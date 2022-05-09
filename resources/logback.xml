@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %-40.40logger{39}:%-4line %-35method - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
+    <logger name="org.eclipse.jetty" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

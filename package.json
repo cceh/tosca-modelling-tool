@@ -1,0 +1,84 @@
+{
+  "name": "winery-electron-scratch",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build:main": "webpack --config webpack.electron-main.config.js",
+    "build:renderer": "webpack --config webpack.electron-renderer.config.js",
+    "start:main:electron": "electron dist/app/main.js --inspect=9229 --remote-debugging-port=9222",
+    "start:main": "npm-run-all build:main start:main:electron",
+    "dev:main": "nodemon --watch src/main -e js,ts,json,html --exec npm run start:main",
+    "dev:renderer": "webpack serve --config webpack.electron-renderer.config.js",
+    "dev": "npm-run-all --parallel dev:renderer dev:main",
+    "deps:winery": "node scripts/get-winery.mjs",
+    "deps:jre": "node scripts/get-jre.mjs",
+    "deps": "npm-run-all deps:winery deps:jre",
+    "build:electron:mac": "electron-builder -m",
+    "build:mac": "npm-run-all deps build:electron:mac",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/app/main.js",
+  "author": "Marcel Schaeben",
+  "license": "MIT",
+  "build": {
+    "files": "dist/app/**/*",
+    "extraResources": [
+      {
+        "from": "vendor/java/${os}",
+        "to": "Resources/java",
+        "filter": "**/*"
+      },
+      {
+        "from": "winery-launcher/target",
+        "to": "Resources/winery",
+        "filter": [
+          "*.jar",
+          "lib"
+        ]
+      },
+      {
+        "from": "resources",
+        "to": "Resources/",
+        "filter": "*"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.1.10",
+    "@types/electron-store": "^3.2.0",
+    "@types/js-yaml": "^4.0.5",
+    "@types/winston": "^2.4.4",
+    "autoprefixer": "^10.4.7",
+    "chalk": "^5.0.1",
+    "css-loader": "^6.7.1",
+    "electron": "^18.2.0",
+    "execa": "^6.1.0",
+    "extract-zip": "^2.0.1",
+    "fork-ts-checker-webpack-plugin": "^7.2.11",
+    "html-webpack-plugin": "^5.5.0",
+    "nodemon": "^2.0.16",
+    "npm-run-all": "^4.1.5",
+    "ora": "^6.1.0",
+    "postcss-loader": "^6.2.1",
+    "prepend-transform": "^0.0.1019",
+    "sass": "^1.51.0",
+    "sass-loader": "^12.6.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1",
+    "yauzl": "^2.10.0",
+    "zx": "^6.1.0"
+  },
+  "dependencies": {
+    "bootstrap": "^5.1.3",
+    "electron-store": "^8.0.1",
+    "js-yaml": "^4.1.0",
+    "lit": "^2.2.3",
+    "node-fetch": "^3.2.4",
+    "portfinder": "^1.0.28",
+    "winston": "^3.7.2"
+  }
+}

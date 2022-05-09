@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="winery-launcher" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="launcher" target="11" />
+      <module name="winery" target="${java.version}" />
+      <module name="winery-launcher" target="11" />
+      <module name="winery-launcher-parent" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

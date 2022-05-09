@@ -1,0 +1,16 @@
+target/
+
+.DS_Store
+
+node_modules
+vendor/java
+dist
+
+*.war
+
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/libraries

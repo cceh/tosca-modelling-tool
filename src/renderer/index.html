@@ -1,0 +1,49 @@
+<html>
+	
+  <head>
+   <title>This title shows at the top</title>
+    <script>
+      const global = globalThis;
+    </script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+  </head>
+
+
+  <template id="repository-list">
+      <h3>Recent repositories</h3>
+      <ul class="repository-list list-group">
+          <template id="repository-item">
+              <button
+                      type="button"
+                      class="list-group-item list-group-item-action"
+              ><slot name="path" /></button>
+          </template>
+      </ul>
+  </template>
+
+
+
+  <body>
+      <h1>Desktop Winery</h1>
+
+      <div class="d-flex flex-column">
+          <div class="d-flex  flex-row">
+              <button type="button" class="btn btn-primary mr-2" onclick="openWorkspace()">Open workspace</button>
+              <button type="button" class="btn btn-primary" onclick="createWorkspace()">Create new workspace</button>
+          </div>
+          <div>
+              <repository-list2></repository-list2>
+          </div>
+      </div>
+
+
+  <loading-modal></loading-modal>
+  <create-workspace-dialog></create-workspace-dialog>
+
+
+
+
+
+
+  </body>
+</html>
