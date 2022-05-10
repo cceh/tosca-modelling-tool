@@ -3,8 +3,10 @@ target/
 .DS_Store
 
 node_modules
-vendor/java
+
+vendor/java/**/*
 !vendor/java/.keep
+
 dist
 
 *.war
