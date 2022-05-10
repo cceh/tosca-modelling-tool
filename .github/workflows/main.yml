@@ -33,11 +33,20 @@ jobs:
 
       - name: Cache dist
         uses: actions/cache@v3
-        id: dist
+        id: cache-dist
         with:
           path: |
             desktop-winery/dist
           key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+
+      - name: Cache winery launcher
+        uses: actions/cache@v3
+        id: cache-winery-launcher
+        with:
+          path: |
+            desktop-winery/winery-launcher/dist
+          key: winery-launcher-${{ hashFiles('**/winery-launcher/src/**/*') }}
+
 
       - name: Cache local Maven repository
         uses: actions/cache@v3
