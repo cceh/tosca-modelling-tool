@@ -21,7 +21,10 @@
   "main": "dist/app/main.js",
   "author": "Marcel Schaeben",
   "license": "MIT",
-  "repository": "https://github.com/olvidalo/desktop-winery",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olvidalo/desktop-winery.git"
+  },
   "build": {
     "mac": {
       "publish": ["github"]
