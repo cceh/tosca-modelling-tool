@@ -12,7 +12,7 @@
     "dev": "npm-run-all --parallel dev:renderer dev:main",
     "deps:winery": "node scripts/get-winery.mjs",
     "deps:jre": "node scripts/get-jre.mjs",
-    "deps": "npm-run-all deps:winery deps:jre",
+    "deps": "npm-run-all deps:jre deps:winery",
     "build:electron:mac": "electron-builder -m",
     "build:mac": "npm-run-all deps build:main build:renderer build:electron:mac",
     "test": "echo \"Error: no test specified\" && exit 1"
