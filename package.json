@@ -15,12 +15,17 @@
     "deps": "npm-run-all deps:jre deps:winery",
     "build:electron:mac": "electron-builder -m",
     "build:mac": "npm-run-all deps build:main build:renderer build:electron:mac",
+    "release": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "dist/app/main.js",
   "author": "Marcel Schaeben",
   "license": "MIT",
+  "repository": "https://github.com/olvidalo/desktop-winery",
   "build": {
+    "mac": {
+      "publish": ["github"]
+    },
     "files": "dist/app/**/*",
     "extraFiles": [
       {
