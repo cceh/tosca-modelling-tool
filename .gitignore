@@ -4,6 +4,7 @@ target/
 
 node_modules
 vendor/java
+!vendor/java/.keep
 dist
 
 *.war
