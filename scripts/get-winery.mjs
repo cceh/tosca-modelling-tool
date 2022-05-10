@@ -43,7 +43,7 @@ async function initializeWinerySubmodule() {
 function buildWineryLauncher() {
     console.log("Building the winery launcher...")
     try {
-        return runCommand("mvn", ["package", `-f`, parentPom, "-Dstyle.color=always", "-DskipTests", "-Dcheckstyle.skip", "-Dmaven.javadoc.skip=true"])
+        return runCommand("mvn", ["package", `--batch-mode`,`-f`, parentPom, "-Dstyle.color=always", "-DskipTests", "-Dcheckstyle.skip", "-Dmaven.javadoc.skip=true"])
     } catch (e) {
         console.error("Could not build the winery launcher.")
         process.exit(1)

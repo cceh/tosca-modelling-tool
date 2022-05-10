@@ -14,7 +14,7 @@
     "deps:jre": "node scripts/get-jre.mjs",
     "deps": "npm-run-all deps:winery deps:jre",
     "build:electron:mac": "electron-builder -m",
-    "build:mac": "npm-run-all deps build:electron:mac",
+    "build:mac": "npm-run-all deps build:main build:renderer build:electron:mac",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "dist/app/main.js",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "build": {
     "files": "dist/app/**/*",
-    "extraResources": [
+    "extraFiles": [
       {
         "from": "vendor/java/${os}",
         "to": "Resources/java",
@@ -70,7 +70,8 @@
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1",
     "yauzl": "^2.10.0",
-    "zx": "^6.1.0"
+    "zx": "^6.1.0",
+    "electron-builder": "^23.0.3"
   },
   "dependencies": {
     "bootstrap": "^5.1.3",

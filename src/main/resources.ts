@@ -13,13 +13,13 @@ export const resourcePath = useProdPath
 
 export const javaCmdPath = useProdPath
     ? path.join(resourcePath, "java", "bin", "java")
-    : path.join(resourcePath, "java", getPlatform(), "bin", "java")
+    : path.join(__dirname, "..", "..", "vendor", "java", getPlatform(), "bin", "java")
 
 export const launcherRootPath = useProdPath
     ? path.join(resourcePath, "winery")
-    : path.join(resourcePath, "..", "launcher", "launcher", "target")
+    : path.join(resourcePath, "..", "winery-launcher", "target")
 
-export const launcherPath = path.join(launcherRootPath, "launcher-1.0-SNAPSHOT.jar")
+export const launcherPath = path.join(launcherRootPath, "winery-launcher.jar")
 
 export const logbackConfigurationPathDefault = path.join(resourcePath, "logback.xml")
 export const logbackConfigurationPathDebug = path.join(resourcePath, "logback-debug.xml")

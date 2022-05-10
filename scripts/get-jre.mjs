@@ -12,6 +12,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const jreVersionFile = path.join(__dirname, "../JRE_VERSION")
 const vendorDir = path.join(__dirname, "../vendor/java")
 
+function clean() {
+    const entries = fs.readdirSync(vendorDir)
+    entries
+        .filter(entry => entry !== ".keep")
+        .forEach(entry => fs.rmSync(path.join(vendorDir, entry), {recursive: true}))
+}
+
 function downloadFile(url, targetPath) {
     console.log(`Downloading ${targetPath}`)
 
@@ -34,9 +41,11 @@ function extractJreZip(zipFilePath, destDir) {
        let jreRootDir
 
        yauzl.open(zipFilePath, { autoClose: true, lazyEntries: true },  (err, zipfile) => {
-           if (err) {
+           if (err || !zipfile) {
                reject(err)
+               return
            }
+
            zipfile.readEntry()
 
            zipfile.on("error", err => {
@@ -71,20 +80,27 @@ function extractJreZip(zipFilePath, destDir) {
 }
 
 async function getJreReleaseInfo(version) {
-    const localReleaseInfoFile = path.join(vendorDir, `jre_${jreVersion}.release_info.json`)
+    const releaseInfoFileName = `jre_${version}.release_info.json`
+    const localReleaseInfoFile = path.join(vendorDir, releaseInfoFileName)
     if (!fs.existsSync(localReleaseInfoFile)) {
         console.log(`Get release info from Adoptium for JRE ${version}`)
-        await downloadFile(`https://api.adoptium.net/v3/assets/release_name/eclipse/${jreVersion}?heap_size=normal&image_type=jre&project=jdk`, localReleaseInfoFile)
+        await downloadFile(`https://api.adoptium.net/v3/assets/release_name/eclipse/${version}?heap_size=normal&image_type=jre&project=jdk`, localReleaseInfoFile)
     } else {
         console.log(`Found existing release info from Adoptium for JRE ${version}`)
     }
 
     const releaseInfoJson =  (await readFile(localReleaseInfoFile)).toString()
-    return JSON.parse(releaseInfoJson)
+    return {
+        releaseInfoFileName,
+        localReleaseInfoFile,
+        releaseInfo: JSON.parse(releaseInfoJson)
+    }
 }
 
-async function downloadJrePackage(packageInfo, destFilePath) {
+async function downloadJrePackage(packageInfo) {
     const {checksum, link} = packageInfo
+
+    const destFilePath = path.join(vendorDir, path.basename(new URL(link).pathname))
 
     const packageFileExists = fs.existsSync(destFilePath)
     const checksumMatches = packageFileExists && (
@@ -93,7 +109,7 @@ async function downloadJrePackage(packageInfo, destFilePath) {
 
     if (packageFileExists && checksumMatches) {
         console.log("JRE already downloaded.")
-        return
+        return destFilePath
     }
 
     await downloadFile(link, destFilePath)
@@ -102,39 +118,52 @@ async function downloadJrePackage(packageInfo, destFilePath) {
     if (downloadedFileChecksum !== checksum) {
         throw new Error("Checksum does not match")
     }
+
+    return destFilePath
 }
 
 async function getJre(os) {
     const jreVersion = (await readFile(jreVersionFile)).toString().trim()
-    const releaseInfo = await getJreReleaseInfo(jreVersion)
+    const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(jreVersion)
 
     const binaryInfo = releaseInfo["binaries"]
         .find(({architecture, os: _os}) => architecture === "x64" && os === _os)
     const packageInfo = binaryInfo["package"]
 
-    const packageFilePath = path.join(vendorDir, path.basename(new URL(link).pathname))
-
-    await downloadJrePackage(packageInfo, packageFilePath)
+    const packageFilePath = await downloadJrePackage(packageInfo)
 
     const extractDir = path.join(vendorDir, os)
-    const isAlreadyExtracted = fs.existsSync(path.join(extractDir, path.basename(localReleaseInfoFile)))
+    const isAlreadyExtracted = fs.existsSync(path.join(extractDir, releaseInfoFileName))
 
     if (isAlreadyExtracted) {
         console.log(`JRE for ${os} already extracted`)
         return
     }
 
-    fs.mkdirSync(extractDir, {recursive: true})
 
+    let extractSuccess = false
+    fs.mkdirSync(extractDir, {recursive: true})
     if (packageFilePath.endsWith(".zip")) {
         await extractJreZip(packageFilePath, extractDir)
+        extractSuccess = true // TODO handle fail
     } else if (packageFilePath.endsWith(".tar.gz")) {
-        await runCommand("tar", ["xfz", packageFilePath, "-C", extractDir, "--keep-newer-files", "--strip-components=1"])
+        const stripComponents = os === "mac" ? "3" : "1"
+        const extractSourcePath = os === "mac" ? "./*/Contents/Home" : "*"
+        const tarCmd = await runCommand("tar", ["xfz", packageFilePath, "-C", extractDir, "--keep-newer-files", `--strip-components=${stripComponents}`, extractSourcePath])
+        extractSuccess = tarCmd && !tarCmd.failed
     }
 
-    fs.copyFileSync(localReleaseInfoFile, path.join(extractDir, path.basename(localReleaseInfoFile)))
+   if (extractSuccess) {
+       console.log(`JRE for ${os} extracted to ${extractDir}.`)
+       fs.copyFileSync(localReleaseInfoFile, path.join(extractDir, path.basename(localReleaseInfoFile)))
+   }
 
 
+}
+
+if (process.argv.includes("--clean")) {
+    await clean()
+    process.exit()
 }
 
 await getJre("windows")

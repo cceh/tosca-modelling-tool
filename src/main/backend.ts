@@ -11,6 +11,7 @@ import fetch from "node-fetch"
 import {createLogger, format, transports} from "winston"
 
 import {WineryConfig} from "./winery-repository-configuration";
+import * as readline from "readline";
 
 class Backend {
     private process: ChildProcess | null = null
@@ -40,13 +41,15 @@ class Backend {
         ]
     })
 
-    get running() { return this.process && this.process.exitCode !== null }
+    get running() { return this.process && this.process.exitCode === null }
     get ready() { return this._ready }
     get port() { return this._port }
     get repositoryPath() { return this._repositoryPath }
     get backendUrl() {
+        console.log(this.process)
+        console.log(this.process.exitCode)
         if (!this.running) {
-            throw new Error("Backend not running  accessing backend URL!")
+            throw new Error("Backend not running while accessing backend URL!")
         }
 
         return this.getBackendBaseUrl(this.port)
@@ -71,6 +74,7 @@ class Backend {
         const port = await getPortPromise({startPort: 8000})
         this.prepareConfigFile(port)
 
+        this.logger.info("Starting the Winery...")
         this.process = spawn(javaCmdPath, [
             `-Duser.home=${this.dataPath}`,
             `-Dorg.eclipse.jetty.LEVEL=INFO`,
@@ -84,8 +88,18 @@ class Backend {
             stdio: "pipe"
         })
 
-        this.process.stdout.on("data", (chunk: Buffer) => this.wineryLogger.info(chunk.toString()))
-        this.process.stderr.on("data", (chunk: Buffer) => this.wineryLogger.error(chunk.toString()))
+        const readlineStdout = readline.createInterface({
+            input: this.process.stdout,
+            historySize: 0
+        })
+
+        const readlineStderr = readline.createInterface({
+            input: this.process.stderr,
+            historySize: 0
+        })
+
+        readlineStdout.on("line", line => this.wineryLogger.info(line))
+        readlineStderr.on("line", line => this.wineryLogger.error(line))
 
         this.process.on("exit", (code, signal) => {
             this.logger.error(`Winery exited with ${signal} (${code}) `)
@@ -106,11 +120,12 @@ class Backend {
     async stop() {
         if (!this.running || this.process?.pid == null) {
             this.logger.error("Winery not running!")
+            return this.waitForBackendStopped()
         }
 
         this.logger.info("Stopping the Winery...")
         this.shouldBeRunning = false
-        this.process?.kill()
+        await fetch(`${this.backendUrl}/shutdown?token=winery`, {method: "POST"})
         return this.waitForBackendStopped()
     }
 
@@ -153,7 +168,7 @@ class Backend {
             this.process?.on("exit", exitListener)
 
             const tryStartBackend = () => {
-                if (!this.process || this.process.exitCode === null || exitedWhileWaitingToStart) {
+                if (!this.process || this.process.exitCode !== null || exitedWhileWaitingToStart) {
                     return
                 }
 

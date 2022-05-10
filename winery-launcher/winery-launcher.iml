@@ -6,7 +6,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
-    <output url="file://$MODULE_DIR$/build/winery-launcher" />
+    <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
@@ -17,6 +17,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-loader:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.46.v20220331" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:9.4.46.v20220331" level="project" />
@@ -42,7 +43,7 @@
     <orderEntry type="library" name="Maven: jakarta.activation:jakarta.activation-api:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: jakarta.ws.rs:jakarta.ws.rs-api:2.1.6" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.repository.rest:classes:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.repository.rest" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
@@ -85,13 +86,13 @@
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />
     <orderEntry type="library" name="Maven: org.jvnet.mimepull:mimepull:1.9.4" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.selfservice:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.repository:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.selfservice" />
+    <orderEntry type="module" module-name="org.eclipse.winery.repository" />
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.11" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-core:2.2.11" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.7" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.7.7" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.accountability:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.accountability" />
     <orderEntry type="library" name="Maven: org.web3j:core:4.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.web3j:abi:4.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.web3j:utils:4.8.9" level="project" />
@@ -124,9 +125,9 @@
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.java-websocket:Java-WebSocket:1.3.8" level="project" />
     <orderEntry type="library" name="Maven: com.github.rutledgepaulv:prune:1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.tosca.canonical:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.tosca.yaml:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.tosca.xml:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.tosca.canonical" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.tosca.yaml" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.tosca.xml" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:30.1.1-jre" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
@@ -138,10 +139,10 @@
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.sshd:sshd-core:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.sshd:sshd-common:2.6.0" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.csar.toscametafile:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.csar.toscametafile" />
     <orderEntry type="library" name="Maven: org.eclipse.virgo.util:org.eclipse.virgo.util.parser.manifest:3.5.0.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.generators.ia:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.highlevelrestapi:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.generators.ia" />
+    <orderEntry type="module" module-name="org.eclipse.winery.highlevelrestapi" />
     <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-frontend-jaxws:2.7.6" level="project" />
@@ -164,12 +165,12 @@
     <orderEntry type="library" name="Maven: jakarta.xml.ws:jakarta.xml.ws-api:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: jakarta.xml.soap:jakarta.xml.soap-api:1.4.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: jakarta.jws:jakarta.jws-api:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.compliance:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.topologygraph:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.common:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.compliance" />
+    <orderEntry type="module" module-name="org.eclipse.winery.topologygraph" />
+    <orderEntry type="module" module-name="org.eclipse.winery.common" />
     <orderEntry type="library" name="Maven: de.danielbechler:java-object-diff:0.95" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jdt:org.eclipse.jdt.annotation:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.edmm:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.edmm" />
     <orderEntry type="library" name="Maven: com.github.UST-EDMM.edmm:edmm-core:1.0.18" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
@@ -234,13 +235,13 @@
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-library:1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.threatmodeling:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.adaptation:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.frontends:war:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.bpmn4tosca.converter.tobpel:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.threatmodeling" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.adaptation" />
+    <orderEntry type="module" module-name="org.eclipse.winery.frontends" />
+    <orderEntry type="module" module-name="org.eclipse.winery.bpmn4tosca.converter.tobpel" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.velocity:velocity:1.7" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.winery:org.eclipse.winery.model.bpmn4tosca:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="org.eclipse.winery.model.bpmn4tosca" />
   </component>
 </module>

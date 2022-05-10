@@ -2,16 +2,68 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="org.eclipse.winery.compliance" />
+        <module name="org.eclipse.winery.tools.copybaragenerator" />
+        <module name="org.eclipse.winery.common" />
+        <module name="org.eclipse.winery.cli" />
+        <module name="org.eclipse.winery.repository" />
+        <module name="org.eclipse.winery.accountability" />
+        <module name="org.eclipse.winery.frontends" />
+        <module name="org.eclipse.winery.tools.deployablecomponents" />
+        <module name="org.eclipse.winery.edmm" />
+        <module name="org.eclipse.winery.highlevelrestapi" />
+        <module name="org.eclipse.winery.model.tosca.yaml" />
+        <module name="org.eclipse.winery.model.tosca.canonical" />
+        <module name="org.eclipse.winery.model.threatmodeling" />
+        <module name="org.eclipse.winery.model.csar.toscametafile" />
+        <module name="org.eclipse.winery.model.tosca.xml" />
+        <module name="org.eclipse.winery.repository.client" />
+        <module name="org.eclipse.winery.generators.ia" />
+        <module name="org.eclipse.winery.repository.rest" />
         <module name="winery-launcher" />
+        <module name="org.eclipse.winery.model.bpmn4tosca" />
+        <module name="org.eclipse.winery.bpmn4tosca.converter.tobpel" />
+        <module name="org.eclipse.winery.crawler" />
+        <module name="org.eclipse.winery.model.adaptation" />
+        <module name="org.eclipse.winery.model.selfservice" />
+        <module name="org.eclipse.winery.topologygraph" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="desktop-winery" target="11" />
       <module name="launcher" target="11" />
-      <module name="winery" target="${java.version}" />
+      <module name="org.eclipse.winery.accountability" target="1.8" />
+      <module name="org.eclipse.winery.bpmn4tosca.converter.tobpel" target="1.8" />
+      <module name="org.eclipse.winery.cli" target="1.8" />
+      <module name="org.eclipse.winery.common" target="1.8" />
+      <module name="org.eclipse.winery.compliance" target="1.8" />
+      <module name="org.eclipse.winery.crawler" target="1.8" />
+      <module name="org.eclipse.winery.edmm" target="1.8" />
+      <module name="org.eclipse.winery.frontends" target="1.8" />
+      <module name="org.eclipse.winery.generators.ia" target="1.8" />
+      <module name="org.eclipse.winery.highlevelrestapi" target="1.8" />
+      <module name="org.eclipse.winery.model" target="1.8" />
+      <module name="org.eclipse.winery.model.adaptation" target="1.8" />
+      <module name="org.eclipse.winery.model.bpmn4tosca" target="1.8" />
+      <module name="org.eclipse.winery.model.csar.toscametafile" target="1.8" />
+      <module name="org.eclipse.winery.model.selfservice" target="1.8" />
+      <module name="org.eclipse.winery.model.threatmodeling" target="1.8" />
+      <module name="org.eclipse.winery.model.tosca.canonical" target="1.8" />
+      <module name="org.eclipse.winery.model.tosca.xml" target="1.8" />
+      <module name="org.eclipse.winery.model.tosca.yaml" target="1.8" />
+      <module name="org.eclipse.winery.reporting" target="1.8" />
+      <module name="org.eclipse.winery.repository" target="1.8" />
+      <module name="org.eclipse.winery.repository.client" target="1.8" />
+      <module name="org.eclipse.winery.repository.rest" target="1.8" />
+      <module name="org.eclipse.winery.tools.copybaragenerator" target="1.8" />
+      <module name="org.eclipse.winery.tools.deployablecomponents" target="1.8" />
+      <module name="org.eclipse.winery.topologygraph" target="1.8" />
+      <module name="winery" target="1.8" />
       <module name="winery-launcher" target="11" />
       <module name="winery-launcher-parent" target="11" />
     </bytecodeTargetLevel>

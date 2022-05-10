@@ -89,7 +89,7 @@ function createToscaManagerWindow(): BrowserWindow {
   }
 
   if (!app.isPackaged) {
-    // toscaManagerWindow.webContents.openDevTools()
+    toscaManagerWindow.webContents.openDevTools()
   }
 
   toscaManagerWindow
@@ -183,7 +183,7 @@ function startBackend(repositoryPath: string): null | Promise<void> {
     const toscaManagerWindow = createToscaManagerWindow()
     toscaManagerWindow.loadURL(backend.backendUrl)
   }).catch(e => {
-    mainWindow.webContents.send("backendStopped")
+    mainWindow?.webContents.send("backendStopped")
     dialog.showErrorBox("Winery error", e.toString())
   });
 }

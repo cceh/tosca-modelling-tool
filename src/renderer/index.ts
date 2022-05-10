@@ -66,7 +66,7 @@ window.createWorkspace = async () => {
     let nameIndex = 1
     let defaultName = "Winery Workspace"
 
-     (fs.existsSync(path.join(defaultParentPath, defaultName))) {
+     if (fs.existsSync(path.join(defaultParentPath, defaultName))) {
         nameIndex++
         defaultName = `Winery Workspace ${nameIndex}`
     }
