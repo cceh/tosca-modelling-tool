@@ -22,7 +22,6 @@ import java.util.EnumSet;
 public class WineryLauncher {
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryLauncher.class);
 
-
     public static Server createHttpServer(int port) {
         HandlerList handlerList = new HandlerList();
 

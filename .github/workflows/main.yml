@@ -36,7 +36,7 @@ jobs:
         id: cache-dist
         with:
           path: |
-            desktop-winery/dist
+            dist
           key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
       - name: Cache winery launcher
@@ -44,7 +44,7 @@ jobs:
         id: cache-winery-launcher
         with:
           path: |
-            desktop-winery/winery-launcher/target
+            **/winery-launcher/target/**/*
           key: winery-launcher-${{ hashFiles('**/winery-launcher/src/**/*') }}
 
 
