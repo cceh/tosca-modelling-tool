@@ -31,14 +31,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: Cache dist
-        uses: actions/cache@v3
-        id: cache-dist
-        with:
-          path: |
-            dist
-          key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
-
       - name: Cache winery launcher
         uses: actions/cache@v3
         id: cache-winery-launcher
