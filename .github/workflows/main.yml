@@ -44,7 +44,7 @@ jobs:
         id: cache-winery-launcher
         with:
           path: |
-            desktop-winery/winery-launcher/dist
+            desktop-winery/winery-launcher/target
           key: winery-launcher-${{ hashFiles('**/winery-launcher/src/**/*') }}
 
 
