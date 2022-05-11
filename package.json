@@ -14,7 +14,9 @@
     "deps:jre": "node scripts/get-jre.mjs",
     "deps": "npm-run-all deps:jre deps:winery",
     "build:electron:mac": "electron-builder -m",
+    "build:electron": "electron-builder",
     "build:mac": "npm-run-all deps build:main build:renderer build:electron:mac",
+    "build": "npm-run-all deps build:main build:renderer build:electron",
     "release": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
