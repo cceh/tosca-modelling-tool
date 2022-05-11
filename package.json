@@ -29,10 +29,15 @@
   },
   "build": {
     "mac": {
-      "publish": [
-        "github"
-      ]
+      "publish": ["github"]
     },
+    "linux": {
+      "publish": ["github"]
+    },
+    "win": {
+      "publish": ["github"]
+    },
+
     "files": "dist/app/**/*",
     "extraFiles": [
       {
@@ -57,9 +62,7 @@
   },
   "devDependencies": {
     "@types/bootstrap": "^5.1.10",
-    "@types/electron-store": "^3.2.0",
     "@types/js-yaml": "^4.0.5",
-    "@types/winston": "^2.4.4",
     "autoprefixer": "^10.4.7",
     "chalk": "^5.0.1",
     "css-loader": "^6.7.1",
