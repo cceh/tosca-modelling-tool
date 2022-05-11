@@ -21,7 +21,7 @@ class Backend {
     private shouldBeRunning = false
 
     readonly dataPath = app.getPath("userData")
-    readonly wineryConfigPath = path.join(this.dataPath, ".winery")
+    readonly wineryConfigPath = path.join(this.dataPath, "winery-config")
     readonly wineryConfigFilePath = path.join(this.wineryConfigPath, "winery.yml")
 
     private logger = createLogger({

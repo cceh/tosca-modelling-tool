@@ -124,7 +124,7 @@ async function downloadJrePackage(packageInfo) {
     return destFilePath
 }
 
-async function getJre(os) {
+async function getJre(os, targetDirectoryName) {
     const jreVersion = (await readFile(jreVersionFile)).toString().trim()
     const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(jreVersion)
 
@@ -134,7 +134,7 @@ async function getJre(os) {
 
     const packageFilePath = await downloadJrePackage(packageInfo)
 
-    const extractDir = path.join(vendorDir, os)
+    const extractDir = path.join(vendorDir, targetDirectoryName)
     const isAlreadyExtracted = fs.existsSync(path.join(extractDir, releaseInfoFileName))
 
     if (isAlreadyExtracted) {
@@ -174,8 +174,8 @@ if (argv.clean) {
 
 const platform = os.platform()
 switch (platform) {
-    case "win32": await getJre("windows"); process.exit()
-    case "darwin": await getJre("mac"); process.exit()
-    default: await getJre(platform)
+    case "win32": await getJre("windows", "win"); process.exit()
+    case "darwin": await getJre("mac", "mac"); process.exit()
+    default: await getJre(platform, platform)
 }
 

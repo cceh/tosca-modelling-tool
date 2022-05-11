@@ -37,7 +37,9 @@
     "win": {
       "publish": ["github"]
     },
-
+    "nsis": {
+      "oneClick": false
+    },
     "files": "dist/app/**/*",
     "extraResources": [
       {
