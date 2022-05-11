@@ -145,7 +145,6 @@ function wineryWindowClosedHandler(this: BrowserWindow, event: Event) {
   if (!mainWindow && openWineryWindows.length === 1) {
     event.preventDefault()
 
-    //this.hide()
     mainWindow = createMainWindow()
     mainWindow.webContents.on("dom-ready", () => {
       mainWindow.webContents.send("backendStopping")
@@ -205,12 +204,14 @@ app.on('ready', () => {
 ipcMain.on("openWorkspace", (event, repositoryPath) => {
   if (!fs.existsSync(repositoryPath)) {
     dialog.showErrorBox("Repository path not found", `The specified repository path could not be found: ${repositoryPath}`)
-    return null
+    event.returnValue = false
+    return
   }
 
   if (!isValidRepository(repositoryPath)) {
-    dialog.showErrorBox("Invalid repository", `The selected directory is not a valid Winery repository. ${repositoryPath}`)
-    return null
+    dialog.showErrorBox("Invalid repository", `The selected directory is not a valid Winery repository: ${repositoryPath}`)
+    event.returnValue = false
+    return
   }
 
   const startBackendResult = startBackend(repositoryPath)

@@ -21,7 +21,11 @@ class Backend {
     private shouldBeRunning = false
 
     readonly dataPath = app.getPath("userData")
-    readonly wineryConfigPath = path.join(this.dataPath, "winery-config")
+
+    // the path where winery.yml is read from is hardcoded as {user.home}/.winery in
+    // org.eclipse.winery.common/src/main/java/org/eclipse/winery/common/configuration/Environment.java
+    readonly wineryConfigPath = path.join(this.dataPath, ".winery")
+
     readonly wineryConfigFilePath = path.join(this.wineryConfigPath, "winery.yml")
 
     private logger = createLogger({
@@ -134,9 +138,8 @@ class Backend {
    private prepareConfigFile(port: number) {
        this.logger.info("Creating default winery.yml config file.")
        fs.mkdirSync(this.wineryConfigPath, {recursive: true})
-       fs.copyFileSync(wineryYamlConfigTemplatePath, this.wineryConfigFilePath)
 
-        const yamlConfig = loadYaml(fs.readFileSync(this.wineryConfigFilePath, "utf-8")) as WineryConfig
+        const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = this.repositoryPath!
        yamlConfig.ui.endpoints.topologymodeler = `${this.getBackendBaseUrl(port)}/winery-topologymodeler`
        yamlConfig.ui.endpoints.repositoryApiUrl = this.getWineryUrl(port)
