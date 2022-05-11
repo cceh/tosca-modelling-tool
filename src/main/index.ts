@@ -61,7 +61,9 @@ function createMainWindow(): BrowserWindow {
     mainWindow.loadURL(`http://localhost:8080/`)
   }
 
-  mainWindow.webContents.openDevTools()
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools()
+  }
 
   mainWindow
       .on('ready-to-show', () => mainWindow.show())
