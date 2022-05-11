@@ -39,15 +39,15 @@
     },
 
     "files": "dist/app/**/*",
-    "extraFiles": [
+    "extraResources": [
       {
         "from": "vendor/java/${os}",
-        "to": "Resources/java",
+        "to": "java",
         "filter": "**/*"
       },
       {
         "from": "winery-launcher/target",
-        "to": "Resources/winery",
+        "to": "winery",
         "filter": [
           "*.jar",
           "lib"
@@ -55,7 +55,7 @@
       },
       {
         "from": "resources",
-        "to": "Resources/",
+        "to": ".",
         "filter": "*"
       }
     ]
