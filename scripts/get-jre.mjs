@@ -125,6 +125,8 @@ async function downloadJrePackage(packageInfo) {
 }
 
 async function getJre(os, targetDirectoryName) {
+    console.log(`Get JRE for: ${os}`)
+
     const jreVersion = (await readFile(jreVersionFile)).toString().trim()
     const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(jreVersion)
 
@@ -172,10 +174,11 @@ if (argv.clean) {
     process.exit()
 }
 
-const platform = os.platform()
-switch (platform) {
-    case "win32": await getJre("windows", "win"); process.exit()
-    case "darwin": await getJre("mac", "mac"); process.exit()
-    default: await getJre(platform, platform)
+const platforms = argv.all ? ["win32", "darwin", "linux"] : [os.platform()]
+for (const platform of platforms) {
+    switch (platform) {
+        case "win32":  console.log(platform); await getJre("windows", "win"); break
+        case "darwin": await getJre("mac", "mac"); break
+        default: await getJre(platform, platform)
+    }
 }
-

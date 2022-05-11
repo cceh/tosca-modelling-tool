@@ -8,6 +8,9 @@ module.exports = [{
     target: "electron-renderer",
     entry: './src/renderer/index.ts',
     devtool: "source-map",
+    optimization: {
+        minimize: false,
+    },
     devServer: {
       watchFiles: ["./src/renderer/**/*"]
     },

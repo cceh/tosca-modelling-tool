@@ -5,6 +5,8 @@
   "scripts": {
     "build:main": "webpack --config webpack.electron-main.config.js",
     "build:renderer": "webpack --config webpack.electron-renderer.config.js",
+    "build:main:prod": "webpack --mode=production --config webpack.electron-main.config.js",
+    "build:renderer:prod": "webpack --mode=production --config webpack.electron-renderer.config.js",
     "start:main:electron": "electron dist/app/main.js --inspect=9229 --remote-debugging-port=9222",
     "start:main": "npm-run-all build:main start:main:electron",
     "dev:main": "nodemon --watch src/main -e js,ts,json,html --exec npm run start:main",
@@ -15,8 +17,7 @@
     "deps": "npm-run-all deps:jre deps:winery",
     "build:electron:mac": "electron-builder -m",
     "build:electron": "electron-builder",
-    "build:mac": "npm-run-all deps build:main build:renderer build:electron:mac",
-    "build": "npm-run-all deps build:main build:renderer build:electron",
+    "build": "npm-run-all deps build:main:prod build:renderer:prod build:electron",
     "release": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -38,7 +39,8 @@
       "publish": ["github"]
     },
     "nsis": {
-      "oneClick": false
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "files": "dist/app/**/*",
     "extraResources": [

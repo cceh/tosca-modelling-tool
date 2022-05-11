@@ -8,7 +8,7 @@ const style = styles
 @customElement("loading-modal")
 class LoadingModal extends LitElement {
 
-    static styles = [style]
+    // static styles = [style]
     @state() private _text: String
     @state() private _fade = true
     private modal: Modal
@@ -19,6 +19,14 @@ class LoadingModal extends LitElement {
     private _status: "showing" | "shown" | "hiding" | "hidden" = "hidden"
 
     get status() { return this._status }
+
+    createRenderRoot() {
+        const renderRoot = super.createRenderRoot()
+        if (renderRoot instanceof ShadowRoot) {
+            renderRoot.adoptedStyleSheets = [style]
+        }
+        return renderRoot
+    }
 
     show(text: string, fade = true) {
         this._text = text

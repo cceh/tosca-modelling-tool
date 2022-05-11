@@ -10,7 +10,7 @@ const style = styles
 @customElement("create-workspace-dialog")
 class CreateWorkspaceDialog extends LitElement {
 
-    static styles = [style]
+    // static styles = [style]
 
     private modal: Modal
     private modalElem: HTMLElement
@@ -19,6 +19,14 @@ class CreateWorkspaceDialog extends LitElement {
     private createButton: HTMLButtonElement
 
     private notifyClose: (repositoryPath: string | null) => void
+
+    createRenderRoot() {
+        const renderRoot = super.createRenderRoot()
+        if (renderRoot instanceof ShadowRoot) {
+            renderRoot.adoptedStyleSheets = [style]
+        }
+        return renderRoot
+    }
 
     async show(parentPath: string, name: string): Promise<string> {
         this.locationInput.value = parentPath
