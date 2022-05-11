@@ -46,8 +46,6 @@ class Backend {
     get port() { return this._port }
     get repositoryPath() { return this._repositoryPath }
     get backendUrl() {
-        console.log(this.process)
-        console.log(this.process.exitCode)
         if (!this.running) {
             throw new Error("Backend not running while accessing backend URL!")
         }
@@ -134,11 +132,9 @@ class Backend {
     }
 
    private prepareConfigFile(port: number) {
-        if (!fs.existsSync(this.wineryConfigFilePath)) {
-            this.logger.info("Creating default winery.yml config file.")
-            fs.mkdirSync(this.wineryConfigPath, {recursive: true})
-            fs.copyFileSync(wineryYamlConfigTemplatePath, this.wineryConfigFilePath)
-        }
+       this.logger.info("Creating default winery.yml config file.")
+       fs.mkdirSync(this.wineryConfigPath, {recursive: true})
+       fs.copyFileSync(wineryYamlConfigTemplatePath, this.wineryConfigFilePath)
 
         const yamlConfig = loadYaml(fs.readFileSync(this.wineryConfigFilePath, "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = this.repositoryPath!

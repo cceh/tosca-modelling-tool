@@ -64,11 +64,10 @@ function createMainWindow(): BrowserWindow {
   mainWindow.webContents.openDevTools()
 
   mainWindow
-      .on('closed', function () {
-        mainWindow = null
-        if (process.platform !== 'darwin') { app.quit() }
-      })
       .on('ready-to-show', () => mainWindow.show())
+      .on('closed', () => {
+        mainWindow = null;
+      })
 
   return mainWindow
 }
@@ -82,11 +81,6 @@ function createToscaManagerWindow(): BrowserWindow {
     show: false,
   })
   windowTypeMap.set(toscaManagerWindow, "tosca-manager")
-
-  if (mainWindow) {
-    mainWindow.close();
-    mainWindow = null;
-  }
 
   if (!app.isPackaged) {
     toscaManagerWindow.webContents.openDevTools()
@@ -151,7 +145,7 @@ function wineryWindowClosedHandler(this: BrowserWindow, event: Event) {
   if (!mainWindow && openWineryWindows.length === 1) {
     event.preventDefault()
 
-    this.hide()
+    //this.hide()
     mainWindow = createMainWindow()
     mainWindow.webContents.on("dom-ready", () => {
       mainWindow.webContents.send("backendStopping")
@@ -180,7 +174,10 @@ function startBackend(repositoryPath: string): null | Promise<void> {
     const parentLocation = path.resolve(repositoryPath, "..")
     store.set("defaultWorkspaceParentPath", parentLocation)
 
+    mainWindow?.hide()
+
     const toscaManagerWindow = createToscaManagerWindow()
+    toscaManagerWindow.once("ready-to-show", () => mainWindow?.close())
     toscaManagerWindow.loadURL(backend.backendUrl)
   }).catch(e => {
     mainWindow?.webContents.send("backendStopped")
@@ -188,9 +185,11 @@ function startBackend(repositoryPath: string): null | Promise<void> {
   });
 }
 
-//app.on('window-all-closed', () => {
-//  if (process.platform !== 'darwin') { app.quit() }
-//})
+app.on('window-all-closed', () => {
+ // if (process.platform !== 'darwin') { app.quit() }
+  console.log("ALL WINDOWS CLOSED")
+  app.quit()
+})
 
 // if there is no mainWindow it creates one (like when you click the dock icon)
 app.on('activate', () => {
