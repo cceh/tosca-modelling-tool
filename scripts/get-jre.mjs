@@ -4,8 +4,10 @@ import {fileURLToPath} from "url";
 import { writeFile, readFile } from "fs/promises"
 import fs from "fs";
 import crypto from "crypto";
+import os from "os"
 import {runCommand} from "./common/common.mjs";
 import yauzl from "yauzl"
+import minimist from "minimist"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -161,11 +163,16 @@ async function getJre(os) {
 
 }
 
-if (process.argv.includes("--clean")) {
+const argv = minimist(process.argv)
+if (argv.clean) {
     await clean()
     process.exit()
 }
 
-await getJre("windows")
-await getJre("linux")
-await getJre("mac")
+const platform = os.platform()
+switch (platform) {
+    case "win32": await getJre("windows"); process.exit()
+    case "darwin": await getJre("mac"); process.exit()
+    default: await getJre(platform)
+}
+
