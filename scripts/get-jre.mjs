@@ -150,7 +150,7 @@ async function getJre(os) {
         extractSuccess = true // TODO handle fail
     } else if (packageFilePath.endsWith(".tar.gz")) {
         const stripComponents = os === "mac" ? "3" : "1"
-        const extractSourcePath = os === "mac" ? "./*/Contents/Home" : undefined
+        const extractSourcePath = os === "mac" ? "./*/Contents/Home" : "."
         const tarCmd = await runCommand("tar", ["xfz", packageFilePath, "-C", extractDir, "--keep-newer-files", `--strip-components=${stripComponents}`, extractSourcePath])
         extractSuccess = tarCmd && !tarCmd.failed
     }
@@ -158,7 +158,10 @@ async function getJre(os) {
    if (extractSuccess) {
        console.log(`JRE for ${os} extracted to ${extractDir}.`)
        fs.copyFileSync(localReleaseInfoFile, path.join(extractDir, path.basename(localReleaseInfoFile)))
+       process.exit()
    }
+
+   process.exit(1)
 
 
 }
