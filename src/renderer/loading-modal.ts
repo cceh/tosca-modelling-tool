@@ -35,8 +35,7 @@ class LoadingModal extends LitElement {
     }
 
     close() {
-        console.log(this.modal)
-        this.modal.hide()
+        this.modal?.hide()
     }
 
     firstUpdated() {

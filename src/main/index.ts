@@ -5,6 +5,18 @@ import {backend} from "./backend";
 import {store} from "../common/store";
 import * as fs from "fs";
 
+import {
+  BACKEND_STARTING,
+  BACKEND_STOPPED,
+  BACKEND_STOPPING,
+  CHOOSE_DIRECTORY,
+  CREATE_A_WORKSPACE, IS_BACKEND_RUNNING,
+  OPEN_A_WORKSPACE
+} from "../common/ipcEvents";
+import Size = Electron.Size;
+import {Logger} from "sass";
+import silent = Logger.silent;
+
 export type WindowType = "main" | "tosca-manager" | "topology-modeler"
 const windowTypeMap = new WeakMap<BrowserWindow, WindowType>()
 
@@ -149,9 +161,9 @@ function wineryWindowClosedHandler(this: BrowserWindow, event: Event) {
 
     mainWindow = createMainWindow()
     mainWindow.webContents.on("dom-ready", () => {
-      mainWindow.webContents.send("backendStopping")
+      mainWindow.webContents.send(BACKEND_STOPPING)
       backend.stop().then(() => {
-        mainWindow.webContents.send("backendStopped")
+        mainWindow.webContents.send(BACKEND_STOPPED)
         this.close()
       })
     })
@@ -163,6 +175,7 @@ function startBackend(repositoryPath: string): null | Promise<void> {
     throw new Error("No repositoryPath set!")
   }
 
+  mainWindow?.webContents.send(BACKEND_STARTING)
   return backend.start(repositoryPath).then(() => {
 
     const knownWorkspaces = store.get("knownWorkspaces") ?? []
@@ -181,7 +194,7 @@ function startBackend(repositoryPath: string): null | Promise<void> {
     toscaManagerWindow.once("ready-to-show", () => mainWindow?.close())
     toscaManagerWindow.loadURL(backend.backendUrl)
   }).catch(e => {
-    mainWindow?.webContents.send("backendStopped")
+    mainWindow?.webContents.send(BACKEND_STOPPED)
     dialog.showErrorBox("Winery error", e.toString())
   });
 }
@@ -203,24 +216,21 @@ app.on('ready', () => {
 
 
 
-ipcMain.on("openWorkspace", (event, repositoryPath) => {
+ipcMain.on(OPEN_A_WORKSPACE, (event, repositoryPath) => {
   if (!fs.existsSync(repositoryPath)) {
     dialog.showErrorBox("Repository path not found", `The specified repository path could not be found: ${repositoryPath}`)
-    event.returnValue = false
     return
   }
 
   if (!isValidRepository(repositoryPath)) {
     dialog.showErrorBox("Invalid repository", `The selected directory is not a valid Winery repository: ${repositoryPath}`)
-    event.returnValue = false
     return
   }
 
-  const startBackendResult = startBackend(repositoryPath)
-  event.returnValue = !!startBackendResult
+  startBackend(repositoryPath)
 })
 
-ipcMain.on("createWorkspace", async (event, repositoryPath) => {
+ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath) => {
 
   if (fs.existsSync(repositoryPath)) {
     if (isValidRepository(repositoryPath)) {
@@ -232,11 +242,8 @@ ipcMain.on("createWorkspace", async (event, repositoryPath) => {
       })
 
       if (result === 0) {
-        const startBackendResult = startBackend(repositoryPath)
-        event.returnValue = !!startBackendResult
+        startBackend(repositoryPath)
       }
-
-      event.returnValue = false
     }
 
     return
@@ -246,27 +253,23 @@ ipcMain.on("createWorkspace", async (event, repositoryPath) => {
     fs.mkdirSync(repositoryPath, { recursive: true })
   } catch (e) {
     dialog.showErrorBox("Could create workspace directory", `Could not create new workspace directory ${repositoryPath}`)
-    event.returnValue = false
     return
   }
 
-  const startBackendResult = startBackend(repositoryPath)
-  event.returnValue = !!startBackendResult
+  startBackend(repositoryPath)
 })
 
-ipcMain.on("selectWorkspaceDir", (event, path: string) => {
-  const result = dialog.showOpenDialogSync({
+ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
+  const result = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
     title: "Choose workspace directory",
     properties: ["openDirectory", "promptToCreate", "createDirectory"],
     defaultPath: path
   })
-
-  // phony check to determine if this is a valid repository
-  event.returnValue = result && result[0]
+  return !result.canceled && result.filePaths[0]
 })
 
-ipcMain.on("isBackendRunning", (event) => {
-  event.returnValue = backend.running
+ipcMain.handle(IS_BACKEND_RUNNING, async (event) => {
+  return backend.running
 })
 
 backend.backendEvents.on("unexpected-exit", (error?) => {
@@ -275,7 +278,7 @@ backend.backendEvents.on("unexpected-exit", (error?) => {
     title: "Winery backend error",
     message: `The Winery has exited unexpectedly${error ? `: ${error}` : "."}`
   })
-  mainWindow?.webContents?.send("backendStopped")
+  mainWindow?.webContents?.send(BACKEND_STOPPED)
 
   if (!mainWindow) {
     createMainWindow()

@@ -45,6 +45,8 @@ class Backend {
         ]
     })
 
+    private stderrLastLine: string = null
+
     get running() { return this.process && this.process.exitCode === null }
     get ready() { return this._ready }
     get port() { return this._port }
@@ -104,12 +106,16 @@ class Backend {
             historySize: 0
         })
 
+        this.stderrLastLine = null
         readlineStdout.on("line", line => this.wineryLogger.info(line))
-        readlineStderr.on("line", line => this.wineryLogger.error(line))
+        readlineStderr.on("line", line => {
+            this.stderrLastLine = line
+            this.wineryLogger.error(line)
+        })
 
         this.process.on("exit", (code, signal) => {
-            this.logger.error(`Winery exited with ${signal} (${code}) `)
-            this.handleBackendExit()
+            this.logger.error(`Winery exited with ${signal} (${code}).`)
+            this.handleBackendExit(this.stderrLastLine && new Error(this.stderrLastLine))
         })
 
         return new Promise((resolve, reject) => {

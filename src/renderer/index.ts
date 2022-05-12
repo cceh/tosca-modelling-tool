@@ -8,29 +8,38 @@ import {loadingModal} from "./loading-modal";
 import {createWorkspaceDialog} from "./create-workspace-dialog"
 import path from "path";
 import * as fs from "fs";
+import {
+    BACKEND_STARTING,
+    BACKEND_STOPPED,
+    BACKEND_STOPPING,
+    CHOOSE_DIRECTORY,
+    CREATE_A_WORKSPACE,
+    IS_BACKEND_RUNNING, OPEN_A_WORKSPACE
+} from "../common/ipcEvents";
 
 const style = styles
 
 document.adoptedStyleSheets = [style]
 
-electron.ipcRenderer.on("backendStopping", () => {
-    const isBackendRunning = electron.ipcRenderer.sendSync("isBackendRunning")
+electron.ipcRenderer.on(BACKEND_STARTING, () => {
+    loadingModal.show("Starting the Winery...")
+})
+
+electron.ipcRenderer.on(BACKEND_STOPPING, () => {
+    const isBackendRunning = electron.ipcRenderer.invoke(IS_BACKEND_RUNNING)
     if (isBackendRunning) {
         loadingModal.show("Stopping the Winery...", false)
     }
 })
 
-electron.ipcRenderer.on("backendStopped", () => {
+electron.ipcRenderer.on(BACKEND_STOPPED, () => {
     if (loadingModal.status === "shown") {
         loadingModal.close()
     }
-
+    // ensure to close loading modal
     if (loadingModal.status === "showing") {
         loadingModal.events.once("shown", () => loadingModal.close())
     }
-
-    // ensure to close loading modal
-
 })
 
 
@@ -45,19 +54,16 @@ declare global {
         startWinery: (workspacePath: string, create?: boolean) => void
     }
 }
-window.openWorkspace = () => {
-    const result = electron.ipcRenderer.sendSync("selectWorkspaceDir");
-    if (result) {
-        window.startWinery(result)
+window.openWorkspace = async () => {
+    const path = await electron.ipcRenderer.invoke(CHOOSE_DIRECTORY)
+    if (path) {
+        window.startWinery(path)
     }
 }
 
 window.startWinery = (path, create = false) => {
-    const message = create ? "createWorkspace" : "openWorkspace"
-    const isStarting = electron.ipcRenderer.sendSync(message, path)
-    if (isStarting) {
-        loadingModal.show("Starting the Winery...")
-    }
+    const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
+    electron.ipcRenderer.send(message, path)
 }
 
 window.createWorkspace = async () => {

@@ -5,6 +5,7 @@ import styles from "./styles.scss"
 import {EventEmitter} from "events";
 import path from "path";
 import electron from "electron";
+import {CHOOSE_DIRECTORY} from "../common/ipcEvents";
 const style = styles
 
 @customElement("create-workspace-dialog")
@@ -18,7 +19,8 @@ class CreateWorkspaceDialog extends LitElement {
     private nameInput: HTMLInputElement
     private createButton: HTMLButtonElement
 
-    private notifyClose: (repositoryPath: string | null) => void
+    private notifyResult: (repositoryPath: string | null) => void
+    private cancelListener: () => void | null
 
     createRenderRoot() {
         const renderRoot = super.createRenderRoot()
@@ -28,26 +30,34 @@ class CreateWorkspaceDialog extends LitElement {
         return renderRoot
     }
 
-    async show(parentPath: string, name: string): Promise<string> {
+    show(parentPath: string, name: string): Promise<string> {
         this.locationInput.value = parentPath
         this.nameInput.value = name
         this.modal.show()
 
 
         return new Promise<string>(resolve => {
-            this.notifyClose = resolve
-            this.modalElem.addEventListener("closed", () => resolve(null))
+            this.notifyResult = (repositoryPath => {
+                resolve(repositoryPath)
+                this.modalElem.removeEventListener("hidden.bs.modal", this.cancelListener)
+                this.cancelListener = null
+                this.notifyResult = null
+            })
+
+            this.cancelListener = () => this.notifyResult(null)
+            this.modalElem.addEventListener("hidden.bs.modal", this.cancelListener)
         })
     }
 
     createButtonHandler() {
         const repositoryPath = path.join(this.locationInput.value, this.nameInput.value)
-        this.notifyClose(repositoryPath)
+        this.notifyResult(repositoryPath)
+        this.modal.hide()
     }
 
     chooseLocationButtonHandler() {
 
-        const path = electron.ipcRenderer.sendSync("selectWorkspaceDir", this.locationInput.value);
+        const path = electron.ipcRenderer.sendSync(CHOOSE_DIRECTORY, this.locationInput.value);
         if (path) {
             this.locationInput.value = path
         }
