@@ -9,6 +9,7 @@ import {runCommand} from "./common/common.mjs";
 import yauzl from "yauzl"
 import minimist from "minimist"
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const jreVersionFile = path.join(__dirname, "../jre-version.json")
 const vendorDir = path.join(__dirname, "../vendor/java")
