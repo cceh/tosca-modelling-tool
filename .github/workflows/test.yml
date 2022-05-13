@@ -5,8 +5,7 @@ name: Check for JRE updates
 # Controls when the workflow will run
 on:
   schedule:
-    # run weekly
-    cron: '11 11 * * 1'
+    - cron: '11 11 * * 1'
   push:
     branches: [ main ]
 
