@@ -46,4 +46,4 @@ jobs:
           )"
           
       - run: echo ${{ steps.jre-updated.outputs.STATUS }}
-        if: ${{ steps.jre-updated.outputs.STATUS != ""}}
+        if: ${{ steps.jre-updated.outputs.STATUS != ''}}
