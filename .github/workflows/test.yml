@@ -26,6 +26,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: test
-        uses: actions/checkout@v3
-      - run: git diff --exit-code jre-version.json
+      - uses: actions/checkout@v3
+      
+      - name: Check if JRE versions were updated
+        id: jre-updated
+        run: >-
+          echo "::set-output name=STATUS::$(
+            git status --porcelain jre-version.json
+          )"
+          
+      - run: echo ${{ steps.jre-updated.outputs.STATUS }}
