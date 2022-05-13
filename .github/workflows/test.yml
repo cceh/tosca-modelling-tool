@@ -27,7 +27,17 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
+      - uses: actions/setup-node@master
+          with:
+            node-version: 16
+
+      - name: Install NPM dependencies
+        run: npm install -D
+
+      - name: Check for latest JRE versions
+        run: npm run deps:jre:check
+
       - name: Check if JRE versions were updated
         id: jre-updated
         run: >-
