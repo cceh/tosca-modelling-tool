@@ -36,6 +36,7 @@ jobs:
         run: npm install -D
 
       - name: Check for latest JRE versions
+        id: jre-version-check
         run: >-
           echo "::set-output name=UPDATED_VERSION::$(
             npm run deps:jre:check
@@ -52,10 +53,11 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         if: ${{ steps.jre-updated.outputs.STATUS != '' }}
         with:
+          token: ${{secrets.PUBLISH_GH_TOKEN}}
           add-paths: jre-version.json
-          commit-message: Update bundled JRE to ${{ steps.jre-updated.outputs.UPDATED_VERSION }}
+          commit-message: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
           branch: update-bundled-jre
           delete-branch: true
-          title: Update bundled JRE to ${{ steps.jre-updated.outputs.UPDATED_VERSION }}
+          title: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
           body: |
-            Updates bundled JRE versions to new security patch release ${ {steps.jre-updated.outputs.UPDATED_VERSION }}.
+            Updates bundled JRE versions to new security patch release ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}.
