@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install NPM dependencies
+      - name: Install NPM dev dependencies
         run: npm install -D
 
       - name: Check for latest JRE versions
