@@ -32,4 +32,4 @@ jobs:
           node-version: 16
 
       - name: test
-        run: find ${{env.GITHUB_WORKSPACE}}
+        run: git diff --exit-code jre-version.json
