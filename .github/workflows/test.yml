@@ -28,4 +28,4 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: test
         uses: actions/checkout@v3
-      - run: git status
+      - run: git diff --exit-code jre-version.json
