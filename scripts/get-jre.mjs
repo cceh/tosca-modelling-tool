@@ -9,9 +9,8 @@ import {runCommand} from "./common/common.mjs";
 import yauzl from "yauzl"
 import minimist from "minimist"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const jreVersionFile = path.join(__dirname, "../JRE_VERSION")
+const jreVersionFile = path.join(__dirname, "../jre-version.json")
 const vendorDir = path.join(__dirname, "../vendor/java")
 
 function clean() {
@@ -86,7 +85,7 @@ async function getJreReleaseInfo(version) {
     const localReleaseInfoFile = path.join(vendorDir, releaseInfoFileName)
     if (!fs.existsSync(localReleaseInfoFile)) {
         console.log(`Get release info from Adoptium for JRE ${version}`)
-        await downloadFile(`https://api.adoptium.net/v3/assets/release_name/eclipse/${version}?heap_size=normal&image_type=jre&project=jdk`, localReleaseInfoFile)
+        await downloadFile(`https://api.adoptium.net/v3/assets/release_name/eclipse/jdk-${version}?heap_size=normal&image_type=jre&project=jdk`, localReleaseInfoFile)
     } else {
         console.log(`Found existing release info from Adoptium for JRE ${version}`)
     }
@@ -124,11 +123,10 @@ async function downloadJrePackage(packageInfo) {
     return destFilePath
 }
 
-async function getJre(os, targetDirectoryName) {
+async function getJre(version, os, arch, targetDirectoryName) {
     console.log(`Get JRE for: ${os}`)
 
-    const jreVersion = (await readFile(jreVersionFile)).toString().trim()
-    const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(jreVersion)
+    const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(version)
 
     const binaryInfo = releaseInfo["binaries"]
         .find(({architecture, os: _os}) => architecture === "x64" && os === _os)
@@ -141,7 +139,7 @@ async function getJre(os, targetDirectoryName) {
 
     if (isAlreadyExtracted) {
         console.log(`JRE for ${os} already extracted`)
-        return
+        return Promise.resolve()
     }
 
 
@@ -152,20 +150,20 @@ async function getJre(os, targetDirectoryName) {
         extractSuccess = true // TODO handle fail
     } else if (packageFilePath.endsWith(".tar.gz")) {
         const stripComponents = os === "mac" ? "3" : "1"
-        const extractSourcePath = os === "mac" ? "./*/Contents/Home" : ""
-        const tarCmd = await runCommand("tar", ["xfz", packageFilePath, "-C", extractDir, "--keep-newer-files", `--strip-components=${stripComponents}`, extractSourcePath])
+        const tarParams = ["xfz", packageFilePath, "-C", extractDir, "--keep-newer-files", `--strip-components=${stripComponents}`]
+        if (os === "mac") {
+            tarParams.push("./*/Contents/Home")
+        }
+        const tarCmd = await runCommand("tar", tarParams)
         extractSuccess = tarCmd && !tarCmd.failed
     }
 
-   if (extractSuccess) {
-       console.log(`JRE for ${os} extracted to ${extractDir}.`)
-       fs.copyFileSync(localReleaseInfoFile, path.join(extractDir, path.basename(localReleaseInfoFile)))
-       process.exit()
-   }
+    if (!extractSuccess) {
+        throw new Error(`Could not extract ${packageFilePath}.`)
+    }
 
-   process.exit(1)
-
-
+    fs.copyFileSync(localReleaseInfoFile, path.join(extractDir, path.basename(localReleaseInfoFile)))
+    return Promise.resolve()
 }
 
 const argv = minimist(process.argv)
@@ -174,11 +172,37 @@ if (argv.clean) {
     process.exit()
 }
 
+const jreVersions = (() => {
+    try {
+        return JSON.parse(fs.readFileSync(jreVersionFile).toString())
+    } catch (e) {
+        console.log(`Could not read JRE version file ${jreVersionFile}.`)
+        throw e
+    }
+
+})()
+
 const platforms = argv.all ? ["win32", "darwin", "linux"] : [os.platform()]
 for (const platform of platforms) {
-    switch (platform) {
-        case "win32":  console.log(platform); await getJre("windows", "win"); break
-        case "darwin": await getJre("mac", "mac"); break
-        default: await getJre(platform, platform)
+    const os =  (() => {
+        switch (platform) {
+            case "win32": return "windows"
+            case "darwin": return "mac"
+            default: return platform
+        }
+    })()
+
+    const arch = "x64"
+    const version = jreVersions[os]?.[arch]
+
+    if (!version) {
+        throw new Error(`Could not find JRE version for ${os} (${arch}) in versions file (${jreVersionFile}).`)
+    }
+
+    try {
+        await getJre(version, os, arch, os === "windows" ? "win" : os)
+    } catch (e) {
+        console.log(`Could not download JRE for ${os} (${arch}).`)
+        throw e
     }
 }
