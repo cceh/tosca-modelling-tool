@@ -59,4 +59,4 @@ jobs:
           delete-branch: true
           title: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
           body: |
-            Updates bundled JRE versions to new security patch release ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}.
+            This automated pull request updates the bundled JRE versions to new security patch release ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}.
