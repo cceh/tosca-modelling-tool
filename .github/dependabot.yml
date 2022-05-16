@@ -14,3 +14,5 @@ updates:
     directory: "/winery-launcher" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore: 
+      - update-types: ["version-update:semver-major"]
