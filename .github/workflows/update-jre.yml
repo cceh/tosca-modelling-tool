@@ -68,6 +68,7 @@ jobs:
         if: ${{ steps.create-pull-request.outputs.pull-request-operation != 'closed' }}
         with:
           server_address: ${{secrets.MAIL_SMTP_SERVER}}
+          server_port: 465
           username: ${{secrets.MAIL_USER}}
           password: ${{secrets.MAIL_PASSWORD}}
           subject: Github Actions – New JRE security update
