@@ -53,6 +53,7 @@ jobs:
         if: ${{ steps.jre-updated.outputs.STATUS != '' }}
         with:
           token: ${{secrets.PUBLISH_GH_TOKEN}}
+          author: GitHub Actions <noreply@github.com>
           add-paths: jre-version.json
           commit-message: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
           branch: update-bundled-jre
