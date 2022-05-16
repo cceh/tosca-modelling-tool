@@ -50,6 +50,7 @@ jobs:
           
       - name: Create pull request for updated JRE versions
         uses: peter-evans/create-pull-request@v4
+        id: create-pull-request
         if: ${{ steps.jre-updated.outputs.STATUS != '' }}
         with:
           token: ${{secrets.PUBLISH_GH_TOKEN}}
@@ -61,3 +62,15 @@ jobs:
           title: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
           body: |
             This automated pull request updates the bundled JRE versions to new security patch release ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}.
+            
+      - name: Send alert email
+        uses: dawidd6/action-send-mail@v3
+        if: ${{ steps.create-pull-request.outputs.pull-request-operation != 'closed' }}
+        with:
+          server_address: ${{secrets.MAIL_SMTP_SERVER}}
+          username: ${{secrets.MAIL_USER}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Actions – New JRE security update
+          to: ${{secrets.ALTERT_RECIPIENT_ADDRESS}}
+          secure: true
+          body: New JRE security update ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}. Created pull request ${{ steps.create-pull-request.outputs.pull-request-url }}.
