@@ -65,7 +65,7 @@ jobs:
             
       - name: Send alert email
         uses: dawidd6/action-send-mail@v3
-        if: ${{ steps.create-pull-request.outputs.pull-request-operation != 'closed' }}
+        if: ${{ steps.create-pull-request.outputs.pull-request-operation == 'updated' || steps.create-pull-request.outputs.pull-request-operation == 'created' }}
         with:
           server_address: ${{secrets.MAIL_SMTP_SERVER}}
           server_port: 465
