@@ -4,6 +4,7 @@ import {fileURLToPath} from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 import semver from "semver";
 import fs from "fs";
+import os from "os";
 
 const JRE_RELEASE = 11
 
@@ -62,6 +63,6 @@ for (const os of Object.keys(jreVersions)) {
 
 if (updatedVersions.size > 0) {
     console.warn("JRE versions updated.")
-    fs.writeFileSync(jreVersionFile, JSON.stringify(updatedJreVersions, null, 2))
+    fs.writeFileSync(jreVersionFile, JSON.stringify(updatedJreVersions, null, 2) + os.EOL)
     console.log(Array.from(updatedVersions.values()).join(", "))
 }

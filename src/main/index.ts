@@ -205,11 +205,6 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
-// if there is no mainWindow it creates one (like when you click the dock icon)
-app.on('activate', () => {
-  if (mainWindow === null) { createMainWindow() }
-})
-
 app.on('ready', () => {
   createMainWindow()
 })
