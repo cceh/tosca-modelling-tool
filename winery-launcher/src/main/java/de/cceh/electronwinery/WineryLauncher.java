@@ -8,16 +8,24 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.rest.Prefs;
+import org.eclipse.winery.repository.rest.websockets.AbstractWebSocket;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import javax.servlet.DispatcherType;
+import javax.websocket.server.ServerEndpoint;
+import javax.websocket.server.ServerEndpointConfig;
 import java.util.EnumSet;
+import java.util.Set;
 
 public class WineryLauncher {
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryLauncher.class);
@@ -66,9 +74,8 @@ public class WineryLauncher {
     }
 
     private static ServletContextHandler getWineryServlet() {
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/winery");
-
 
         // Add the filter, and then use the provided FilterHolder to configure it
         FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -81,7 +88,8 @@ public class WineryLauncher {
         ServletHolder h = context.addServlet(ServletContainer.class, "/*");
         h.setInitParameter("jersey.config.server.provider.packages",
                 "org.eclipse.winery.repository.rest.resources," +
-                        "org.eclipse.winery.repository.rest.filters");
+                        "org.eclipse.winery.repository.rest.filters"
+                );
         h.setInitParameter("jersey.config.server.provider.classnames",
                 "org.glassfish.jersey.logging.LoggingFeature," +
                         "org.glassfish.jersey.media.multipart.MultiPartFeature," +
@@ -90,8 +98,36 @@ public class WineryLauncher {
 
         h.setInitOrder(1);
 
-        context.addServlet(DefaultServlet.class, "/");
+        // Jetty does not pick up web socket classes annotated with @ServerEndpoint(path) without using a WAR /
+        // WebAppContext but we can't use the built Winery WAR because its web.xml has a dependency on the Tomcat CORS
+        // filter.
 
+        // Scan for Winery classes with a WebSocket annotation and configure them manually
+        WebSocketServerContainerInitializer.configure(context, (servletContext, serverContainer) -> {
+            ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+            provider.addIncludeFilter(new AssignableTypeFilter(AbstractWebSocket.class));
+            Set<BeanDefinition> components = provider.findCandidateComponents("org.eclipse.winery.repository.rest.websockets");
+
+            for (BeanDefinition component : components)
+            {
+                try {
+                    Class<?> webSocketClass = Class.forName(component.getBeanClassName());
+                    ServerEndpoint serverEndpointAnnotation = webSocketClass.getAnnotation(ServerEndpoint.class);
+                    String endpointPath = serverEndpointAnnotation.value();
+
+                    // Add the entpoint under the path specified as annotation value
+                    ServerEndpointConfig serverEndpointConfig = ServerEndpointConfig.Builder.create(
+                            webSocketClass, endpointPath
+                    ).build();
+
+                    serverContainer.addEndpoint(serverEndpointConfig);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        context.addServlet(DefaultServlet.class, "/");
         return context;
     }
 
@@ -110,47 +146,6 @@ public class WineryLauncher {
             LOGGER.debug("Repository is not filebased");
         }
 
-
-        // Waits until server is finished.
-        // Will never happen, thus user has to press Ctrl+C.
-        // See also https://stackoverflow.com/a/14981621/873282.
-
-//        Thread monitor = new MonitorThread();
-//        monitor.start();
-
-
         server.join();
     }
-
-//    private static class MonitorThread extends Thread {
-//
-//        private ServerSocket socket;
-//
-//        public MonitorThread() {
-//            setDaemon(true);
-//            setName("StopMonitor");
-//            try {
-//                socket = new ServerSocket(8079, 1, InetAddress.getByName("127.0.0.1"));
-//            } catch(Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//
-//        @Override
-//        public void run() {
-//            System.out.println("*** running jetty 'stop' thread");
-//            Socket accept;
-//            try {
-//                accept = socket.accept();
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
-//                reader.readLine();
-//                System.out.println("*** stopping jetty embedded server");
-//                WineryLauncher.server.stop();
-//                accept.close();
-//                socket.close();
-//            } catch(Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//    }
 }

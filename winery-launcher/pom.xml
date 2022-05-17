@@ -15,6 +15,8 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <version.jetty>9.4.46.v20220331</version.jetty>
+        <version.spring>5.3.20</version.spring>
+        <javax.websocket.api.version>1.0</javax.websocket.api.version>
     </properties>
 
     <build>
@@ -32,6 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
                     <excludeTransitive>false</excludeTransitive>
@@ -48,7 +51,9 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -63,11 +68,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-loader</artifactId>
-            <version>2.1.4.RELEASE</version>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -87,22 +87,40 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>javax-websocket-server-impl</artifactId>
             <version>${version.jetty}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-util</artifactId>
-            <version>${version.jetty}</version>
-            <scope>compile</scope>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
             <version>2.35</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${version.spring}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -122,11 +140,7 @@
             <artifactId>org.eclipse.winery.frontends</artifactId>
             <version>3.0.0-SNAPSHOT</version>
             <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.bpmn4tosca.converter.tobpel</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
