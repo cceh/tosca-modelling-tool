@@ -42,11 +42,6 @@ electron.ipcRenderer.on(BACKEND_STOPPED, () => {
     }
 })
 
-
-document.addEventListener("DOMContentLoaded", () => {
-})
-
-
 declare global {
     interface Window {
         openWorkspace: () => void
@@ -93,17 +88,26 @@ export class RepositoryList extends LitElement {
 
 
     render() {
-        const workspaces = store.get("knownWorkspaces")
+        const workspaces = store.get("knownWorkspaces").map(workspace => {
+            const pathComponents = workspace.path.split(path.sep)
+            return {
+                name: pathComponents.pop(),
+                path: pathComponents.join(path.sep),
+                workspace
+            }
+        })
 
         return html`
-            <h2>Recent workspaces</h2>
-            <div class="repository-list list-group bg-light">
+            <div class="repository-list list-group bg-light overflow-auto" style="height: 100%">
                 ${workspaces.map(workspace => html`
                     <button
                         type="button"
                         class="list-group-item list-group-item-action"
-                        @click=${() => this.handleClick(workspace)}
-                >${workspace.path}</button>
+                        @click=${() => this.handleClick(workspace.workspace)}
+                >
+                        <h5>${workspace.name}</h5>
+                        <div class="text-muted">${workspace.path}</div>
+                    </button>
                 `)}
             </div>
         `

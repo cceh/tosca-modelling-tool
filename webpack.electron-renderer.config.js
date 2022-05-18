@@ -24,7 +24,14 @@ module.exports = [{
                 },
             },
             exclude: /node_modules/
+        }, {
+            test: /\.(png|svg|jpg|jpeg|gif)$/i,
+            type: 'asset/resource'
         },
+            {
+                test: /\.html$/i,
+                loader: 'html-loader',
+            },
         // rules for bootstrap
             {
                 test: /\.(scss)$/,

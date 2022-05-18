@@ -1,5 +1,53 @@
+@use "sass:color";
+$enable-rfs: false;
+
 @import "~bootstrap/scss/bootstrap";
 
+html, body {
+  height: 100%;
+}
+
 body {
-  padding: 2em;
+  -webkit-app-region: drag;
+}
+
+body {
+  background-image: url(./opentosca-logo-bg.svg);
+  background-repeat: no-repeat;
+  background-position: right -112px top -56px;
+  background-attachment: fixed;
+  background-size: 600px;
+}
+
+.card {
+  background-color: rgba(255,255,255,0.93);
+  transition: 150ms ease-in-out;
+  transition-property: background-color, box-shadow, color;
+  &:hover {
+    @extend .shadow-sm;
+    background-color: #f8f9fa;
+    color: #495057;
+  }
+}
+
+nav {
+  background-color: rgba(248,249,250,0.93);
+}
+
+button, input, a[href] {
+  -webkit-app-region: no-drag;
+}
+
+.container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.content {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+repository-list2 {
+  overflow: hidden;
 }

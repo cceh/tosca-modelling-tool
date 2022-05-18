@@ -1,4 +1,4 @@
-import {app, BrowserWindow, dialog, ipcMain, HandlerDetails, WebContents, shell} from "electron";
+import {app, BrowserWindow, dialog, ipcMain, HandlerDetails, WebContents, shell, Menu} from "electron";
 import url from "url";
 import path from "path";
 import {backend} from "./backend";
@@ -51,17 +51,23 @@ function isValidRepository(repositoryPath: string) {
 
 
 function createMainWindow(): BrowserWindow {
-  mainWindow = new BrowserWindow({
-    center: true,
-    width: 1024,
-    height: 1000,
-    show: false,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
+    mainWindow = new BrowserWindow({
+        center: true,
+        width: 1024,
+        height: 1000,
+        show: false,
+        maximizable: false,
+        fullscreenable: false,
+        titleBarStyle: "customButtonsOnHover",
+        titleBarOverlay: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    })
+
   windowTypeMap.set(mainWindow, "main")
+
 
   if (app.isPackaged) {
     mainWindow.loadURL(url.format({
@@ -89,7 +95,10 @@ function createMainWindow(): BrowserWindow {
 function createToscaManagerWindow(): BrowserWindow {
   // no node integration because of orion editor
   let toscaManagerWindow = new BrowserWindow({
-    webPreferences: {nodeIntegration: false},
+    webPreferences: {
+      nodeIntegration: false,
+      preload: path.join(__dirname, app.isPackaged ? "preload.js" : "../../dist/app/preload.js")
+    },
     width: 1000,
     height: 600,
     show: false,
@@ -291,8 +300,10 @@ backend.backendEvents.on("unexpected-exit", (error?) => {
 
 // open external links in external browser
 app.on('web-contents-created', (event, contents) => {
+
   contents.on('will-navigate', (event, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl)
+
 
     // workaround for TOSCA manager bug: TOSCA docs link in 'about' dialog invalid
     if (parsedUrl.pathname.startsWith("/docs.oasis-open.org")) {
@@ -330,3 +341,19 @@ if (!store.has("defaultWorkspaceParentPath") || !fs.existsSync(store.get("defaul
     store.set("defaultWorkspaceParentPath", path.join(app.getPath("home"), "Winery Workspaces"))
 }
 
+
+ipcMain.on("menu", (event, url) => {
+  Menu.buildFromTemplate([
+    {
+      label: "Open in new window",
+      click: (item, browserWindow, keyboardEvent) => {
+        const toscaWindow = createToscaManagerWindow()
+        toscaWindow.loadURL(url)
+      }
+    }
+  ]).popup({window: BrowserWindow.fromWebContents(event.sender)})
+})
+
+ipcMain.on("newWindow", (event, url) => {
+  createToscaManagerWindow().loadURL(url)
+})

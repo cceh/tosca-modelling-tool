@@ -23,27 +23,49 @@
 
 
 
-  <body>
-      <h1>Desktop Winery</h1>
+  <body class="d-flex flex-column">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Desktop Winery</span>
+        </div>
+    </nav>
 
-      <div class="d-flex flex-column">
-          <div class="d-flex  flex-row">
-              <button type="button" class="btn btn-primary mr-2" onclick="openWorkspace()">Open workspace</button>
-              <button type="button" class="btn btn-primary" onclick="createWorkspace()">Create new workspace</button>
-          </div>
-          <div>
-              <repository-list2></repository-list2>
-          </div>
+      <div class="content container-fluid d-flex flex-column flex-grow-1 overflow-hidden">
+         <div class="d-flex flex-column">
+             <a href="#" onclick="createWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" style="max-width: 540px;">
+                 <div class="row g-0">
+                     <div class="col-md-4 bg-primary p-5">
+                         <img src="./new-project-icon.svg" />
+                     </div>
+                     <div class="col-md-8">
+                         <div class="card-body">
+                             <h5 class="card-title">Create a new starter workspace</h5>
+                             <p class="text-muted">A starter workspace contains predefined nodes and edges to get you modelling straight ahead.</p>
+                         </div>
+                     </div>
+                 </div>
+             </a>
+             <a href="#" onclick="openWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" class="card mb-3" style="max-width: 540px;">
+                 <div class="row g-0">
+                     <div class="col-md-4 bg-primary p-5">
+                        <img src="open-project-icon.svg" />
+                     </div>
+                     <div class="col-md-8">
+                         <div class="card-body">
+                             <h5 class="card-title">Open an existing workspace</h5>
+                             <p class="text-muted">Open an existing workspace folder placeholder text.</p>
+                         </div>
+                     </div>
+                 </div>
+             </a>
+         </div>
+          <h4>Recent workspaces</h4>
+          <repository-list2></repository-list2>
       </div>
 
 
   <loading-modal></loading-modal>
   <create-workspace-dialog></create-workspace-dialog>
-
-
-
-
-
 
   </body>
 </html>
