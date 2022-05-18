@@ -5,7 +5,7 @@ import { LitElement, html } from "lit";
 import styles from "./styles.scss"
 
 import {loadingModal} from "./loading-modal";
-import {createWorkspaceDialog} from "./create-workspace-dialog"
+import {createWorkspaceDialog} from "./create-workspace-dialog/create-workspace-dialog"
 import path from "path";
 import * as fs from "fs";
 import {
