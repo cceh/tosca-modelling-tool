@@ -1,11 +1,8 @@
 import electron from "electron";
-import {store, Workspace} from "../common/store";
-import { LitElement, html } from "lit";
+import {store} from "../common/store";
 
 import styles from "./styles.scss"
 
-import {loadingModal} from "./loading-modal";
-import {createWorkspaceDialog} from "./create-workspace-dialog/create-workspace-dialog"
 import path from "path";
 import * as fs from "fs";
 import {
@@ -14,104 +11,83 @@ import {
     BACKEND_STOPPING,
     CHOOSE_DIRECTORY,
     CREATE_A_WORKSPACE,
-    IS_BACKEND_RUNNING, OPEN_A_WORKSPACE
+    IS_BACKEND_RUNNING,
+    OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 
-const style = styles
+import {WorkspaceList} from "./components/workspace-list";
+import {CreateWorkspaceDialog} from "./components/create-workspace-dialog";
+import {LoadingOverlay} from "./components/loading-overlay";
 
-document.adoptedStyleSheets = [style]
+declare global {
+    interface Window extends GlobalMethods { }
+}
+
+interface GlobalMethods {
+    openWorkspace: () => void
+    createWorkspace: () => void
+    startWinery: (workspacePath: string, create?: boolean) => void
+}
+
+document.adoptedStyleSheets = [styles]
+
+window.customElements.define("workspace-list", WorkspaceList)
+window.customElements.define("create-workspace-dialog", CreateWorkspaceDialog)
+window.customElements.define("loading-overlay", LoadingOverlay)
+
+const createWorkspaceDialog = document.querySelector("create-workspace-dialog") as CreateWorkspaceDialog
+const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverlay
+
 
 electron.ipcRenderer.on(BACKEND_STARTING, () => {
-    loadingModal.show("Starting the Winery...")
+    loadingOverlay.show("Starting the Winery...")
 })
 
 electron.ipcRenderer.on(BACKEND_STOPPING, () => {
     const isBackendRunning = electron.ipcRenderer.invoke(IS_BACKEND_RUNNING)
     if (isBackendRunning) {
-        loadingModal.show("Stopping the Winery...", false)
+        loadingOverlay.show("Stopping the Winery...", false)
     }
 })
 
 electron.ipcRenderer.on(BACKEND_STOPPED, () => {
-    if (loadingModal.status === "shown") {
-        loadingModal.close()
+    if (loadingOverlay.status === "shown") {
+        loadingOverlay.close()
     }
     // ensure to close loading modal
-    if (loadingModal.status === "showing") {
-        loadingModal.events.once("shown", () => loadingModal.close())
+    if (loadingOverlay.status === "showing") {
+        loadingOverlay.events.once("shown", () => loadingOverlay.close())
     }
 })
 
-declare global {
-    interface Window {
-        openWorkspace: () => void
-        createWorkspace: () => void
-        startWinery: (workspacePath: string, create?: boolean) => void
-    }
-}
-window.openWorkspace = async () => {
-    const path = await electron.ipcRenderer.invoke(CHOOSE_DIRECTORY)
-    if (path) {
-        window.startWinery(path)
-    }
-}
 
-window.startWinery = (path, create = false) => {
-    const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
-    electron.ipcRenderer.send(message, path)
-}
+const globalMethods: GlobalMethods = {
+    openWorkspace: async () => {
+        const path = await electron.ipcRenderer.invoke(CHOOSE_DIRECTORY)
+        if (path) {
+            window.startWinery(path)
+        }
+    },
+    startWinery: (path: string, create = false) => {
+        const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
+        electron.ipcRenderer.send(message, path)
+    },
+    createWorkspace: async () => {
+        const defaultParentPath = store.get("defaultWorkspaceParentPath")
 
-window.createWorkspace = async () => {
-    const defaultParentPath = store.get("defaultWorkspaceParentPath")
+        let nameIndex = 1
+        let defaultName = "Winery Workspace"
 
-    let nameIndex = 1
-    let defaultName = "Winery Workspace"
+        if (fs.existsSync(path.join(defaultParentPath, defaultName))) {
+            nameIndex++
+            defaultName = `Winery Workspace ${nameIndex}`
+        }
 
-     if (fs.existsSync(path.join(defaultParentPath, defaultName))) {
-        nameIndex++
-        defaultName = `Winery Workspace ${nameIndex}`
-    }
-
-    const workspacePath = await createWorkspaceDialog.show(defaultParentPath, defaultName)
-    if (workspacePath) {
-        window.startWinery(workspacePath, true)
+        const workspacePath = await createWorkspaceDialog.show(defaultParentPath, defaultName)
+        if (workspacePath) {
+            window.startWinery(workspacePath, true)
+        }
     }
 }
 
-export class RepositoryList extends LitElement {
-
-    static styles = [style]
-
-    handleClick(workspace: Workspace) {
-        window.startWinery(workspace.path)
-    }
-
-
-    render() {
-        const workspaces = store.get("knownWorkspaces").map(workspace => {
-            const pathComponents = workspace.path.split(path.sep)
-            return {
-                name: pathComponents.pop(),
-                path: pathComponents.join(path.sep),
-                workspace
-            }
-        })
-
-        return html`
-            <div class="repository-list list-group bg-light overflow-auto" style="height: 100%">
-                ${workspaces.map(workspace => html`
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        @click=${() => this.handleClick(workspace.workspace)}
-                >
-                        <h5>${workspace.name}</h5>
-                        <div class="text-muted">${workspace.path}</div>
-                    </button>
-                `)}
-            </div>
-        `
-    }
-}
-window.customElements.define("repository-list2", RepositoryList)
-
+Object.assign(window, globalMethods)

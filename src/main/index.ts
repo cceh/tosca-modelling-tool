@@ -1,4 +1,4 @@
-import {app, BrowserWindow, dialog, ipcMain, HandlerDetails, WebContents, shell, Menu} from "electron";
+import {app, BrowserWindow, dialog, HandlerDetails, ipcMain, Menu, shell, WebContents} from "electron";
 import url from "url";
 import path from "path";
 import {backend} from "./backend";
@@ -10,12 +10,11 @@ import {
   BACKEND_STOPPED,
   BACKEND_STOPPING,
   CHOOSE_DIRECTORY,
-  CREATE_A_WORKSPACE, IS_BACKEND_RUNNING,
+  CREATE_A_WORKSPACE,
+  IS_BACKEND_RUNNING,
   OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
-import Size = Electron.Size;
 import {Logger} from "sass";
-import silent = Logger.silent;
 
 export type WindowType = "main" | "tosca-manager" | "topology-modeler"
 const windowTypeMap = new WeakMap<BrowserWindow, WindowType>()

@@ -12,7 +12,7 @@ body {
 }
 
 body {
-  background-image: url(./opentosca-logo-bg.svg);
+  background-image: url(images/opentosca-logo-bg.svg);
   background-repeat: no-repeat;
   background-position: right -112px top -56px;
   background-attachment: fixed;
@@ -48,6 +48,6 @@ button, input, a[href] {
   padding-bottom: 1rem;
 }
 
-repository-list2 {
+workspace-list {
   overflow: hidden;
 }

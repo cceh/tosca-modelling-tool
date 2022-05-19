@@ -1,6 +1,6 @@
 'use strict';
 
-import { platform } from 'os';
+import {platform} from 'os';
 
 export const getPlatform = () => {
     switch (platform()) {

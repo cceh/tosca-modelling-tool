@@ -7,7 +7,7 @@ const style = styles
 
 import template from "./create-workspace-dialog.html"
 
-class CreateWorkspaceDialog extends HTMLElement {
+export class CreateWorkspaceDialog extends HTMLElement {
 
     private readonly modal: Modal
     private readonly modalElem: HTMLElement
@@ -78,6 +78,3 @@ class CreateWorkspaceDialog extends HTMLElement {
         setTimeout(() => this.createButton.disabled = !this.nameInput.value)
     }
 }
-
-window.customElements.define("create-workspace-dialog", CreateWorkspaceDialog)
-export const createWorkspaceDialog = document.querySelector("create-workspace-dialog") as CreateWorkspaceDialog

@@ -3,10 +3,9 @@ import {javaCmdPath, launcherPath, logbackConfigurationPathDefault, wineryYamlCo
 import {getPortPromise} from "portfinder";
 import {EventEmitter} from "events";
 import {app} from "electron";
-import { load as loadYaml, dump as dumpYaml } from "js-yaml";
+import {dump as dumpYaml, load as loadYaml} from "js-yaml";
 import * as fs from "fs";
 import * as path from "path";
-import * as stream from "stream";
 import fetch from "node-fetch"
 import {createLogger, format, transports} from "winston"
 

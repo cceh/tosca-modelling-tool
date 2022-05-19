@@ -5,7 +5,6 @@
     <script>
       const global = globalThis;
     </script>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
   </head>
 
 
@@ -35,7 +34,7 @@
              <a href="#" onclick="createWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" style="max-width: 540px;">
                  <div class="row g-0">
                      <div class="col-md-4 bg-primary p-5">
-                         <img src="./new-project-icon.svg" />
+                         <img src="images/new-project-icon.svg" />
                      </div>
                      <div class="col-md-8">
                          <div class="card-body">
@@ -48,7 +47,7 @@
              <a href="#" onclick="openWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" class="card mb-3" style="max-width: 540px;">
                  <div class="row g-0">
                      <div class="col-md-4 bg-primary p-5">
-                        <img src="open-project-icon.svg" />
+                        <img src="images/open-project-icon.svg" />
                      </div>
                      <div class="col-md-8">
                          <div class="card-body">
@@ -60,11 +59,11 @@
              </a>
          </div>
           <h4>Recent workspaces</h4>
-          <repository-list2></repository-list2>
+          <workspace-list></workspace-list>
       </div>
 
 
-  <loading-modal></loading-modal>
+  <loading-overlay></loading-overlay>
   <create-workspace-dialog></create-workspace-dialog>
 
   </body>
