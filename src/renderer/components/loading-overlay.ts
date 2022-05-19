@@ -1,18 +1,19 @@
 import Modal from "bootstrap/js/dist/modal";
 import styles from "../styles.scss"
 import {EventEmitter} from "events";
+
 const style = styles
 
 export class LoadingOverlay extends HTMLElement {
 
-    private modal: Modal
-    private modalElem: HTMLElement
-    private textElem: HTMLSpanElement
+    private readonly modal: Modal
+
+    private readonly modalElem: HTMLElement
+    private readonly textElem: HTMLSpanElement
 
     readonly events = new EventEmitter()
 
     private _status: "showing" | "shown" | "hiding" | "hidden" = "hidden"
-
     get status() { return this._status }
 
     constructor() {

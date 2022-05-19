@@ -3,9 +3,9 @@ import styles from "../styles.scss"
 import path from "path";
 import electron from "electron";
 import {CHOOSE_DIRECTORY} from "../../common/ipcEvents";
-const style = styles
-
 import template from "./create-workspace-dialog.html"
+
+const style = styles
 
 export class CreateWorkspaceDialog extends HTMLElement {
 

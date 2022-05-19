@@ -6,15 +6,14 @@ import {store} from "../common/store";
 import * as fs from "fs";
 
 import {
-  BACKEND_STARTING,
-  BACKEND_STOPPED,
-  BACKEND_STOPPING,
-  CHOOSE_DIRECTORY,
-  CREATE_A_WORKSPACE,
-  IS_BACKEND_RUNNING,
-  OPEN_A_WORKSPACE
+    BACKEND_STARTING,
+    BACKEND_STOPPED,
+    BACKEND_STOPPING,
+    CHOOSE_DIRECTORY,
+    CREATE_A_WORKSPACE,
+    IS_BACKEND_RUNNING,
+    OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
-import {Logger} from "sass";
 
 export type WindowType = "main" | "tosca-manager" | "topology-modeler"
 const windowTypeMap = new WeakMap<BrowserWindow, WindowType>()

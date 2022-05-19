@@ -19,16 +19,30 @@ body {
   background-size: 600px;
 }
 
-.card {
-  background-color: rgba(255,255,255,0.93);
+@mixin card-transitions {
   transition: 150ms ease-in-out;
   transition-property: background-color, box-shadow, color;
+}
+
+.card {
+  @include card-transitions;
+  background-color: rgba(255,255,255,0.93);
+
+  .card-image-col {
+    @include card-transitions;
+    background-color: $primary;
+  }
+
   &:hover {
-    @extend .shadow-sm;
-    background-color: #f8f9fa;
-    color: #495057;
+    @extend .shadow;
+    background-color: $list-group-hover-bg;
+    color: $list-group-action-hover-color;
+    .card-image-col {
+      background-color: shade-color($primary, $btn-active-bg-shade-amount);
+    }
   }
 }
+
 
 nav {
   background-color: rgba(248,249,250,0.93);

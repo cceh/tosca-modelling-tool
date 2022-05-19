@@ -37,7 +37,9 @@ window.customElements.define("loading-overlay", LoadingOverlay)
 
 const createWorkspaceDialog = document.querySelector("create-workspace-dialog") as CreateWorkspaceDialog
 const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverlay
+const workspaceList = document.querySelector("workspace-list") as WorkspaceList
 
+workspaceList.setWorkspaces(store.get("knownWorkspaces"))
 
 electron.ipcRenderer.on(BACKEND_STARTING, () => {
     loadingOverlay.show("Starting the Winery...")
