@@ -15,7 +15,7 @@ import {
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 
-import {WorkspaceList} from "./components/workspace-list";
+import {WORKSPACE_SELECT, WorkspaceList, WorkspaceSelectEvent} from "./components/workspace-list";
 import {CreateWorkspaceDialog} from "./components/create-workspace-dialog";
 import {LoadingOverlay} from "./components/loading-overlay";
 
@@ -26,7 +26,6 @@ declare global {
 interface GlobalMethods {
     openWorkspace: () => void
     createWorkspace: () => void
-    startWinery: (workspacePath: string, create?: boolean) => void
 }
 
 document.adoptedStyleSheets = [styles]
@@ -40,6 +39,9 @@ const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverl
 const workspaceList = document.querySelector("workspace-list") as WorkspaceList
 
 workspaceList.setWorkspaces(store.get("knownWorkspaces"))
+workspaceList.addEventListener(WORKSPACE_SELECT, (event: WorkspaceSelectEvent) =>
+    startWinery(event.detail.workspacePath)
+)
 
 electron.ipcRenderer.on(BACKEND_STARTING, () => {
     loadingOverlay.show("Starting the Winery...")
@@ -52,29 +54,21 @@ electron.ipcRenderer.on(BACKEND_STOPPING, () => {
     }
 })
 
-electron.ipcRenderer.on(BACKEND_STOPPED, () => {
-    if (loadingOverlay.status === "shown") {
-        loadingOverlay.close()
-    }
-    // ensure to close loading modal
-    if (loadingOverlay.status === "showing") {
-        loadingOverlay.events.once("shown", () => loadingOverlay.close())
-    }
-})
+electron.ipcRenderer.on(BACKEND_STOPPED, () => loadingOverlay.close())
 
+function startWinery(path: string, create = false) {
+    const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
+    electron.ipcRenderer.send(message, path)
+}
 
 const globalMethods: GlobalMethods = {
-    openWorkspace: async () => {
+    async openWorkspace() {
         const path = await electron.ipcRenderer.invoke(CHOOSE_DIRECTORY)
         if (path) {
-            window.startWinery(path)
+            startWinery(path)
         }
     },
-    startWinery: (path: string, create = false) => {
-        const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
-        electron.ipcRenderer.send(message, path)
-    },
-    createWorkspace: async () => {
+    async createWorkspace() {
         const defaultParentPath = store.get("defaultWorkspaceParentPath")
 
         let nameIndex = 1
@@ -87,7 +81,7 @@ const globalMethods: GlobalMethods = {
 
         const workspacePath = await createWorkspaceDialog.show(defaultParentPath, defaultName)
         if (workspacePath) {
-            window.startWinery(workspacePath, true)
+            startWinery(workspacePath, true)
         }
     }
 }

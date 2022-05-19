@@ -70,6 +70,15 @@ export class LoadingOverlay extends HTMLElement {
     }
 
     close() {
+        if (this.status === "shown") {
+            this.modal?.hide()
+        }
+
+        // ensure to close loading modal when still fading in
+        if (this.status === "showing") {
+            this.events.once("shown", () => this.modal?.hide())
+        }
+
         this.modal?.hide()
     }
 }

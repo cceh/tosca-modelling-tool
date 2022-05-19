@@ -4,6 +4,7 @@
     <file type="AngularCLI" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/angular.json" />
     <file type="web" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.generators.ia/src/main/resources/template/project/src/main/webapp/WEB-INF/web.xml" />
     <file type="web" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest" />
+    <type id="Spring" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">

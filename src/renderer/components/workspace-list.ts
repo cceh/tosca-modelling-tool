@@ -2,6 +2,16 @@ import {Workspace} from "../../common/store";
 import path from "path";
 import styles from "../styles.scss";
 
+export const WORKSPACE_SELECT = "workspace-select";
+interface WorkspaceSelectEventDetail {
+    workspacePath: string
+}
+export class WorkspaceSelectEvent extends CustomEvent<WorkspaceSelectEventDetail> {
+    constructor(workspacePath: string) {
+        super(WORKSPACE_SELECT, { detail: { workspacePath } });
+    }
+}
+
 export class WorkspaceList extends HTMLElement {
     constructor() {
         super();
@@ -42,8 +52,8 @@ export class WorkspaceList extends HTMLElement {
     }
 
     handleClick(workspaceButton: HTMLElement) {
-        const {wineryWorkspacePath} = workspaceButton.dataset
-        window.startWinery(wineryWorkspacePath)
+        const workspacePath = workspaceButton.dataset.wineryWorkspacePath
+        this.dispatchEvent(new WorkspaceSelectEvent(workspacePath))
     }
 }
 
