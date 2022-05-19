@@ -89,7 +89,7 @@
     "postcss-loader": "^6.2.1",
     "prepend-transform": "^0.0.1019",
     "sass": "^1.51.0",
-    "sass-loader": "^12.6.0",
+    "sass-loader": "^13.0.0",
     "semver": "^7.3.7",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.3.0",
