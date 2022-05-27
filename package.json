@@ -20,7 +20,7 @@
     "build:electron": "electron-builder",
     "build": "npm-run-all deps build:main:prod build:renderer:prod build:electron",
     "release": "electron-builder",
-    "test:winery-launcher": "mvn -f winery-launcher/pom.xml test",
+    "test:winery-launcher": "mvn -pl winery-launcher test",
     "test": "npm run test:winery-launcher"
   },
   "main": "dist/app/main.js",

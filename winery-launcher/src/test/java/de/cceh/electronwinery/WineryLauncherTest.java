@@ -88,14 +88,11 @@ class WineryLauncherTest {
     public void afterWineryServerIsStarted_websocketsShouldBeCorrectlySetUp(String endpoint) {
         assertDoesNotThrow(() -> {
             URI uri = URI.create("ws://localhost:8888/winery" + endpoint);
-            HttpClient httpClient = HttpClient.newHttpClient();
-            WebSocket.Builder webSocketBuilder = httpClient.newWebSocketBuilder();
-            webSocketBuilder.buildAsync(uri, new WebSocket.Listener() {
-                @Override
-                public void onOpen(WebSocket webSocket) {
-                    WebSocket.Listener.super.onOpen(webSocket);
-                }
-            }).get();
+            HttpClient
+                    .newHttpClient()
+                    .newWebSocketBuilder()
+                    .buildAsync(uri, new WebSocket.Listener() {})
+                    .get();
         }, "Winery Websocket for endpoint /winery" + endpoint + " has not been correctly set up.");
     }
 
