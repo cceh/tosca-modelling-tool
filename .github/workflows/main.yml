@@ -45,7 +45,7 @@ jobs:
           path: |
             **/winery-launcher/target/**/*
           # TODO: also hash winery submodule HEAD
-          key: winery-launcher-${{ hashFiles('**/winery-launcher/**/*', '**/winery-launcher/*') }}
+          key: winery-launcher-${{ runner.os }}-${{ hashFiles('**/winery-launcher/src/**/*', '**/winery-launcher/pom.xml', '**/.git/modules/vendor/winery/HEAD') }}
 
       - name: Cache local Maven repository
         if: ${{ steps.cache-winery-launcher.outputs.cache-hit == false }}
@@ -67,3 +67,8 @@ jobs:
 
       - name: Build app
         run: npm run build
+
+      - name: Test Winery Launcher
+        if: ${{ steps.cache-winery-launcher.outputs.cache-hit == false }}
+        run: npm run test:winery-launcher
+
