@@ -67,8 +67,3 @@ jobs:
 
       - name: Build app
         run: npm run build
-
-      - name: Test Winery Launcher
-        if: ${{ steps.cache-winery-launcher.outputs.cache-hit == false }}
-        run: npm run test:winery-launcher
-
