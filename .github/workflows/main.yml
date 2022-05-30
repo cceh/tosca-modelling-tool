@@ -68,8 +68,17 @@ jobs:
       - name: Build app
         run: npm run ci:build
         
-      - name: Build (and publish) distribution package
+      - name: Build distribution package
         uses: nick-fields/retry@v2
+        if: github.event_name == 'pull_request'
+        with:
+          command: npm run ci:package
+          max_attempts: 5
+          timeout_minutes: 20
+          
+      - name: Build and publish distribution package
+        uses: nick-fields/retry@v2
+        if: github.event_name != 'pull_request'
         with:
           command: npm run ci:dist
           max_attempts: 5
