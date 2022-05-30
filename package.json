@@ -19,6 +19,8 @@
     "build:electron:mac": "electron-builder -m",
     "build:electron": "electron-builder",
     "build": "npm-run-all deps build:main:prod build:renderer:prod build:electron",
+    "ci:build": "npm-run-all deps build:main:prod build:renderer:prod",
+    "ci:dist": "electron-builder",
     "release": "electron-builder",
     "test:winery-launcher": "mvn -pl winery-launcher test",
     "test": "npm run test:winery-launcher"
