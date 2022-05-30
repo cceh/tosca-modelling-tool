@@ -66,4 +66,11 @@ jobs:
         run: npm ci
 
       - name: Build app
-        run: npm run build
+        run: npm run ci:build
+        
+      - name: Build (and publish) distribution package
+        uses: nick-fields/retry@v2
+        with:
+          command: npm run ci:dist
+          max_attempts: 5
+          timeout_minutes: 20
