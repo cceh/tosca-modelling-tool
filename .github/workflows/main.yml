@@ -69,13 +69,13 @@ jobs:
         run: npm run ci:build
         
       - name: Build distribution package
-        uses: nick-fields/retry@v2
         if: github.event_name == 'pull_request'
-        with:
-          command: npm run ci:package
-          max_attempts: 5
-          timeout_minutes: 20
-          
+        run: npm run ci:package
+      
+      # electron-builder sometimes fails to publish artifacts due to random
+      # connection resets while uploading go GitHub.
+      # This step uses the retry action to try again on upload failure up to 
+      # 5 times.
       - name: Build and publish distribution package
         uses: nick-fields/retry@v2
         if: github.event_name != 'pull_request'
