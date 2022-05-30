@@ -3,10 +3,8 @@
     <output-path>$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest/target</output-path>
     <properties id="maven-jee-properties">
       <options>
-        <exploded>false</exploded>
         <module>org.eclipse.winery.repository.rest</module>
         <packaging>war</packaging>
-        <unpackNestedArchives>false</unpackNestedArchives>
       </options>
     </properties>
     <root id="archive" name="winery.war">

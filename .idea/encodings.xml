@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/vendor/winery" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.accountability/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.accountability/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.bpmn4tosca.converter.tobpel/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.bpmn4tosca.converter.tobpel/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.cli" charset="UTF-8" />
@@ -11,19 +12,37 @@
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.compliance/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.compliance/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.crawler/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.crawler/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.edmm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.edmm/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.generators.ia/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.generators.ia/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.highlevelrestapi/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.highlevelrestapi/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.adaptation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.adaptation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.bpmn4tosca/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.bpmn4tosca/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.csar.toscametafile/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.csar.toscametafile/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.selfservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.selfservice/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.threatmodeling/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model.threatmodeling/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.canonical/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.canonical/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.xml/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.xml/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.yaml/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/org.eclipse.winery.model.tosca.yaml/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.reporting/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.reporting/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.client/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.client/src/main/resources" charset="UTF-8" />
@@ -32,9 +51,15 @@
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository/src/main/templates" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.copybaragenerator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.copybaragenerator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.copybaragenerator/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.deployablecomponents/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.deployablecomponents/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.topologygraph/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.topologygraph/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vendor/winery/src/main/resources" charset="UTF-8" />
   </component>
 </project>
