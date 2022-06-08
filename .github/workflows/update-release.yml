@@ -22,7 +22,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add website/_data/desktop-winery-releases.json
-          git commit -m "Update releases for website"
+          git diff-index --quiet HEAD || git commit -m "Update releases for website"
           git push
 
       - uses: ./.github/workflows/gh-pages.yml
