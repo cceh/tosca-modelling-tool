@@ -5,6 +5,7 @@ on:
     paths:
       - 'website/**/*'
       - '.github/workflows/gh-pages.yml'
+  workflow_call:
 
 
   # Allows you to run this workflow manually from the Actions tab

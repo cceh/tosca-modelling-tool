@@ -24,4 +24,6 @@ jobs:
           git add website/_data/desktop-winery-releases.json
           git commit -m "Update releases for website"
           git push
-          
+
+      - uses: ./.github/workflows/gh-pages.yml
+
