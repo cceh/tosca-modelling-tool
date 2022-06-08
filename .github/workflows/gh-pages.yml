@@ -26,9 +26,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       # Runs a single command using the runners shell
       - name: Push website directory as subtree to branch gh-pages
-        run: git subtree push --prefix website origin gh-pages
+        run: git subtree push --prefix website origin gh-pages --force
