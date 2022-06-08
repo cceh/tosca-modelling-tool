@@ -1,0 +1,25 @@
+name: Update release data for website
+
+on:
+  release:
+    types: [published, unpublished, edited]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  update-releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Push website directory as subtree to branch gh-pages
+        run: |
+          curl https://api.github.com/repos/${{ github.repository }}/releases > website/_data/desktop-winery-releases.json
+          git add website/_data/desktop-winery-releases.json
+          git commit -m "Update releases for website"
+          git push
+          

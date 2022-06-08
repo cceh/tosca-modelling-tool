@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - '**/workflows/update-jre.yml'
       - '.github/workflows/gh-pages.yml'
+      - '.github/workflows/update-release.yml'
       - 'website/**'
   pull_request:
     branches: [ main ]
