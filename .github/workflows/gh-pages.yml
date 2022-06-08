@@ -26,5 +26,6 @@ jobs:
       - name: Push website directory as subtree to branch gh-pages
 #        run: git push origin `git subtree split --prefix website main`:refs/heads/gh-pages --force
         run: |
+          git fetch origin gh-pages
           git subtree split --branch gh-pages --prefix website/
           git push origin gh-pages
