@@ -18,7 +18,7 @@ jobs:
 
       - name: Push website directory as subtree to branch gh-pages
         run: |
-          curl https://api.github.com/repos/${{ github.repository }}/releases > website/_data/desktop-winery-releases.json
+          curl https://api.github.com/repos/${{ github.repository }}/releases > $GITHUB_WORKSPACE/website/_data/desktop-winery-releases.json
           git add website/_data/desktop-winery-releases.json
           git commit -m "Update releases for website"
           git push
