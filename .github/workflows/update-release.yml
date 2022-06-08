@@ -15,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          - ref: 'main'
 
       - name: Push website directory as subtree to branch gh-pages
         run: |
