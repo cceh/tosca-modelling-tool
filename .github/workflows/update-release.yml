@@ -25,5 +25,8 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "Update releases for website"
           git push
 
-      - uses: ./.github/workflows/gh-pages.yml
+ update-pages-branch:
+   needs: update-releases
+   uses: ./.github/workflows/gh-pages.yml
+
 
