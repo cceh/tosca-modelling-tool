@@ -1,6 +1,6 @@
 {
   "name": "winery-electron-scratch",
-  "version": "1.0.0",
+  "version": "0.0.7-alpha",
   "description": "",
   "scripts": {
     "build:main": "webpack --config webpack.electron-main.config.js",
