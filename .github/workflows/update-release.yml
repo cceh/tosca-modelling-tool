@@ -27,6 +27,8 @@ jobs:
 
   update-pages-branch:
     needs: update-releases
+    permissions:
+      contents: write
     uses: ./.github/workflows/gh-pages.yml
 
 
