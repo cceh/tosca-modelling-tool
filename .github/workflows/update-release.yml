@@ -15,10 +15,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          - ref: 'main'
 
       - name: Push website directory as subtree to branch gh-pages
         run: |
-          git checkout main
           curl https://api.github.com/repos/${{ github.repository }}/releases > website/_data/desktop-winery-releases.json
           git config user.name github-actions
           git config user.email github-actions@github.com
