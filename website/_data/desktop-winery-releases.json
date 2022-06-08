@@ -1,5 +1,46 @@
 [
   {
+    "url": "https://api.github.com/repos/olvidalo/desktop-winery/releases/68954925",
+    "assets_url": "https://api.github.com/repos/olvidalo/desktop-winery/releases/68954925/assets",
+    "upload_url": "https://uploads.github.com/repos/olvidalo/desktop-winery/releases/68954925/assets{?name,label}",
+    "html_url": "https://github.com/olvidalo/desktop-winery/releases/tag/v0.0.4-alpha",
+    "id": 68954925,
+    "author": {
+      "login": "olvidalo",
+      "id": 4175380,
+      "node_id": "MDQ6VXNlcjQxNzUzODA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4175380?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/olvidalo",
+      "html_url": "https://github.com/olvidalo",
+      "followers_url": "https://api.github.com/users/olvidalo/followers",
+      "following_url": "https://api.github.com/users/olvidalo/following{/other_user}",
+      "gists_url": "https://api.github.com/users/olvidalo/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/olvidalo/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/olvidalo/subscriptions",
+      "organizations_url": "https://api.github.com/users/olvidalo/orgs",
+      "repos_url": "https://api.github.com/users/olvidalo/repos",
+      "events_url": "https://api.github.com/users/olvidalo/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/olvidalo/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOHT_IAs4EHCst",
+    "tag_name": "v0.0.4-alpha",
+    "target_commitish": "main",
+    "name": "v0.0.2-alpha111",
+    "draft": false,
+    "prerelease": true,
+    "created_at": "2022-06-08T14:15:56Z",
+    "published_at": "2022-06-08T13:57:53Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/olvidalo/desktop-winery/tarball/v0.0.4-alpha",
+    "zipball_url": "https://api.github.com/repos/olvidalo/desktop-winery/zipball/v0.0.4-alpha",
+    "body": ""
+  },
+  {
     "url": "https://api.github.com/repos/olvidalo/desktop-winery/releases/66516511",
     "assets_url": "https://api.github.com/repos/olvidalo/desktop-winery/releases/66516511/assets",
     "upload_url": "https://uploads.github.com/repos/olvidalo/desktop-winery/releases/66516511/assets{?name,label}",
