@@ -9,11 +9,13 @@ on:
     branches: [ main ]
     paths-ignore:
       - '**/workflows/update-jre.yml'
+      - '.github/workflows/gh-pages.yml'
       - 'website/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - '**/workflows/update-jre.yml'
+      - '.github/workflows/gh-pages.yml'
       - 'website/**'
       
   # Allows you to run this workflow manually from the Actions tab
