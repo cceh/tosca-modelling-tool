@@ -30,7 +30,7 @@
     "target_commitish": "main",
     "name": "v0.0.1-alpha",
     "draft": false,
-    "prerelease": true,
+    "prerelease": false,
     "created_at": "2022-06-07T08:06:45Z",
     "published_at": "2022-06-08T11:57:03Z",
     "assets": [
@@ -63,7 +63,7 @@
         "content_type": "text/yaml",
         "state": "uploaded",
         "size": 398,
-        "download_count": 0,
+        "download_count": 3,
         "created_at": "2022-06-07T08:18:52Z",
         "updated_at": "2022-06-07T08:18:53Z",
         "browser_download_url": "https://github.com/olvidalo/desktop-winery/releases/download/v0.0.1-alpha/latest-linux.yml"
@@ -97,7 +97,7 @@
         "content_type": "text/yaml",
         "state": "uploaded",
         "size": 535,
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2022-06-07T08:31:18Z",
         "updated_at": "2022-06-07T08:31:18Z",
         "browser_download_url": "https://github.com/olvidalo/desktop-winery/releases/download/v0.0.1-alpha/latest-mac.yml"
@@ -131,7 +131,7 @@
         "content_type": "text/yaml",
         "state": "uploaded",
         "size": 375,
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2022-06-07T08:28:50Z",
         "updated_at": "2022-06-07T08:28:50Z",
         "browser_download_url": "https://github.com/olvidalo/desktop-winery/releases/download/v0.0.1-alpha/latest.yml"
@@ -411,6 +411,6 @@
     ],
     "tarball_url": "https://api.github.com/repos/olvidalo/desktop-winery/tarball/v0.0.1-alpha",
     "zipball_url": "https://api.github.com/repos/olvidalo/desktop-winery/zipball/v0.0.1-alpha",
-    "body": "abc"
+    "body": "abcd"
   }
 ]
