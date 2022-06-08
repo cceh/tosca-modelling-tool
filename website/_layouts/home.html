@@ -6,7 +6,7 @@ layout: default
 
   <h2>Releases</h2>
   <ul>
-    {% for release in site.data.desktop-winery-releases %}
+    {% for release in site.github.releases %}
       <li>{{ release.name }}</li>
       <ul>
         {% for asset in release.assets %}
