@@ -24,4 +24,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Push website directory as subtree to branch gh-pages
-        run: git push origin `git subtree split --prefix website main`:refs/heads/gh-pages --force
+#        run: git push origin `git subtree split --prefix website main`:refs/heads/gh-pages --force
+        run: |
+          git subtree split --branch gh-pages --prefix website/
+          git push origin gh-pages
