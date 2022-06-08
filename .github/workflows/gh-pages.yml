@@ -3,7 +3,7 @@ name: Push website to gh-pages branch
 on:
   push:
     paths:
-      - 'website/**'
+      - 'website/**/*'
       - '.github/workflows/gh-pages.yml'
 
 
