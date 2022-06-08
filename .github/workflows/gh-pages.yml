@@ -5,6 +5,8 @@ on:
     paths:
       - 'website/**/*'
       - '.github/workflows/gh-pages.yml'
+    branches:
+      - 'main'
 #  workflow_call:
   release:
     types: [published, unpublished, edited]
