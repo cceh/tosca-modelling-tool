@@ -24,7 +24,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Build site
+        run: |
+          cd website
+          bundle exec jekyll build
+          cd ..
+
       - name: Push website directory as subtree to branch gh-pages
         run: |
-          git subtree split --branch gh-pages --prefix website/
+          git subtree split --branch gh-pages --prefix website/_site/
           git push origin gh-pages --force
+
