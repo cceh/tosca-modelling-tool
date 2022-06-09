@@ -1,3 +1,6 @@
 [submodule "vendor/winery"]
 	path = vendor/winery
 	url = https://github.com/eclipse/winery
+[submodule "website"]
+	path = website
+	url = https://github.com/CloudCannon/hydra-jekyll-template
