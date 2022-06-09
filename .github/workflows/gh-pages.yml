@@ -40,6 +40,10 @@ jobs:
 
       - name: Push website directory as subtree to branch gh-pages
         run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Website build"
           git subtree split --branch gh-pages --prefix website/_site/
           git push origin gh-pages --force
 
