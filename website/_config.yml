@@ -2,8 +2,8 @@
 # Site
 
 title: Hydra Template
-url: "https://proud-alligator.cloudvent.net"
-baseurl:
+url: "https://olvidalo.github.io"
+baseurl: "/desktop-winery"
 google_analytics_key:
 google_maps_javascript_api_key:
 disqus_shortname:
@@ -74,6 +74,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jekyll-paginate
+  - jekyll-github-metadata
 
 exclude:
   - Gemfile

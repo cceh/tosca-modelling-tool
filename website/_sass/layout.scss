@@ -18,6 +18,8 @@
 }
 
 header {
+	height: 33px;
+
 	color: #fff;
 	padding: 20px 0;
 	background: $brand-color; /* Old browsers */
@@ -36,7 +38,7 @@ header {
 
 	.company-name {
 		font-size: 1.7em;
-		line-height: 0;
+		line-height: 33px;
 
 		a {
 			display: inline-block;
