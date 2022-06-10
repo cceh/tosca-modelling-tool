@@ -54,7 +54,9 @@ function buildWineryLauncher() {
             "-DfailIfNoTests=false",
 
             "-Dcheckstyle.skip",
-            "-Dmaven.javadoc.skip=true"
+            "-Dmaven.javadoc.skip=true",
+
+            ...(process.argv.includes("--skip-frontends") ? ["-Pjava"] : [])
         ])
     } catch (e) {
         console.error("Could not build the winery launcher.")

@@ -68,7 +68,8 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'adopt'
+        distribution: 'temurin'
+        cache: 'maven'
 
     - name: Set up node 16
       if: matrix.language == 'java' 

@@ -13,6 +13,7 @@
     "dev:renderer": "webpack serve --config webpack.electron-renderer.config.js",
     "dev": "npm-run-all --parallel dev:renderer dev:main",
     "deps:winery": "node scripts/get-winery.mjs",
+    "deps:winery:skip-frontends": "node scripts/get-winery.mjs --skip-frontends",
     "deps:jre": "node scripts/get-jre.mjs",
     "deps:jre:check": "node scripts/update-jre-version.mjs",
     "deps": "npm-run-all deps:jre deps:winery",
