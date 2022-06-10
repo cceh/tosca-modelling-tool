@@ -9,6 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore: 
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
 
   - package-ecosystem: "maven" # See documentation for possible values
     directory: "/winery-launcher" # Location of package manifests
@@ -17,3 +20,11 @@ updates:
     ignore: 
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "bundler" # See documentation for possible values
+    directory: "/website" # Location of package manifests
+    schedule:
+      interval: "daily"
+    ignore: 
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
