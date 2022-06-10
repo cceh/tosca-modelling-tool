@@ -46,7 +46,7 @@ jobs:
       with:
         path: |
           **/vendor/winery/**/*
-          key: winery-${{ runner.os }}-${{ hashFiles('**/.git/modules/vendor/winery/HEAD') }}
+        key: winery-${{ runner.os }}-${{ hashFiles('**/.git/modules/vendor/winery/HEAD') }}
 
     - name: Set up JDK 11
       uses: actions/setup-java@v3
