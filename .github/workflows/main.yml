@@ -10,13 +10,17 @@ on:
     paths-ignore:
       - '**/workflows/update-jre.yml'
       - '.github/workflows/gh-pages.yml'
+      - '.github/workflows/codeql-analysis.yml'
       - '.github/workflows/update-release.yml'
+      - '.github/*.yml'
       - 'website/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - '**/workflows/update-jre.yml'
       - '.github/workflows/gh-pages.yml'
+      - '.github/workflows/codeql-analysis.yml'
+      - '.github/*.yml'
       - 'website/**'
       
   # Allows you to run this workflow manually from the Actions tab
