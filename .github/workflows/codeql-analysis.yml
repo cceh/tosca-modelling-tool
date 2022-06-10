@@ -53,7 +53,16 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+
+    - name: Set up node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
         
+    - name: Install dev dependencies
+      run: npm install --only=dev
+
     - name: Build winery
       run: npm run deps:winery
 
