@@ -57,7 +57,7 @@ jobs:
     - name: Cache winery
       if: matrix.language == 'java' 
       uses: actions/cache@v3
-      id: cache-winery-launcher
+      id: cache-winery
       with:
         path: |
           **/vendor/winery/**/*
