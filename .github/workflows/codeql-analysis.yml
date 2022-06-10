@@ -41,6 +41,7 @@ jobs:
       uses: actions/checkout@v3
       
     - name: Cache winery
+      if: matrix.language == 'java' 
       uses: actions/cache@v3
       id: cache-winery-launcher
       with:
@@ -49,21 +50,25 @@ jobs:
         key: winery-${{ runner.os }}-${{ hashFiles('**/.git/modules/vendor/winery/HEAD') }}
 
     - name: Set up JDK 11
+      if: matrix.language == 'java' 
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'adopt'
 
     - name: Set up node 16
+      if: matrix.language == 'java' 
       uses: actions/setup-node@v3
       with:
         node-version: 16
         cache: 'npm'
         
     - name: Install dev dependencies
+      if: matrix.language == 'java' 
       run: npm install --only=dev
 
     - name: Build winery
+      if: matrix.language == 'java' 
       run: npm run deps:winery
 
     # Initializes the CodeQL tools for scanning.
