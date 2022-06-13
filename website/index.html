@@ -4,7 +4,7 @@ description: Track and optimize your sales team in real time
 ---
 <section class="hero">
 	<div class="text-container">
-		<h1 class="editable">The last TOSCA topology modeling tool <strong>you'll ever need</strong></h1>
+		<h1 class="editable">The last TOSCA modeling tool <strong>you'll ever need</strong></h1>
 		<p class="subtext editable">Track and optimize your sales team in real time.</p>
 		{% assign latest_release = site.github.releases | first %}
 		<h3>Latest release</h3>
@@ -12,7 +12,7 @@ description: Track and optimize your sales team in real time
 			{% assign mac_asset = latest_release.assets | sort: "name" | find_exp: "asset", "asset.name contains '.dmg'" %}
 			<div class="cta button alt"><a href="{{ mac_asset.browser_download_url }}">Mac: {{ mac_asset.name }}</a></div>
 			{% assign win_asset = latest_release.assets | sort: "name" | find_exp: "asset", "asset.name contains '.exe'" %}
-			<div class="cta button alt"><a href="{{ win_asset.browser_download_url }}">Windows: {{ mac_asset.name }}</a></div>
+			<div class="cta button alt"><a href="{{ win_asset.browser_download_url }}">Windows: {{ win_asset.name }}</a></div>
 		</ul>
 
 		<div>
