@@ -6,14 +6,16 @@
 version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
+    open-pull-requests-limit: 10
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     ignore: 
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
 
   - package-ecosystem: "maven" # See documentation for possible values
+    open-pull-requests-limit: 10
     directory: "/winery-launcher" # Location of package manifests
     schedule:
       interval: "daily"
@@ -22,6 +24,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "bundler" # See documentation for possible values
+    open-pull-requests-limit: 10
     directory: "/website" # Location of package manifests
     schedule:
       interval: "daily"
