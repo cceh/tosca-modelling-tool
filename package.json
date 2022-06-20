@@ -103,7 +103,7 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.1",
     "yauzl": "^2.10.0",
-    "zx": "^6.2.4"
+    "zx": "^7.0.0"
   },
   "dependencies": {
     "bootstrap": "^5.2.0-beta1",
