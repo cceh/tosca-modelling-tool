@@ -86,7 +86,7 @@
     "electron-builder": "^23.1.0",
     "execa": "^6.1.0",
     "fork-ts-checker-webpack-plugin": "^7.2.11",
-    "html-loader": "^4.0.0",
+    "html-loader": "^4.1.0",
     "html-webpack-plugin": "^5.5.0",
     "minimist": "^1.2.6",
     "nodemon": "^2.0.16",
