@@ -82,7 +82,7 @@
     "autoprefixer": "^10.4.7",
     "chalk": "^5.0.1",
     "css-loader": "^6.7.1",
-    "electron": "^19.0.3",
+    "electron": "^21.3.1",
     "electron-builder": "^23.6.0",
     "execa": "^6.1.0",
     "fork-ts-checker-webpack-plugin": "^7.2.11",
