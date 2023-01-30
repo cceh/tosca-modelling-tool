@@ -61,7 +61,7 @@ jobs:
       with:
         path: |
           **/vendor/winery/**/*
-        key: winery-${{ runner.os }}-${{ hashFiles('**/.git/modules/vendor/winery/HEAD') }}
+        key: winery-launcher-${{ runner.os }}-${{ hashFiles('**/winery-launcher/src/**/*', '**/winery-launcher/pom.xml', '**/.git/modules/vendor/winery/HEAD', '**/jre-version.json') }}
 
     - name: Set up JDK 17
       if: matrix.language == 'java' 
