@@ -82,7 +82,10 @@ jobs:
       if: matrix.language == 'java' 
       run: npm install --only=dev
 
-    # Initializes the CodeQL tools for scanning.
+    - name: Set extractor exclude option
+      run: echo "CODEQL_EXTRACTOR_JAVA_EXCLUDE=vendor/winery/**/*" >> $GITHUB_ENV
+
+      # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
