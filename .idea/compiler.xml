@@ -65,7 +65,7 @@
       <module name="org.eclipse.winery.tools.deployablecomponents" target="17" />
       <module name="org.eclipse.winery.topologygraph" target="17" />
       <module name="winery" target="17" />
-      <module name="winery-launcher" target="11" />
+      <module name="winery-launcher" target="17" />
       <module name="winery-launcher-parent" target="11" />
     </bytecodeTargetLevel>
   </component>
