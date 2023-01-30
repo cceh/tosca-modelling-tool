@@ -6,7 +6,7 @@ import semver from "semver";
 import fs from "fs";
 import os from "os";
 
-const JRE_RELEASE = 11
+const JRE_RELEASE = 17
 
 const jreVersionFile = path.join(__dirname, "../jre-version.json")
 
