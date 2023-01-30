@@ -63,11 +63,11 @@ jobs:
           **/vendor/winery/**/*
         key: winery-${{ runner.os }}-${{ hashFiles('**/.git/modules/vendor/winery/HEAD') }}
 
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       if: matrix.language == 'java' 
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
         cache: 'maven'
 

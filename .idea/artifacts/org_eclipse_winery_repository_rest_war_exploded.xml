@@ -19,15 +19,13 @@
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
           <element id="library" level="project" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" />
           <element id="library" level="project" name="Maven: org.slf4j:jul-to-slf4j:1.7.25" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.30.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.30.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-server:2.30.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-jaxb:2.30.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.37" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.37" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-server:2.37" />
           <element id="library" level="project" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" />
-          <element id="library" level="project" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.2" />
           <element id="library" level="project" name="Maven: jakarta.ws.rs:jakarta.ws.rs-api:2.1.6" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-multipart:2.30.1" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.10.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-multipart:2.37" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.2" />
           <element id="library" level="project" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.4.0-b180830.0359" />
           <element id="library" level="project" name="Maven: org.glassfish.jaxb:txw2:2.4.0-b180830.0438" />
@@ -35,19 +33,20 @@
           <element id="library" level="project" name="Maven: org.jvnet.staxex:stax-ex:1.8" />
           <element id="library" level="project" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" />
           <element id="library" level="project" name="Maven: javax.activation:javax.activation-api:1.2.0" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.30.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.ext:jersey-entity-filtering:2.30.1" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.10.1" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.10.1" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.10.1" />
-          <element id="library" level="project" name="Maven: jakarta.activation:jakarta.activation-api:1.2.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:2.30.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-jaxb:2.37" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2.external:jakarta.inject:2.6.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:2.30.1" />
-          <element id="library" level="project" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.3" />
-          <element id="library" level="project" name="Maven: com.sun.activation:jakarta.activation:1.2.1" />
-          <element id="library" level="project" name="Maven: org.glassfish.jersey.inject:jersey-hk2:2.30.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.37" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.ext:jersey-entity-filtering:2.37" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.13.3" />
+          <element id="library" level="project" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.3" />
+          <element id="library" level="project" name="Maven: jakarta.activation:jakarta.activation-api:1.2.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:2.37" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:2.37" />
+          <element id="library" level="project" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.inject:jersey-hk2:2.37" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-locator:2.6.1" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2.external:aopalliance-repackaged:2.6.1" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-api:2.6.1" />
@@ -69,14 +68,12 @@
           <element id="library" level="project" name="Maven: org.reflections:reflections:0.9.11" />
           <element id="library" level="project" name="Maven: org.javassist:javassist:3.22.0-GA" />
           <element id="library" level="project" name="Maven: org.jvnet.mimepull:mimepull:1.9.4" />
-          <element id="archive" name="org.eclipse.winery.model.selfservice-3.0.0-SNAPSHOT.jar">
-            <element id="module-output" name="org.eclipse.winery.model.selfservice" />
+          <element id="archive" name="org.eclipse.winery.model.extension-3.0.0-SNAPSHOT.jar">
+            <element id="module-output" name="org.eclipse.winery.model.extension" />
           </element>
           <element id="archive" name="org.eclipse.winery.repository-3.0.0-SNAPSHOT.jar">
             <element id="module-output" name="org.eclipse.winery.repository" />
           </element>
-          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.11" />
-          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-core:2.2.11" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.7" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.7.7" />
           <element id="archive" name="org.eclipse.winery.accountability-3.0.0-SNAPSHOT.jar">
@@ -157,6 +154,7 @@
           <element id="library" level="project" name="Maven: org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7.1" />
           <element id="library" level="project" name="Maven: wsdl4j:wsdl4j:1.6.3" />
           <element id="library" level="project" name="Maven: org.apache.cxf:cxf-rt-core:2.7.6" />
+          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.1.13" />
           <element id="library" level="project" name="Maven: org.apache.cxf:cxf-rt-bindings-soap:2.7.6" />
           <element id="library" level="project" name="Maven: org.apache.cxf:cxf-rt-databinding-jaxb:2.7.6" />
           <element id="library" level="project" name="Maven: org.apache.cxf:cxf-rt-bindings-xml:2.7.6" />
@@ -181,17 +179,17 @@
           <element id="archive" name="org.eclipse.winery.edmm-3.0.0-SNAPSHOT.jar">
             <element id="module-output" name="org.eclipse.winery.edmm" />
           </element>
-          <element id="library" level="project" name="Maven: com.github.UST-EDMM.edmm:edmm-core:1.0.18" />
-          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.10" />
+          <element id="library" level="project" name="Maven: com.github.UST-EDMM.edmm:edmm-core:-b8ccf39ae2-1" />
+          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.22" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-collections4:4.4" />
-          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.6" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.9" />
           <element id="library" level="project" name="Maven: org.freemarker:freemarker:2.3.29" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-core:5.2.2.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.2.2.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-context:5.2.2.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.2.2.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.2.2.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-expression:5.2.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:5.3.14" />
           <element id="library" level="project" name="Maven: io.fabric8:kubernetes-client:4.4.2" />
           <element id="library" level="project" name="Maven: io.fabric8:kubernetes-model:4.4.2" />
           <element id="library" level="project" name="Maven: io.fabric8:kubernetes-model-common:4.4.2" />
@@ -215,7 +213,7 @@
           <element id="library" level="project" name="Maven: com.squareup.okhttp:okhttp-ws:2.7.5" />
           <element id="library" level="project" name="Maven: org.bouncycastle:bcprov-ext-jdk15on:1.61" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.4.0" />
-          <element id="library" level="project" name="Maven: com.github.UST-EDMM.edmm:cfn-builder:1.0.18" />
+          <element id="library" level="project" name="Maven: com.github.UST-EDMM.edmm:cfn-builder:-b8ccf39ae2-1" />
           <element id="library" level="project" name="Maven: com.amazonaws:aws-java-sdk-ec2:1.11.257" />
           <element id="library" level="project" name="Maven: com.amazonaws:aws-java-sdk-core:1.11.257" />
           <element id="library" level="project" name="Maven: software.amazon.ion:ion-java:1.0.2" />
@@ -223,7 +221,7 @@
           <element id="library" level="project" name="Maven: com.amazonaws:jmespath-java:1.11.257" />
           <element id="library" level="project" name="Maven: org.jgrapht:jgrapht-core:1.3.1" />
           <element id="library" level="project" name="Maven: org.jheaps:jheaps:0.10" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2" />
           <element id="library" level="project" name="Maven: jstl:jstl:1.2" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-configuration2:2.3" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.7" />
@@ -237,6 +235,7 @@
           <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.5.2" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.4" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpmime:4.5.2" />
           <element id="library" level="project" name="Maven: org.eclipse.collections:eclipse-collections:8.2.0" />
           <element id="library" level="project" name="Maven: org.eclipse.collections:eclipse-collections-api:8.2.0" />
           <element id="library" level="project" name="Maven: net.jcip:jcip-annotations:1.0" />
