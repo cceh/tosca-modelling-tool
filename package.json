@@ -91,7 +91,7 @@
     "minimist": "^1.2.7",
     "nodemon": "^2.0.20",
     "npm-run-all": "^4.1.5",
-    "postcss-loader": "^7.0.2",
+    "postcss-loader": "^7.2.4",
     "prepend-transform": "^0.0.1019",
     "sass": "^1.57.1",
     "sass-loader": "^13.2.0",
