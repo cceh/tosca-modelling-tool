@@ -83,7 +83,7 @@
     "chalk": "^5.2.0",
     "css-loader": "^6.7.3",
     "electron": "^24.1.2",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.2.1",
     "execa": "^7.1.1",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "html-loader": "^4.2.0",
