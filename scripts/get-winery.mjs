@@ -51,7 +51,7 @@ function buildWineryLauncher() {
 
             // skip the Winery tests, only test the winery launcher
             "-Dtest=!%regex[org/eclipse/winery.*]",
-            "-DfailIfNoTests=false",
+            "-Dsurefire.failIfNoSpecifiedTests=false",
 
             "-Dcheckstyle.skip",
             "-Dmaven.javadoc.skip=true",
