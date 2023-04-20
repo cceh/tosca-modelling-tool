@@ -35,8 +35,7 @@ async function initializeWinerySubmodule() {
     try {
         return runCommand("git", ["submodule", "update", "--init", "--recursive", winerySubmoduleDir])
     } catch {
-        console.error("Could not initialize Winery submodule.")
-        process.exit(1)
+        throw new Error("Could not initialize Winery submodule.")
     }
 }
 
@@ -59,8 +58,7 @@ function buildWineryLauncher() {
             ...(process.argv.includes("--skip-frontends") ? ["-Pjava"] : [])
         ])
     } catch (e) {
-        console.error("Could not build the winery launcher.")
-        process.exit(1)
+        throw new Error("Could not build the winery launcher.")
     }
 }
 
