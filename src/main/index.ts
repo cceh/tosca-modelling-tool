@@ -4,6 +4,7 @@ import path from "path";
 import {backend} from "./backend";
 import {store} from "../common/store";
 import * as fs from "fs";
+import * as fse from "fs-extra";
 
 import {
     BACKEND_STARTING,
@@ -14,6 +15,8 @@ import {
     IS_BACKEND_RUNNING,
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
+import {baseRepositoriesPath} from "./resources";
+import * as process from "process";
 
 export type WindowType = "main" | "tosca-manager" | "topology-modeler"
 const windowTypeMap = new WeakMap<BrowserWindow, WindowType>()
@@ -177,33 +180,41 @@ function wineryWindowClosedHandler(this: BrowserWindow, event: Event) {
   }
 }
 
+/**
+ * Start the backend with the given repository path.
+ *
+ * @param repositoryPath - The path of the repository to start the backend with.
+ * @returns A Promise that resolves when the backend has started, or throws an error if something goes wrong.
+ */
 function startBackend(repositoryPath: string): null | Promise<void> {
   if (!repositoryPath) {
     throw new Error("No repositoryPath set!")
   }
 
   mainWindow?.webContents.send(BACKEND_STARTING)
-  return backend.start(repositoryPath).then(() => {
+  return backend
+      .start(repositoryPath)
+      .then(() => {
 
-    const knownWorkspaces = store.get("knownWorkspaces") ?? []
-    const knownOtherWorkspaces = knownWorkspaces.filter(workspace => workspace.path !== repositoryPath)
-    store.set("knownWorkspaces", [
-      { path: repositoryPath },
-      ...knownOtherWorkspaces
-    ])
+        const knownWorkspaces = store.get("knownWorkspaces") ?? []
+        const knownOtherWorkspaces = knownWorkspaces.filter(workspace => workspace.path !== repositoryPath)
+        store.set("knownWorkspaces", [
+          {path: repositoryPath},
+          ...knownOtherWorkspaces
+        ])
 
-    const parentLocation = path.resolve(repositoryPath, "..")
-    store.set("defaultWorkspaceParentPath", parentLocation)
+        const parentLocation = path.resolve(repositoryPath, "..")
+        store.set("defaultWorkspaceParentPath", parentLocation)
 
-    mainWindow?.hide()
+        mainWindow?.hide()
 
-    const toscaManagerWindow = createToscaManagerWindow()
-    toscaManagerWindow.once("ready-to-show", () => mainWindow?.close())
-    toscaManagerWindow.loadURL(backend.backendUrl)
-  }).catch(e => {
-    mainWindow?.webContents.send(BACKEND_STOPPED)
-    dialog.showErrorBox("Winery error", e.toString())
-  });
+        const toscaManagerWindow = createToscaManagerWindow()
+        toscaManagerWindow.once("ready-to-show", () => mainWindow?.close())
+        toscaManagerWindow.loadURL(backend.backendUrl)
+      }).catch(e => {
+        mainWindow?.webContents.send(BACKEND_STOPPED)
+        dialog.showErrorBox("Winery error", e.toString())
+      });
 }
 
 app.on('window-all-closed', () => {
@@ -232,8 +243,9 @@ ipcMain.on(OPEN_A_WORKSPACE, (event, repositoryPath) => {
   startBackend(repositoryPath)
 })
 
-ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath) => {
+ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => {
 
+  // handle already existing repository directory
   if (fs.existsSync(repositoryPath)) {
     if (isValidRepository(repositoryPath)) {
       const result = dialog.showMessageBoxSync({
@@ -246,15 +258,28 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath) => {
       if (result === 0) {
         startBackend(repositoryPath)
       }
+    } else {
+      if(fs.readdirSync(repositoryPath).length > 0) {
+        dialog.showMessageBoxSync({
+          title: "Directory not empty",
+          message: `The directory at ${repositoryPath} already exists and is not empty. Cannot create a workspace in a non-empty directory.`,
+          buttons: ["Choose another name"]
+        })
+      }
     }
 
     return
   }
 
+  // create the repository directory
   try {
-    fs.mkdirSync(repositoryPath, { recursive: true })
+    if (baseRepository) {
+      fse.copySync(path.join(baseRepositoriesPath, baseRepository), repositoryPath)
+    } else {
+      fs.mkdirSync(repositoryPath, { recursive: true })
+    }
   } catch (e) {
-    dialog.showErrorBox("Could create workspace directory", `Could not create new workspace directory ${repositoryPath}`)
+    dialog.showErrorBox("Could create workspace directory", `Could not create new workspace directory ${repositoryPath}: ${e.message}`)
     return
   }
 
@@ -294,7 +319,15 @@ backend.backendEvents.on("unexpected-exit", (error?) => {
   })
 })
 
+backend.backendEvents.on("exit-failed", () => {
+  dialog.showMessageBoxSync({
+    type: "error",
+    title: "Winery backend error",
+    message: `Timeout of reached while waiting for the winery to stop.`
+  })
 
+  process.exit(-1);
+})
 
 // open external links in external browser
 app.on('web-contents-created', (event, contents) => {
@@ -327,19 +360,6 @@ app.on('web-contents-created', (event, contents) => {
   })
 })
 
-// store initialization
-if (!store.has("knownWorkspaces")) {
-  store.set("knownWorkspaces", [])
-} else {
-  const existingWorkspaces = store.get("knownWorkspaces").filter(workspace => isValidRepository(workspace.path))
-  store.set("knownWorkspaces", existingWorkspaces)
-}
-
-if (!store.has("defaultWorkspaceParentPath") || !fs.existsSync(store.get("defaultWorkspaceParentPath"))) {
-    store.set("defaultWorkspaceParentPath", path.join(app.getPath("home"), "Winery Workspaces"))
-}
-
-
 ipcMain.on("menu", (event, url) => {
   Menu.buildFromTemplate([
     {
@@ -355,3 +375,15 @@ ipcMain.on("menu", (event, url) => {
 ipcMain.on("newWindow", (event, url) => {
   createToscaManagerWindow().loadURL(url)
 })
+
+// store initialization
+if (!store.has("knownWorkspaces")) {
+  store.set("knownWorkspaces", [])
+} else {
+  const existingWorkspaces = store.get("knownWorkspaces").filter(workspace => isValidRepository(workspace.path))
+  store.set("knownWorkspaces", existingWorkspaces)
+}
+
+if (!store.has("defaultWorkspaceParentPath") || !fs.existsSync(store.get("defaultWorkspaceParentPath"))) {
+  store.set("defaultWorkspaceParentPath", path.join(app.getPath("home"), "Winery Workspaces"))
+}

@@ -1,0 +1,39 @@
+@import "bootstrap";
+
+:host {
+    -webkit-app-region: no-drag;
+}
+
+.big-button {
+  display: flex;
+  flex-direction: row;
+  min-height: var(--button-height, var(--default-button-height));
+  background-color: var(--app-card-bg);
+  cursor: pointer;
+
+  transition: 150ms ease-in-out;
+  transition-property: background-color, box-shadow, color;
+
+  &:hover {
+    @extend .shadow;
+    background-color: $list-group-hover-bg;
+    color: $list-group-action-hover-color;
+  }
+}
+
+.card-image-col {
+  background-color: $primary;
+  width: 120px;
+  padding: 1.25rem;
+}
+
+.card-body {
+  flex: 1;
+}
+
+::slotted(img) {
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}

@@ -1,7 +1,8 @@
 import electron from "electron";
 import {store} from "../common/store";
 
-import styles from "./styles.scss"
+import globalStyles from "./global-styles.scss"
+import indexStyles from "./index.scss"
 
 import path from "path";
 import * as fs from "fs";
@@ -15,9 +16,12 @@ import {
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 
-import {WORKSPACE_SELECT, WorkspaceList, WorkspaceSelectEvent} from "./components/workspace-list";
-import {CreateWorkspaceDialog} from "./components/create-workspace-dialog";
-import {LoadingOverlay} from "./components/loading-overlay";
+import {BigButton} from "./components/shared/big-button.component";
+import {WorkspaceList} from "./components/workspace-list.component";
+import {CreateWorkspaceDialogComponent} from "./components/create-workspace-dialog.component";
+import {LoadingOverlayComponent} from "./components/loading-overlay.component";
+import {WORKSPACE_SELECT, WorkspaceSelectEvent} from "./components/shared/workspace-select.event";
+import {LastWorkspaceButton} from "./components/last-workspace-button.component";
 
 declare global {
     interface Window extends GlobalMethods { }
@@ -25,20 +29,34 @@ declare global {
 
 interface GlobalMethods {
     openWorkspace: () => void
-    createWorkspace: () => void
+    openLastWorkspace: () => void
+    createWorkspace: (baseRepository?: string) => void
 }
 
-document.adoptedStyleSheets = [styles]
+document.adoptedStyleSheets = [globalStyles, indexStyles]
 
 window.customElements.define("workspace-list", WorkspaceList)
-window.customElements.define("create-workspace-dialog", CreateWorkspaceDialog)
-window.customElements.define("loading-overlay", LoadingOverlay)
+window.customElements.define("create-workspace-dialog", CreateWorkspaceDialogComponent)
+window.customElements.define("loading-overlay", LoadingOverlayComponent)
+window.customElements.define("last-workspace-button", LastWorkspaceButton)
+window.customElements.define('big-button', BigButton);
 
-const createWorkspaceDialog = document.querySelector("create-workspace-dialog") as CreateWorkspaceDialog
-const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverlay
+const createWorkspaceDialog = document.querySelector("create-workspace-dialog") as CreateWorkspaceDialogComponent
+const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverlayComponent
 const workspaceList = document.querySelector("workspace-list") as WorkspaceList
+const lastWorkspaceButton = document.querySelector("last-workspace-button") as LastWorkspaceButton
 
-workspaceList.setWorkspaces(store.get("knownWorkspaces"))
+// const workspaces = [] as Workspace[] // store.get("knownWorkspaces")
+const workspaces = store.get("knownWorkspaces")
+
+if (workspaces?.length > 0) {
+    workspaceList.setWorkspaces(store.get("knownWorkspaces"))
+    lastWorkspaceButton.setLastWorkspace(workspaces[0])
+} else {
+    workspaceList.classList.add("hidden")
+    lastWorkspaceButton.classList.add("hidden")
+}
+
 workspaceList.addEventListener(WORKSPACE_SELECT, (event: WorkspaceSelectEvent) =>
     startWinery(event.detail.workspacePath)
 )
@@ -56,9 +74,9 @@ electron.ipcRenderer.on(BACKEND_STOPPING, () => {
 
 electron.ipcRenderer.on(BACKEND_STOPPED, () => loadingOverlay.close())
 
-function startWinery(path: string, create = false) {
+function startWinery(path: string, create = false, baseRepository: string = null) {
     const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE
-    electron.ipcRenderer.send(message, path)
+    electron.ipcRenderer.send(message, path, baseRepository)
 }
 
 const globalMethods: GlobalMethods = {
@@ -68,7 +86,15 @@ const globalMethods: GlobalMethods = {
             startWinery(path)
         }
     },
-    async createWorkspace() {
+    async openLastWorkspace() {
+      const workspaces = store.get("knownWorkspaces")
+      if (workspaces.length > 0) {
+          startWinery(workspaces[0].path)
+      } else {
+          throw new Error("There are no known workspaces.")
+      }
+    },
+    async createWorkspace(baseRepository) {
         const defaultParentPath = store.get("defaultWorkspaceParentPath")
 
         let nameIndex = 1
@@ -81,7 +107,7 @@ const globalMethods: GlobalMethods = {
 
         const workspacePath = await createWorkspaceDialog.show(defaultParentPath, defaultName)
         if (workspacePath) {
-            startWinery(workspacePath, true)
+            startWinery(workspacePath, true, baseRepository)
         }
     }
 }

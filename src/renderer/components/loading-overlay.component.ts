@@ -1,10 +1,8 @@
 import Modal from "bootstrap/js/dist/modal";
-import styles from "../styles.scss"
+import globalStyles from "../global-styles.scss"
 import {EventEmitter} from "events";
 
-const style = styles
-
-export class LoadingOverlay extends HTMLElement {
+export class LoadingOverlayComponent extends HTMLElement {
 
     private readonly modal: Modal
 
@@ -20,7 +18,7 @@ export class LoadingOverlay extends HTMLElement {
         super();
 
         this.attachShadow({mode: "open"})
-        this.shadowRoot.adoptedStyleSheets = [style]
+        this.shadowRoot.adoptedStyleSheets = [globalStyles]
 
         this.shadowRoot.innerHTML = `
             <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">

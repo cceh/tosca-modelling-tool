@@ -66,10 +66,6 @@ class Backend {
     async start(repositoryPath: string) {
         this._repositoryPath = repositoryPath
 
-        if (!fs.existsSync(this._repositoryPath)) {
-            fs.mkdirSync(this._repositoryPath, {recursive: true})
-        }
-
         if (this.running) {
             throw new Error("Backend already running!")
         }
@@ -136,15 +132,16 @@ class Backend {
 
         this.logger.info("Stopping the Winery...")
         this.shouldBeRunning = false
-        await fetch(`${this.backendUrl}/shutdown?token=winery`, {method: "POST"})
-        return this.waitForBackendStopped()
+        const res = this.waitForBackendStopped()
+        setTimeout(() => fetch(`${this.backendUrl}/shutdown?token=winery`, {method: "POST"}), 5000)
+        return res
     }
 
    private prepareConfigFile(port: number) {
        this.logger.info("Creating default winery.yml config file.")
        fs.mkdirSync(this.wineryConfigPath, {recursive: true})
 
-        const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
+       const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = this.repositoryPath!
        yamlConfig.ui.endpoints.topologymodeler = `${this.getBackendBaseUrl(port)}/winery-topologymodeler`
        yamlConfig.ui.endpoints.repositoryApiUrl = this.getWineryUrl(port)
@@ -175,15 +172,16 @@ class Backend {
             }
             this.process?.on("exit", exitListener)
 
-            const tryStartBackend = () => {
+            const checkBackendRunning = () => {
                 if (!this.process || this.process.exitCode !== null || exitedWhileWaitingToStart) {
                     return
                 }
 
                 const retry = () => {
                     this.logger.info(`Waiting for the Winery to start on port ${port}...`);
-                    setTimeout(() => tryStartBackend(), 200)
+                    setTimeout(() => checkBackendRunning(), 200)
                 }
+
                 fetch(this.getWineryUrl(port))
                     .then(response => {
                         if (response.ok) {
@@ -199,34 +197,36 @@ class Backend {
                     .catch(retry)
             }
 
-            tryStartBackend()
+            checkBackendRunning()
         }))
     }
 
-    private waitForBackendStopped() {
-        return new Promise<void>(((resolve, reject) => {
-            const tryStopBackend = () => {
-                const retry = () => {
-                    this.logger.info(`Waiting for the Winery to stop...`);
-                    setTimeout(() => tryStopBackend(), 200)
-                }
-                const success = () => {
-                    this.logger.info("Winery stopped!")
-                    resolve()
-                }
-                fetch(this.getWineryUrl(this.port!))
-                    .then(response => {
-                        if (response.ok) {
-                            retry()
-                        } else {
-                            success()
-                        }
-                    })
-                    .catch(success)
+    private async waitForBackendStopped(timeoutMs = 180000): Promise<void> {
+        const intervalMs = 200
+        let waitedMs = 0
+
+        while (true) {
+            if (waitedMs === timeoutMs) {
+                this.backendEvents.emit("exit-failed")
+                break;
             }
 
-            tryStopBackend()
-        }))
+            try {
+                const response = await fetch(this.getWineryUrl(this.port!));
+                if (response.ok) {
+                    this.logger.info("Waiting for the Winery to stop...");
+                    await new Promise(resolve => setTimeout(resolve, intervalMs));
+                } else {
+                    this.logger.info("Winery stopped!");
+                    break;
+                }
+            } catch (error) {
+                this.logger.info("Winery stopped!");
+                break;
+            }
+
+            waitedMs += intervalMs
+        }
     }
 }
 

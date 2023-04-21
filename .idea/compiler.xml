@@ -37,36 +37,7 @@
     <bytecodeTargetLevel>
       <module name="desktop-winery" target="11" />
       <module name="launcher" target="11" />
-      <module name="org.eclipse.winery.accountability" target="17" />
-      <module name="org.eclipse.winery.bpmn4tosca.converter.tobpel" target="17" />
-      <module name="org.eclipse.winery.cli" target="17" />
-      <module name="org.eclipse.winery.common" target="17" />
-      <module name="org.eclipse.winery.compliance" target="17" />
-      <module name="org.eclipse.winery.crawler" target="17" />
-      <module name="org.eclipse.winery.edmm" target="17" />
-      <module name="org.eclipse.winery.frontends" target="17" />
-      <module name="org.eclipse.winery.generators.ia" target="17" />
-      <module name="org.eclipse.winery.highlevelrestapi" target="17" />
-      <module name="org.eclipse.winery.model" target="17" />
-      <module name="org.eclipse.winery.model.adaptation" target="11" />
-      <module name="org.eclipse.winery.model.bpmn4tosca" target="17" />
-      <module name="org.eclipse.winery.model.csar.toscametafile" target="17" />
-      <module name="org.eclipse.winery.model.extension" target="17" />
       <module name="org.eclipse.winery.model.selfservice" target="1.8" />
-      <module name="org.eclipse.winery.model.threatmodeling" target="17" />
-      <module name="org.eclipse.winery.model.tosca.canonical" target="17" />
-      <module name="org.eclipse.winery.model.tosca.xml" target="17" />
-      <module name="org.eclipse.winery.model.tosca.yaml" target="17" />
-      <module name="org.eclipse.winery.reporting" target="17" />
-      <module name="org.eclipse.winery.repository" target="17" />
-      <module name="org.eclipse.winery.repository.client" target="17" />
-      <module name="org.eclipse.winery.repository.rest" target="17" />
-      <module name="org.eclipse.winery.tools.copybaragenerator" target="17" />
-      <module name="org.eclipse.winery.tools.deployablecomponents" target="17" />
-      <module name="org.eclipse.winery.topologygraph" target="17" />
-      <module name="winery" target="17" />
-      <module name="winery-launcher" target="17" />
-      <module name="winery-launcher-parent" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

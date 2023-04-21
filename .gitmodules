@@ -4,3 +4,6 @@
 [submodule "website"]
 	path = website
 	url = https://github.com/CloudCannon/hydra-jekyll-template
+[submodule "vendor/tosca-definitions-common"]
+	path = vendor/base-repos/tosca-definitions-common
+	url = https://github.com/OpenTOSCA/tosca-definitions-common

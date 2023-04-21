@@ -1,0 +1,12 @@
+@use "sass:color";
+$enable-rfs: false;
+@import "bootstrap";
+
+:root {
+  --app-card-bg: rgba(255,255,255,0.7);
+  --default-button-height: 120px;
+}
+
+button, input, a[href] {
+  -webkit-app-region: no-drag;
+}

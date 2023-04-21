@@ -1,0 +1,40 @@
+@import "global-styles";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  -webkit-app-region: drag;
+}
+
+button,
+input,
+textarea,
+select,
+a,
+label, {
+  -webkit-app-region: no-drag;
+}
+
+body {
+  background-image: url(images/opentosca-logo-bg.svg);
+  background-repeat: no-repeat;
+  background-position: right -112px top -56px;
+  background-attachment: fixed;
+  background-size: 600px;
+}
+
+.container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.content {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.hidden {
+  display: none;
+}

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="AngularCLI" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/angular.json" />
-    <file type="web" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.generators.ia/src/main/resources/template/project/src/main/webapp/WEB-INF/web.xml" />
-    <file type="web" url="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest" />
     <type id="Spring" />
+    <type id="web" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">

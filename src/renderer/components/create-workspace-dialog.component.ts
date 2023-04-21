@@ -1,13 +1,11 @@
 import Modal from "bootstrap/js/dist/modal";
-import styles from "../styles.scss"
+import globalStyles from "../global-styles.scss"
 import path from "path";
 import electron from "electron";
 import {CHOOSE_DIRECTORY} from "../../common/ipcEvents";
-import template from "./create-workspace-dialog.html"
+import template from "./create-workspace-dialog.component.html"
 
-const style = styles
-
-export class CreateWorkspaceDialog extends HTMLElement {
+export class CreateWorkspaceDialogComponent extends HTMLElement {
 
     private readonly modal: Modal
     private readonly modalElem: HTMLElement
@@ -23,7 +21,7 @@ export class CreateWorkspaceDialog extends HTMLElement {
         super();
 
         this.attachShadow({mode: "open"})
-        this.shadowRoot.adoptedStyleSheets = [style]
+        this.shadowRoot.adoptedStyleSheets = [globalStyles]
         this.shadowRoot.innerHTML = template
 
         this.modalElem = this.shadowRoot.querySelector("div") as HTMLElement

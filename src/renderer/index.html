@@ -10,46 +10,45 @@
   <body class="d-flex flex-column">
     <nav class="navbar">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Desktop Winery</span>
+            <span class="navbar-brand mb-0 h1">TOSCA Modelling Tool</span>
         </div>
     </nav>
 
-      <div class="content container-fluid d-flex flex-column flex-grow-1 overflow-hidden">
-         <div class="d-flex flex-column">
-             <a href="#" onclick="createWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" style="max-width: 540px;">
-                 <div class="row g-0">
-                     <div class="card-image-col col-md-4 p-5">
-                         <img src="images/new-project-icon.svg" />
-                     </div>
-                     <div class="col-md-8">
-                         <div class="card-body">
-                             <h5 class="card-title">Create a new starter workspace</h5>
-                             <p class="text-muted">A starter workspace contains predefined nodes and edges to get you modelling straight ahead.</p>
-                         </div>
-                     </div>
-                 </div>
-             </a>
-             <a href="#" onclick="openWorkspace()" role="button" class="card mb-3 text-decoration-none text-reset" class="card mb-3" style="max-width: 540px;">
-                 <div class="row g-0">
-                     <div class="card-image-col col-md-4 p-5">
-                        <img src="images/open-project-icon.svg" />
-                     </div>
-                     <div class="col-md-8">
-                         <div class="card-body">
-                             <h5 class="card-title">Open an existing workspace</h5>
-                             <p class="text-muted">Open an existing workspace folder placeholder text.</p>
-                         </div>
-                     </div>
-                 </div>
-             </a>
-         </div>
-          <h4>Recent workspaces</h4>
-          <workspace-list></workspace-list>
-      </div>
+    <div class="content container-fluid">
+        <last-workspace-button class="mb-3" onclick="openLastWorkspace()"></last-workspace-button>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="d-flex flex-column">
+                    <big-button on-click="createWorkspace('tosca-definitions-common')">
+                        <img slot="image" src="images/new-project-icon.svg"/>
+                        <span slot="title">Create a new starter workspace</span>
+                        <span slot="text">
+                            Create a workspace based on the <em>TOSCA Definitions Common Repository</em>
+                            which contains pre-defined TOSCA definitions to get you modelling straight away.
+                        </span>
+                    </big-button>
 
+                    <big-button on-click="openWorkspace()">
+                        <img slot="image" src="images/open-project-icon.svg"/>
+                        <span slot="title">Open an existing workspace</span>
+                        <span slot="text">
+                            Choose a previously created workspace directory and continue to work
+                            on modelling your applications.
+                        </span>
+                    </big-button>
+                </div>
+            </div>
+
+             <div class="col-md-6">
+                <workspace-list class="flex-grow-1"></workspace-list>
+            </div>
+        </div>
+    </div>
 
   <loading-overlay></loading-overlay>
   <create-workspace-dialog></create-workspace-dialog>
+
+
 
   </body>
 </html>

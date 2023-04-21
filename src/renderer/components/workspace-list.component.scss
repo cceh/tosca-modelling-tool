@@ -1,0 +1,24 @@
+@import "../global-styles";
+
+$border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+
+.workspace-list-container {
+  overflow: hidden;
+  background: var(--app-card-bg);
+
+  .card-title {
+    margin-bottom: var(--bs-card-spacer-y);
+  }
+
+  .list-group {
+    border-top: $border;
+    $margin: calc(-1 * var(--bs-card-spacer-y));
+    margin: 0 $margin 0 $margin;
+  }
+}
+
+.list-group-item {
+  border: none;
+  background-color: transparent;
+  border-bottom: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+}
