@@ -59,8 +59,7 @@ function createMainWindow(): BrowserWindow {
         show: false,
         maximizable: false,
         fullscreenable: false,
-        titleBarStyle: "customButtonsOnHover",
-        titleBarOverlay: true,
+      frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
