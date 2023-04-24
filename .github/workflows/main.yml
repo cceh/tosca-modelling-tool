@@ -41,6 +41,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Windows has problems with the lenghts of the filenames / pahts of the tosca-definitions-common repo.
+      # This enables long paths for Windows.
+      - name: Enable long paths
+        run: git config --global core.longpaths true
+    
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: actions/setup-node@master
