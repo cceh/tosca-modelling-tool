@@ -1,7 +1,7 @@
 import {app, BrowserWindow, dialog, HandlerDetails, ipcMain, Menu, shell, WebContents} from "electron";
 import url from "url";
 import path from "path";
-import {backend} from "./backend";
+import {Backend} from "./backend";
 import {store} from "../common/store";
 import * as fs from "fs";
 import * as fse from "fs-extra";
@@ -31,6 +31,7 @@ const mainWindowUrl = app.isPackaged
 
 let mainWindow: BrowserWindow
 
+const backend = new Backend(app.getPath("userData"))
 
 function navigationAllowedForUrl(url: URL) {
   if (url.toString() === mainWindowUrl) {
@@ -174,6 +175,14 @@ function wineryWindowClosedHandler(this: BrowserWindow, event: Event) {
       backend.stop().then(() => {
         mainWindow.webContents.send(BACKEND_STOPPED)
         this.close()
+      }).catch(() => {
+        dialog.showMessageBoxSync({
+          type: "error",
+          title: "Winery backend error",
+          message: `Timeout of reached while waiting for the winery to stop.`
+        })
+
+        process.exit(-1);
       })
     })
   }
@@ -213,6 +222,7 @@ function startBackend(repositoryPath: string): null | Promise<void> {
       }).catch(e => {
         mainWindow?.webContents.send(BACKEND_STOPPED)
         dialog.showErrorBox("Winery error", e.toString())
+        console.error(e)
       });
 }
 
@@ -295,7 +305,7 @@ ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
 })
 
 ipcMain.handle(IS_BACKEND_RUNNING, async (event) => {
-  return backend.running
+  return backend.isRunning
 })
 
 backend.backendEvents.on("unexpected-exit", (error?) => {
@@ -316,16 +326,6 @@ backend.backendEvents.on("unexpected-exit", (error?) => {
       window.destroy()
     }
   })
-})
-
-backend.backendEvents.on("exit-failed", () => {
-  dialog.showMessageBoxSync({
-    type: "error",
-    title: "Winery backend error",
-    message: `Timeout of reached while waiting for the winery to stop.`
-  })
-
-  process.exit(-1);
 })
 
 // open external links in external browser

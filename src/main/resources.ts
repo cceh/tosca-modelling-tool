@@ -5,7 +5,7 @@ import {getPlatform} from "./get-platform";
 // @ts-ignore
 // import {rootPath} from 'electron-root-path';
 
-const useProdPath = app.isPackaged
+const useProdPath = app?.isPackaged
 
 export const resourcePath = useProdPath
     ? process.resourcesPath

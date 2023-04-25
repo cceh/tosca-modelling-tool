@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Cache winery launcher
         uses: actions/cache@v3
@@ -79,8 +79,18 @@ jobs:
       - name: Install NPM dependencies
         run: npm ci
 
-      - name: Build app
-        run: npm run ci:build
+      - name: Get and build app dependencies
+        run: npm run deps
+
+      # winery-launcher is tested my maven after build
+      - name: Test Electron app
+        run: npm run test:electron
+
+      - name: Build Electron main
+        run: npm run build:main:prod
+
+      - name: Build Electron renderer
+        run: npm run build:renderer:prod
         
       - name: Build distribution package
         if: github.event_name == 'pull_request'

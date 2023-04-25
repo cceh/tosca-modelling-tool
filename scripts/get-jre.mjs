@@ -1,4 +1,3 @@
-import fetch from "node-fetch"
 import path from "path";
 import {fileURLToPath} from "url";
 import { writeFile, readFile } from "fs/promises"

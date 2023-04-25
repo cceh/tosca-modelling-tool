@@ -18,3 +18,5 @@ dist
 .idea/jsLibraryMappings.xml
 .idea/libraries
 .idea/inspectionProfiles
+/coverage
+/.nyc_output

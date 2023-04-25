@@ -26,7 +26,9 @@
     "ci:dist": "electron-builder",
     "release": "electron-builder",
     "test:winery-launcher": "mvn -pl winery-launcher test",
-    "test": "npm run test:winery-launcher"
+    "test:electron": "mocha --loader=ts-node/esm test/**/*.unit.test.ts test/**/*.integration.test.ts",
+    "test:electron:coverage": "nyc npm run test:electron",
+    "test": "npm-run-all test:winery-launcher test:electron"
   },
   "main": "dist/app/main.js",
   "author": "Marcel Schaeben",
@@ -82,11 +84,31 @@
       }
     ]
   },
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "check-coverage": true,
+    "all": true,
+    "include": [
+      "src/**/!(*.test.*).[tj]s?(x)"
+    ],
+    "reporter": [
+      "html",
+      "lcov",
+      "text",
+      "text-summary"
+    ],
+    "report-dir": "coverage"
+  },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/bootstrap": "^5.2.6",
+    "@types/chai": "^4.3.4",
     "@types/fs-extra": "^11.0.1",
     "@types/js-yaml": "^4.0.5",
+    "@types/mocha": "^10.0.1",
+    "@types/sinon": "^10.0.14",
     "autoprefixer": "^10.4.13",
+    "chai": "^4.3.7",
     "chalk": "^5.2.0",
     "css-loader": "^6.7.3",
     "electron": "^24.1.2",
@@ -96,15 +118,19 @@
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.0",
     "minimist": "^1.2.7",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
     "npm-run-all": "^4.1.5",
+    "nyc": "^15.1.0",
     "postcss-loader": "^7.2.4",
     "prepend-transform": "^0.0.1019",
     "sass": "^1.62.0",
     "sass-loader": "^13.2.0",
     "semver": "^7.4.0",
+    "sinon": "^15.0.4",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "webpack": "^5.80.0",
     "webpack-cli": "^5.0.1",
@@ -116,7 +142,6 @@
     "bootstrap": "^5.2.3",
     "electron-store": "^8.1.0",
     "js-yaml": "^4.1.0",
-    "node-fetch": "^3.3.0",
     "portfinder": "^1.0.32",
     "winston": "^3.8.2"
   }
