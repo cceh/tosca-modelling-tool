@@ -149,7 +149,7 @@ export class Backend extends EventEmitter {
     async stop(timeoutMs: number = 180000) {
         if (!this.isRunning) {
             this.logger.error("Winery not running!")
-            return this.waitForBackendStopped(timeoutMs)
+            return
         }
 
         this.logger.info("Stopping the Winery...")
