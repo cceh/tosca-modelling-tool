@@ -9,6 +9,7 @@ import {expect} from "chai";
 import {Backend} from "../../src/main/backend";
 import * as resources from "../../src/main/resources"
 import {createLogger, LogEntry, transports} from "winston";
+import * as fsextra from "fs-extra";
 import {PathProvider} from "../../src/main/resources";
 
 class MockChildProcess extends ChildProcess {
@@ -37,6 +38,7 @@ describe('Backend Unit Tests', () => {
     let getPortPromiseStub: SinonStub;
     let fetchStub: SinonStub;
     let writeFileStub: SinonStub;
+    let backend: Backend;
 
     let fakeProcess: MockChildProcess;
 
@@ -59,13 +61,13 @@ describe('Backend Unit Tests', () => {
     });
 
     afterEach(() => {
+        fsextra.remove(dataPath);
         sinon.restore();
-        fs.rmSync(dataPath, {recursive: true, force: true})
     });
 
     describe("#start()", () => {
         it('should write the .winery config file, creating the config directory if it does not exist', async () => {
-            const backend = new Backend(dataPath)
+            backend = new Backend(dataPath)
 
             const wineryConfigPath = path.join(dataPath, ".winery")
 

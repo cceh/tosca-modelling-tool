@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import crypto from 'crypto';
 import {expect} from 'chai';
+import * as fsextra from "fs-extra";
 
 const getTemporaryRepositoryPath =
     () => path.join(os.tmpdir(), `test-repo-${crypto.randomBytes(6).toString('hex')}`)
@@ -24,12 +25,12 @@ describe('Backend Integration Tests', () => {
     afterEach(async () => {
         await backend.stop()
 
-        fs.rmSync(dataPath, {recursive: true, force: true})
+        fsextra.remove(dataPath)
         if (fs.existsSync(repositoryPath)) {
-            fs.rmSync(repositoryPath, {recursive: true, force: true})
+            await fsextra.remove(repositoryPath);
         }
         if (fs.existsSync(secondRepositoryPath)) {
-            fs.rmSync(secondRepositoryPath, {recursive: true, force: true})
+            await fsextra.remove(secondRepositoryPath);
         }
     })
 
