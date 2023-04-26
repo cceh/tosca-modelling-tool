@@ -200,7 +200,7 @@ describe('Backend Unit Tests', () => {
         const fakeErrorWineryLogLine = "ERROR: Catastrophe uncorked. Winery in chaos, must exit."
 
         const unexpectedExitEventReceived = new Promise<void>((resolve) => {
-            backend.backendEvents.once('unexpected-exit', (error: Error) => {
+            backend.once('unexpected-exit', (error: Error) => {
                 // the error should contain the last log line of the winery process
                 expect(error.message).to.contain(fakeErrorWineryLogLine)
                 resolve();

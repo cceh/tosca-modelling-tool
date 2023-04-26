@@ -29,7 +29,7 @@ class BackendState {
 /**
  * Manages the Winery process.
  */
-export class Backend {
+export class Backend extends EventEmitter {
     state: BackendState | null = null
 
     // the path where winery.yml is read from is hardcoded as {user.home}/.winery in
@@ -38,6 +38,8 @@ export class Backend {
     readonly wineryConfigFilePath = path.join(this.wineryConfigPath, "winery.yml")
 
     constructor(readonly dataPath: string, private logger?: winston.Logger, private wineryLogger?: winston.Logger) {
+        super()
+
         this.logger = logger || createLogger({
             level: 'info',
             transports: [
@@ -70,8 +72,6 @@ export class Backend {
 
     getBackendBaseUrl(port: number) { return `http://localhost:${port}`}
     getWineryUrl(port: number) { return `${this.getBackendBaseUrl(port)}/winery`}
-
-    readonly backendEvents = new EventEmitter()
 
     /**
      * Starts the winery process with the specified repository path.
@@ -165,7 +165,7 @@ export class Backend {
 
     private handleBackendExit(error?: Error) {
         if (this.state?.shouldBeRunning) {
-            this.backendEvents.emit("unexpected-exit", error)
+            this.emit("unexpected-exit", error)
         }
 
         this.state = null

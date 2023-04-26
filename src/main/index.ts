@@ -308,7 +308,7 @@ ipcMain.handle(IS_BACKEND_RUNNING, async (event) => {
   return backend.isRunning
 })
 
-backend.backendEvents.on("unexpected-exit", (error?) => {
+backend.on("unexpected-exit", (error?) => {
   dialog.showMessageBoxSync({
     type: "error",
     title: "Winery backend error",
