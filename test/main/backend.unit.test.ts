@@ -7,7 +7,9 @@ import child_process, {ChildProcess} from "child_process";
 import {Duplex, PassThrough, Writable} from "stream";
 import {expect} from "chai";
 import {Backend} from "../../src/main/backend";
+import * as resources from "../../src/main/resources"
 import {createLogger, LogEntry, transports} from "winston";
+import {PathProvider} from "../../src/main/resources";
 
 class MockChildProcess extends ChildProcess {
     constructor(
@@ -19,6 +21,7 @@ class MockChildProcess extends ChildProcess {
         super();
     }
 }
+
 
 // Helper function: create da test dummy logger to listen for "logged" events
 const createTestLogger = () => {
@@ -121,10 +124,28 @@ describe('Backend Unit Tests', () => {
             expect(backend.isRunning).to.be.true;
         })
 
+        it('should reject when the process cannot be started', async () => {
+            fetchStub
+                .withArgs(match(/http:\/\/localhost:8000\/winery/))
+                .rejects(new Error("Not ready"));
+            const backend = new Backend(dataPath);
+            setTimeout(() => fakeProcess.emit('error', new Error("Fake error starting process")), 100);
+
+            try {
+                await backend.start("/path/to/repo")
+                expect.fail("start() Promise did not reject")
+            } catch (_) {
+            }
+
+            expect(backend.isRunning).to.be.false;
+        });
+
         it('should reject when the backend process exits unexpectedly while waiting', async () => {
             fetchStub
                 .withArgs(match(/http:\/\/localhost:8000\/winery/))
                 .rejects(new Error("Not ready"));
+
+            // resources.launcherPath = "sfd"
 
             const backend = new Backend(dataPath);
             setTimeout(() => fakeProcess.emit('exit', 1, 'SIGTERM'), 100);
