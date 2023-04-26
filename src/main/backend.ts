@@ -5,11 +5,11 @@ import {dump as dumpYaml, load as loadYaml} from "js-yaml";
 import * as fs from "fs";
 import * as path from "path";
 import winston, {createLogger, format, transports} from "winston"
-import {javaCmdPath, launcherPath, logbackConfigurationPathDefault, wineryYamlConfigTemplatePath} from "./resources";
 
 
 import {WineryConfig} from "./winery-repository-configuration";
 import * as readline from "readline";
+import {pathProvider as defaultPathProvider, PathProvider} from "./resources";
 
 class BackendState {
     readonly process: ChildProcess;
@@ -37,7 +37,12 @@ export class Backend extends EventEmitter {
     readonly wineryConfigPath = path.join(this.dataPath, ".winery")
     readonly wineryConfigFilePath = path.join(this.wineryConfigPath, "winery.yml")
 
-    constructor(readonly dataPath: string, private logger?: winston.Logger, private wineryLogger?: winston.Logger) {
+    constructor(
+        readonly dataPath: string,
+        private logger?: winston.Logger,
+        private wineryLogger?: winston.Logger,
+        private pathProvider?: PathProvider
+        ) {
         super()
 
         this.logger = logger || createLogger({
@@ -56,11 +61,15 @@ export class Backend extends EventEmitter {
                     new transports.File({filename: path.join(this.dataPath, "winery.log")})
                 ]
         })
+
+        this.pathProvider = pathProvider || defaultPathProvider
     }
 
     private stderrLastLine: string = null
 
-    get isRunning() { return !!this.state && this.state.process.pid != null && this.state.process.exitCode === null }
+    get isRunning() {
+        return !!this.state && this.state.process.pid != null && this.state.process.exitCode === null
+    }
     get port() { return this.state.port }
     get backendUrl() {
         if (!this.isRunning) {
@@ -93,15 +102,15 @@ export class Backend extends EventEmitter {
         // discoverGitSystemConfig             - Exception caught during execution of command '[git, --version]' in '/usr/bin', return code '1', error message 'xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools."}
         // https://stackoverflow.com/questions/33804097/prevent-jgit-from-reading-the-native-git-config
         // https://www.npmjs.com/package/which
-        const process = spawn(javaCmdPath, [
+        const process = spawn(this.pathProvider.getJavaCmdPath(), [
             `-Duser.home=${this.dataPath}`,
             `-Dorg.eclipse.jetty.LEVEL=INFO`,
             `-Dwinerylauncher.port=${port}`,
-            `-Dlogback.configurationFile=${logbackConfigurationPathDefault}`,
+            `-Dlogback.configurationFile=${this.pathProvider.getLogbackConfigurationPathDefault}`,
             "-jar",
             "-XX:TieredStopAtLevel=1",
             "-noverify",
-            launcherPath]
+            this.pathProvider.getLauncherPath()]
             , {
             stdio: "pipe"
         })
@@ -117,7 +126,7 @@ export class Backend extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             process.on("error", error => {
                 this.logger.error(`Starting the Winery failed: ${error}`)
-                this.handleBackendExit(error)
+                reject(error)
             })
             this.waitForBackendReady(port, process)
                 .then(() => {
@@ -154,7 +163,7 @@ export class Backend extends EventEmitter {
        this.logger.info("Creating default winery.yml config file.")
        fs.mkdirSync(this.wineryConfigPath, {recursive: true})
 
-       const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
+       const yamlConfig = loadYaml(fs.readFileSync(this.pathProvider.getWineryYamlConfigTemplatePath(), "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = repositoryPath
        yamlConfig.ui.endpoints.topologymodeler = `${this.getBackendBaseUrl(port)}/winery-topologymodeler`
        yamlConfig.ui.endpoints.repositoryApiUrl = this.getWineryUrl(port)

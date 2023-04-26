@@ -15,8 +15,8 @@ import {
     IS_BACKEND_RUNNING,
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
-import {baseRepositoriesPath} from "./resources";
 import * as process from "process";
+import pathProvider from "./resources";
 
 export type WindowType = "main" | "tosca-manager" | "topology-modeler"
 const windowTypeMap = new WeakMap<BrowserWindow, WindowType>()
@@ -283,7 +283,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
   // create the repository directory
   try {
     if (baseRepository) {
-      fse.copySync(path.join(baseRepositoriesPath, baseRepository), repositoryPath)
+      fse.copySync(path.join(pathProvider.getBaseRepositoriesPath(), baseRepository), repositoryPath)
     } else {
       fs.mkdirSync(repositoryPath, { recursive: true })
     }
