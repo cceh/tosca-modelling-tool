@@ -1,4 +1,5 @@
 import electron from "electron";
+import {SHOW_LINK_CONTEXT_MENU, OPEN_NEW_WINDOW} from "../common/ipcEvents";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -7,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event.target instanceof HTMLElement) {
             const closestLink = event.target.closest<HTMLAnchorElement>("a[href]")
             if (closestLink) {
-                electron.ipcRenderer.send("menu", closestLink.href)
+                electron.ipcRenderer.send(SHOW_LINK_CONTEXT_MENU, closestLink.href)
             }
         }
     })
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // TODO: adapt for Windows (and Linux?)
                 if (event.shiftKey) {
                     event.preventDefault()
-                    electron.ipcRenderer.send("newWindow", closestLink.href)
+                    electron.ipcRenderer.send(OPEN_NEW_WINDOW, closestLink.href)
                 }
             }
         }

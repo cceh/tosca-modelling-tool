@@ -1,5 +1,5 @@
 import electron from "electron";
-import {store} from "../common/store";
+import {SK_DEFAULT_WORKSPACE_PARENT_PATH, SK_KNOWN_WORKSPACES, store} from "../common/store";
 
 import globalStyles from "./global-styles.scss"
 import indexStyles from "./index.scss"
@@ -46,11 +46,11 @@ const loadingOverlay = document.querySelector("loading-overlay") as LoadingOverl
 const workspaceList = document.querySelector("workspace-list") as WorkspaceList
 const lastWorkspaceButton = document.querySelector("last-workspace-button") as LastWorkspaceButton
 
-// const workspaces = [] as Workspace[] // store.get("knownWorkspaces")
-const workspaces = store.get("knownWorkspaces")
+// const workspaces = [] as Workspace[] // store.get(SK_KNOWN_WORKSPACES)
+const workspaces = store.get(SK_KNOWN_WORKSPACES)
 
 if (workspaces?.length > 0) {
-    workspaceList.setWorkspaces(store.get("knownWorkspaces"))
+    workspaceList.setWorkspaces(store.get(SK_KNOWN_WORKSPACES))
     lastWorkspaceButton.setLastWorkspace(workspaces[0])
 } else {
     workspaceList.classList.add("hidden")
@@ -87,7 +87,7 @@ const globalMethods: GlobalMethods = {
         }
     },
     async openLastWorkspace() {
-      const workspaces = store.get("knownWorkspaces")
+      const workspaces = store.get(SK_KNOWN_WORKSPACES)
       if (workspaces.length > 0) {
           startWinery(workspaces[0].path)
       } else {
@@ -95,7 +95,7 @@ const globalMethods: GlobalMethods = {
       }
     },
     async createWorkspace(baseRepository) {
-        const defaultParentPath = store.get("defaultWorkspaceParentPath")
+        const defaultParentPath = store.get(SK_DEFAULT_WORKSPACE_PARENT_PATH)
 
         let nameIndex = 1
         let defaultName = "Winery Workspace"

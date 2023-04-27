@@ -1,6 +1,7 @@
 import path from 'path';
 import {app} from 'electron';
 import {getPlatform} from "./get-platform";
+import url from "url";
 
 export class PathProvider {
   private useProdPath = app?.isPackaged;
@@ -45,6 +46,15 @@ export class PathProvider {
     return path.join(this.getResourcePath(), "winery.yaml");
   }
 }
+
+// TODO: refactor / move somewhere else
+export const mainWindowUrl = app?.isPackaged
+    ? url.format({
+      pathname: path.join(__dirname, './index.html'),
+      protocol: 'file:',
+      slashes: true
+    })
+    : `http://localhost:8080/`
 
 export const pathProvider = new PathProvider()
 export default pathProvider
