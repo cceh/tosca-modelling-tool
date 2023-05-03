@@ -16,6 +16,27 @@
         <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.accountability/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.bpmn4tosca.converter.tobpel/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.cli/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.common/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.compliance/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.crawler/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.edmm/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.frontends/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.generators.ia/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.highlevelrestapi/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.model/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.reporting/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.copybaragenerator/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.tools.deployablecomponents/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.topologygraph/pom.xml" />
+        <option value="$PROJECT_DIR$/vendor/winery/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

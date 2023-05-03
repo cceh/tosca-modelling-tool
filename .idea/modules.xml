@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.edmm/org.eclipse.winery.edmm.iml" filepath="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.edmm/org.eclipse.winery.edmm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.client/org.eclipse.winery.repository.client.iml" filepath="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.client/org.eclipse.winery.repository.client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest/org.eclipse.winery.repository.rest.iml" filepath="$PROJECT_DIR$/vendor/winery/org.eclipse.winery.repository.rest/org.eclipse.winery.repository.rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/winery-launcher/winery-launcher.iml" filepath="$PROJECT_DIR$/winery-launcher/winery-launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/winery-launcher-parent.iml" filepath="$PROJECT_DIR$/winery-launcher-parent.iml" />
     </modules>
   </component>
 </project>
