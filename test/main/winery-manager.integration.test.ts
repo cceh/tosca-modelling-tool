@@ -1,4 +1,4 @@
-import {Backend} from "../../src/main/backend";
+import {WineryManager} from "../../src/main/wineryManager";
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -9,21 +9,21 @@ import * as fsextra from "fs-extra";
 const getTemporaryRepositoryPath =
     () => path.join(os.tmpdir(), `test-repo-${crypto.randomBytes(6).toString('hex')}`)
 
-describe('Backend Integration Tests', () => {
-    let backend: Backend;
+describe('Winery Manager Integration Tests', () => {
+    let wineryManager: WineryManager;
     let dataPath: string;
     let repositoryPath: string;
     let secondRepositoryPath: string;
 
     beforeEach(async () => {
-        dataPath = fs.mkdtempSync(path.join(os.tmpdir(), "test-backend-data-"))
+        dataPath = fs.mkdtempSync(path.join(os.tmpdir(), "test-wineryManager-data-"))
         repositoryPath = getTemporaryRepositoryPath()
         secondRepositoryPath = getTemporaryRepositoryPath()
-        backend = new Backend(dataPath)
+        wineryManager = new WineryManager(dataPath)
     })
 
     afterEach(async () => {
-        await backend.stop()
+        await wineryManager.stop()
 
         fsextra.remove(dataPath)
         if (fs.existsSync(repositoryPath)) {
@@ -34,41 +34,41 @@ describe('Backend Integration Tests', () => {
         }
     })
 
-    it('should start and stop the backend', async () => {
-        await backend.start(repositoryPath);
-        expect(backend.isRunning).to.be.true;
+    it('should start and stop the Winery process', async () => {
+        await wineryManager.start(repositoryPath);
+        expect(wineryManager.isRunning).to.be.true;
 
-        await backend.stop();
-        expect(backend.isRunning).to.be.false;
+        await wineryManager.stop();
+        expect(wineryManager.isRunning).to.be.false;
     }).timeout(10000);
 
     it('should create the correct repository path', async () => {
-        await backend.start(repositoryPath);
+        await wineryManager.start(repositoryPath);
 
-        expect(backend.isRunning).to.be.true;
+        expect(wineryManager.isRunning).to.be.true;
         expect(fs.existsSync(repositoryPath)).to.be.true
         expect(fs.existsSync(path.join(repositoryPath, ".git"))).to.be.true
     }).timeout(10000);
 
     it('should be able to be started and stopped consecutively with different repository paths', async () => {
-        await backend.start(repositoryPath);
-        expect(backend.isRunning).to.be.true;
+        await wineryManager.start(repositoryPath);
+        expect(wineryManager.isRunning).to.be.true;
         expect(fs.existsSync(repositoryPath)).to.be.true
-        await backend.stop()
+        await wineryManager.stop()
 
-        await backend.start(secondRepositoryPath);
-        expect(backend.isRunning).to.be.true;
+        await wineryManager.start(secondRepositoryPath);
+        expect(wineryManager.isRunning).to.be.true;
         expect(fs.existsSync(secondRepositoryPath)).to.be.true
-        await backend.stop()
+        await wineryManager.stop()
     }).timeout(20000);
 
     it('should respond to a request when running', async () => {
-        if (!backend.isRunning) {
-            await backend.start(repositoryPath);
+        if (!wineryManager.isRunning) {
+            await wineryManager.start(repositoryPath);
         }
-        expect(backend.isRunning).to.be.true;
+        expect(wineryManager.isRunning).to.be.true;
 
-        const response = await fetch(backend.getWineryUrl(backend.port));
+        const response = await fetch(wineryManager.getWineryUrl(wineryManager.port));
         expect(response.ok).to.be.true;
     }).timeout(10000);
 })

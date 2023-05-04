@@ -7,12 +7,12 @@ import indexStyles from "./index.scss"
 import path from "path";
 import * as fs from "fs";
 import {
-    BACKEND_STARTING,
-    BACKEND_STOPPED,
-    BACKEND_STOPPING,
+    WINERY_STARTING,
+    WINERY_STOPPED,
+    WINERY_STOPPING,
     CHOOSE_DIRECTORY,
     CREATE_A_WORKSPACE,
-    IS_BACKEND_RUNNING,
+    IS_WINERY_RUNNING,
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 
@@ -61,18 +61,18 @@ workspaceList.addEventListener(WORKSPACE_SELECT, (event: WorkspaceSelectEvent) =
     startWinery(event.detail.workspacePath)
 )
 
-electron.ipcRenderer.on(BACKEND_STARTING, () => {
+electron.ipcRenderer.on(WINERY_STARTING, () => {
     loadingOverlay.show("Starting the Winery...")
 })
 
-electron.ipcRenderer.on(BACKEND_STOPPING, () => {
-    const isBackendRunning = electron.ipcRenderer.invoke(IS_BACKEND_RUNNING)
-    if (isBackendRunning) {
+electron.ipcRenderer.on(WINERY_STOPPING, () => {
+    const isWineryRunning = electron.ipcRenderer.invoke(IS_WINERY_RUNNING)
+    if (isWineryRunning) {
         loadingOverlay.show("Stopping the Winery...", false)
     }
 })
 
-electron.ipcRenderer.on(BACKEND_STOPPED, () => loadingOverlay.close())
+electron.ipcRenderer.on(WINERY_STOPPED, () => loadingOverlay.close())
 
 function startWinery(path: string, create = false, baseRepository: string = null) {
     const message = create ? CREATE_A_WORKSPACE : OPEN_A_WORKSPACE

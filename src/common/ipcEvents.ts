@@ -1,7 +1,7 @@
-export const BACKEND_STARTING = "backend-starting"
-export const BACKEND_STOPPING = "backend-stopping"
-export const BACKEND_STOPPED = "backend-stopped"
-export const IS_BACKEND_RUNNING = "is-backend-running"
+export const WINERY_STARTING = "winery-starting"
+export const WINERY_STOPPING = "winery-stopping"
+export const WINERY_STOPPED = "winery-stopped"
+export const IS_WINERY_RUNNING = "is-winery-running"
 
 
 export const OPEN_A_WORKSPACE =  "open-a-workspace"

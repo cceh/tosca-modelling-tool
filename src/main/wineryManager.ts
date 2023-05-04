@@ -7,17 +7,17 @@ import * as path from "path";
 import winston, {createLogger, format, transports} from "winston"
 
 
-import {WineryConfig} from "./winery-repository-configuration";
+import {WineryConfig} from "./wineryConfiguration";
 import * as readline from "readline";
-import {pathProvider as defaultPathProvider, PathProvider} from "./resources";
+import {javaCmdPath, launcherPath, logbackConfigurationPathDefault, wineryYamlConfigTemplatePath} from "./resources";
 
-class BackendState {
+class WineryState {
     readonly process: ChildProcess;
     readonly port: number;
     readonly repositoryPath: string;
 
     // Allows to differentiate between an intentional shutdown of the backend server and an unexpected exit
-    shouldBeRunning: boolean = true;
+    shouldBeRunning = true;
 
     constructor(process: ChildProcess, port: number, repositoryPath: string) {
         this.process = process;
@@ -29,26 +29,31 @@ class BackendState {
 /**
  * Manages the Winery process.
  */
-export class Backend extends EventEmitter {
-    state: BackendState | null = null
+export class WineryManager extends EventEmitter {
+    state: WineryState | null = null
 
     // the path where winery.yml is read from is hardcoded as {user.home}/.winery in
     // org.eclipse.winery.common/src/main/java/org/eclipse/winery/common/configuration/Environment.java
     readonly wineryConfigPath = path.join(this.dataPath, ".winery")
     readonly wineryConfigFilePath = path.join(this.wineryConfigPath, "winery.yml")
 
+    /**
+     * @param dataPath - Path that will be used as the winery.home path. This is where Winery reads the config file from
+     * @param logger - The main logger for this class. A custom logger can be injected for testing.
+     * @param wineryLogger - The logger where the Winery output (stdout and stderr) will be redirected to.
+     *  A custom logger can be injected for testing.
+     */
     constructor(
         readonly dataPath: string,
         private logger?: winston.Logger,
-        private wineryLogger?: winston.Logger,
-        private pathProvider?: PathProvider
+        private wineryLogger?: winston.Logger
         ) {
         super()
 
         this.logger = logger || createLogger({
             level: 'info',
             transports: [
-                new transports.File({filename: path.join(this.dataPath, "backend.log")}),
+                new transports.File({filename: path.join(this.dataPath, "winery-manager.log")}),
                 new transports.Console({
                     format: format.simple()
                 })
@@ -61,25 +66,46 @@ export class Backend extends EventEmitter {
                     new transports.File({filename: path.join(this.dataPath, "winery.log")})
                 ]
         })
-
-        this.pathProvider = pathProvider || defaultPathProvider
     }
 
     private stderrLastLine: string = null
 
+    /**
+     * Determines whether the Winery process is currently running.
+     */
     get isRunning() {
         return !!this.state && this.state.process.pid != null && this.state.process.exitCode === null
     }
-    get port() { return this.state.port }
-    get backendUrl() {
+
+    /**
+     * The port on which the Winery server currently listens for requests.
+     *
+     * @throws
+     * Throws an error if the Winery process is not currently running.
+     */
+    get port() {
         if (!this.isRunning) {
-            throw new Error("Backend not running while accessing backend URL!")
+            throw new Error("Winery process not running while accessing Winery port!")
+        }
+
+        return this.state?.port
+    }
+
+    /**
+     * The URL on which the Winery server currently listens for requests.
+     *
+     * @throws
+     * Throws an error if the Winery process is not currently running.
+     */
+    get baseUrl() {
+        if (!this.isRunning) {
+            throw new Error("Winery process not running while accessing Winery URL!")
         }
 
         return this.getBackendBaseUrl(this.port)
     }
 
-    getBackendBaseUrl(port: number) { return `http://localhost:${port}`}
+    private getBackendBaseUrl(port: number) { return `http://localhost:${port}`}
     getWineryUrl(port: number) { return `${this.getBackendBaseUrl(port)}/winery`}
 
     /**
@@ -91,7 +117,7 @@ export class Backend extends EventEmitter {
     async start(repositoryPath: string) {
 
         if (this.isRunning) {
-            throw new Error("Backend already running!")
+            throw new Error("Winery process already running!")
         }
 
         const port = await getPortPromise({startPort: 8000})
@@ -102,15 +128,15 @@ export class Backend extends EventEmitter {
         // discoverGitSystemConfig             - Exception caught during execution of command '[git, --version]' in '/usr/bin', return code '1', error message 'xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools."}
         // https://stackoverflow.com/questions/33804097/prevent-jgit-from-reading-the-native-git-config
         // https://www.npmjs.com/package/which
-        const process = spawn(this.pathProvider.getJavaCmdPath(), [
+        const process = spawn(javaCmdPath, [
             `-Duser.home=${this.dataPath}`,
             `-Dorg.eclipse.jetty.LEVEL=INFO`,
             `-Dwinerylauncher.port=${port}`,
-            `-Dlogback.configurationFile=${this.pathProvider.getLogbackConfigurationPathDefault}`,
+            `-Dlogback.configurationFile=${logbackConfigurationPathDefault}`,
             "-jar",
             "-XX:TieredStopAtLevel=1",
             "-noverify",
-            this.pathProvider.getLauncherPath()]
+            launcherPath]
             , {
             stdio: "pipe"
         })
@@ -120,7 +146,7 @@ export class Backend extends EventEmitter {
         // Handle Winery startup errors and expected or unexpected process exit
         process.once("exit", (code, signal) => {
             this.logger.error(`Winery exited with ${signal} (${code}).`)
-            this.handleBackendExit(this.stderrLastLine && new Error(this.stderrLastLine))
+            this.handleWineryProcessExit(this.stderrLastLine && new Error(this.stderrLastLine))
         })
 
         return new Promise<void>((resolve, reject) => {
@@ -128,10 +154,10 @@ export class Backend extends EventEmitter {
                 this.logger.error(`Starting the Winery failed: ${error}`)
                 reject(error)
             })
-            this.waitForBackendReady(port, process)
+            this.waitForWineryReady(port, process)
                 .then(() => {
                     // Winery started successfully
-                    this.state = new BackendState(process, port, repositoryPath)
+                    this.state = new WineryState(process, port, repositoryPath)
                     resolve()
                 })
                 .catch(reject)
@@ -146,7 +172,7 @@ export class Backend extends EventEmitter {
      *
      * @returns A Promise that resolves when the Winery process has successfully stopped.
     */
-    async stop(timeoutMs: number = 180000) {
+    async stop(timeoutMs = 180000) {
         if (!this.isRunning) {
             this.logger.error("Winery not running!")
             return
@@ -154,25 +180,31 @@ export class Backend extends EventEmitter {
 
         this.logger.info("Stopping the Winery...")
         this.state.shouldBeRunning = false
-        const res = this.waitForBackendStopped(timeoutMs)
-        fetch(`${this.backendUrl}/shutdown?token=winery`, {method: "POST"})
+        const res = this.waitForWineryStopped(timeoutMs)
+        fetch(`${this.baseUrl}/shutdown?token=winery`, {method: "POST"})
         return res
     }
 
-   private prepareConfigFile(port: number, repositoryPath: string) {
+    /**
+     * Some values like the repository path and the URLs to the bundled webapps (which depend on the
+     * dynamically obtained port number of the Jetty web server) can only be set in the Winery config file and cannot be
+     * passed as parameters or environment variables. This method creates the config file on each start
+     * of the backend with the required settings.
+     */
+    private prepareConfigFile(port: number, repositoryPath: string) {
        this.logger.info("Creating default winery.yml config file.")
        fs.mkdirSync(this.wineryConfigPath, {recursive: true})
 
-       const yamlConfig = loadYaml(fs.readFileSync(this.pathProvider.getWineryYamlConfigTemplatePath(), "utf-8")) as WineryConfig
+       const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = repositoryPath
        yamlConfig.ui.endpoints.topologymodeler = `${this.getBackendBaseUrl(port)}/winery-topologymodeler`
        yamlConfig.ui.endpoints.repositoryApiUrl = this.getWineryUrl(port)
        yamlConfig.ui.endpoints.repositoryUiUrl = this.getBackendBaseUrl(port)
 
-       fs.writeFileSync(this.wineryConfigFilePath, dumpYaml(yamlConfig))
+        fs.writeFileSync(this.wineryConfigFilePath, dumpYaml(yamlConfig))
     }
 
-    private handleBackendExit(error?: Error) {
+    private handleWineryProcessExit(error?: Error) {
         if (this.state?.shouldBeRunning) {
             this.emit("unexpected-exit", error)
         }
@@ -210,7 +242,7 @@ export class Backend extends EventEmitter {
      * @param process - The Winery ChildProcess instance
      * @returns A Promise that resolves when the Winery process is ready. Rejects the promise if the process exits unexpectedly.
      */
-    private waitForBackendReady(port: number, process: ChildProcess) {
+    private waitForWineryReady(port: number, process: ChildProcess) {
         return new Promise<void>(((resolve, reject) => {
             let exitedWhileWaitingToStart = false
 
@@ -224,14 +256,14 @@ export class Backend extends EventEmitter {
             process.once("exit", exitListener)
 
             // Periodically check whether the Winery process is accepting connections
-            const checkBackendRunning = () => {
+            const checkWineryRunning = () => {
                 if (process.exitCode !== null || exitedWhileWaitingToStart) {
                     return
                 }
 
                 const retry = () => {
                     this.logger.info(`Waiting for the Winery to start on port ${port}...`);
-                    setTimeout(() => checkBackendRunning(), 200)
+                    setTimeout(() => checkWineryRunning(), 200)
                 }
 
                 fetch(this.getWineryUrl(port))
@@ -247,11 +279,11 @@ export class Backend extends EventEmitter {
                     .catch(retry)
             }
 
-            checkBackendRunning()
+            checkWineryRunning()
         }))
     }
 
-    private async waitForBackendStopped(timeoutMs: number): Promise<void> {
+    private async waitForWineryStopped(timeoutMs: number): Promise<void> {
         const intervalMs = 200
         let waitedMs = 0
 

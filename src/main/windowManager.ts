@@ -1,13 +1,3 @@
-/**
- * windows.ts – Create and manage the lifecycle of app windows
- * ------------------------------------------------------------
- *
- * @fileoverview Create and manage the lifecycle of app windows
- * @author Marcel Schaeben <m.schaeben@uni-koeln.de>
- *
- */
-
-
 import {app, BrowserWindow, dialog, HandlerDetails, shell, WebContents} from 'electron';
 import {mainWindowUrl} from './resources';
 import process from 'process';
@@ -20,6 +10,9 @@ export const LAST_WINERY_WINDOW_CLOSED = "all-winery-windows-closed"
 
 let mainWindow: BrowserWindow = null
 
+/**
+ * Create and manage the lifecycle of app windows
+ */
 export class WindowManager extends EventEmitter {
     private wineryWindows = new Set<BrowserWindow>()
 
@@ -60,7 +53,7 @@ export class WindowManager extends EventEmitter {
      * Creates and configures a browser window suitable for the TOSCA Manager
      */
     private createToscaManagerWindow(): BrowserWindow {
-        let toscaManagerWindow = new BrowserWindow({
+        const toscaManagerWindow = new BrowserWindow({
             webPreferences: {
                 nodeIntegration: false,
                 preload: path.join(
@@ -169,12 +162,12 @@ export class WindowManager extends EventEmitter {
         }
     }
 
-    // TODO: make sure the host is the local backend
+    // TODO: make sure the host is the local Winery root path
     private isToscaManagerUrl(parsedUrl: URL) {
         return parsedUrl.pathname === "/";
     }
 
-    // TODO: make sure the host is the local backend
+    // TODO: make sure the host is the local Winery root path
     private isTopologyManagerUrl(parsedUrl: URL) {
         return parsedUrl.pathname.startsWith(`/winery-topologymodeler`);
     }
@@ -192,5 +185,3 @@ export class WindowManager extends EventEmitter {
         this.wineryWindows.delete(window);
     }
 }
-
-export default WindowManager;

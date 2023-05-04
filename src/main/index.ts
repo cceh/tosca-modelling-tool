@@ -2,16 +2,12 @@
  * index.ts – Entry point for the Electron main process for the TOSCA Modelling Tool
  * ---------------------------------------------------------------------------------
  *
- * @fileoverview Electron main process for the TOSCA Modelling Tool
- * @author Marcel Schaeben <m.schaeben@uni-koeln.de>
- *
- * ---
  * Within the realms of Electron's land,
  * The main process takes a valiant stand,
  * Orchestrating windows, menus, and more,
  * Handling events that knock on its door.
  *
- * It starts the backend, swift as a breeze,
+ * It starts the wineryProcess, swift as a breeze,
  * Ensuring that all workspaces it sees,
  * Managing repositories, both old and new,
  * Guiding their paths, it knows what to do.
@@ -30,7 +26,7 @@
  * The Electron main process manages the TOSCA Modeling Tool's lifecycle. It is responsible for:
  *
  *  - Initializing the application's store and setting default values.
- *  - Starting and stopping the TOSCA Winery backend.
+ *  - Starting and stopping the TOSCA Winery wineryProcess.
  *  - Interact with the WindowManager class to manage multiple windows, such as the main window and one or multiple
  *    "Winery windows", i.e. TOSCA Manager and Topology Modeler windows.
  *  - Handling Inter-Process Communication (IPC) between the main process and renderer process. The renderer process
@@ -38,32 +34,32 @@
  *  - Responding to menu actions, navigation events, and other application events.
  *
  *  The main process coordinates the application's flow by listening for IPC messages from the renderer process,
- *  and interacting with the backend and window manager accordingly. Additionally, it ensures that only allowed
+ *  and interacting with the Winery process and window manager accordingly. Additionally, it ensures that only allowed
  *  URLs are navigated to within the application, and opens external URLs in the user's default browser.
  *
  */
 
 import {app, BrowserWindow, dialog, ipcMain, Menu, shell} from "electron";
 import path from "path";
-import {Backend} from "./backend";
+import {WineryManager} from "./wineryManager";
 import {SK_DEFAULT_WORKSPACE_PARENT_PATH, SK_KNOWN_WORKSPACES, store} from "../common/store";
 import * as fs from "fs";
 import * as fse from "fs-extra";
 
 import {
-    BACKEND_STARTING,
-    BACKEND_STOPPED,
-    BACKEND_STOPPING,
+    WINERY_STARTING,
+    WINERY_STOPPED,
+    WINERY_STOPPING,
     CHOOSE_DIRECTORY,
     CREATE_A_WORKSPACE,
-    IS_BACKEND_RUNNING, SHOW_LINK_CONTEXT_MENU, OPEN_NEW_WINDOW,
+    IS_WINERY_RUNNING, SHOW_LINK_CONTEXT_MENU, OPEN_NEW_WINDOW,
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 import * as process from "process";
-import pathProvider, {mainWindowUrl} from "./resources";
-import {LAST_WINERY_WINDOW_CLOSED, WindowManager} from "./windows";
+import {LAST_WINERY_WINDOW_CLOSED, WindowManager} from "./windowManager";
+import {baseRepositoriesPath, mainWindowUrl} from "./resources";
 
-const backend = new Backend(app.getPath("userData"))
+const wineryProcess = new WineryManager(app.getPath("userData"))
 const windowManager = new WindowManager(navigationAllowedForUrl)
 
 
@@ -85,8 +81,8 @@ function navigationAllowedForUrl(url: URL) {
     }
 
     const parsedMainWindowUrl = new URL(mainWindowUrl)
-    const parsedBackendUrl = new URL(backend.backendUrl)
-    const allowedOrigins = [parsedMainWindowUrl.origin, parsedBackendUrl.origin]
+    const parsedWineryUrl = new URL(wineryProcess.baseUrl)
+    const allowedOrigins = [parsedMainWindowUrl.origin, parsedWineryUrl.origin]
 
     return allowedOrigins.includes(url.origin)
 }
@@ -113,18 +109,18 @@ function initializeStore() {
 
 
 /**
- * Start the backend with the given repository path.
+ * Start the Winery process with the given repository path.
  *
- * @param repositoryPath - The path of the repository to start the backend with.
- * @returns A Promise that resolves when the backend has started, or throws an error if something goes wrong.
+ * @param repositoryPath - The path of the repository to start the wineryProcess with.
+ * @returns A Promise that resolves when the wineryProcess has started, or throws an error if something goes wrong.
  */
-function startBackend(repositoryPath: string): null | Promise<void> {
+function startWinery(repositoryPath: string): null | Promise<void> {
     if (!repositoryPath) {
         throw new Error("No repositoryPath set!")
     }
 
-    windowManager.mainWindow.webContents.send(BACKEND_STARTING)
-    return backend
+    windowManager.mainWindow.webContents.send(WINERY_STARTING)
+    return wineryProcess
         .start(repositoryPath)
         .then(() => {
 
@@ -139,9 +135,9 @@ function startBackend(repositoryPath: string): null | Promise<void> {
             store.set(SK_DEFAULT_WORKSPACE_PARENT_PATH, parentLocation)
 
             windowManager.mainWindow.hide()
-            windowManager.openToscaManagerWindow(backend.backendUrl)
+            windowManager.openToscaManagerWindow(wineryProcess.baseUrl)
         }).catch(e => {
-            windowManager.mainWindow.webContents.send(BACKEND_STOPPED)
+            windowManager.mainWindow.webContents.send(WINERY_STOPPED)
             dialog.showErrorBox("Winery error", e.toString())
             console.error(e)
             windowManager.mainWindow.show()
@@ -167,7 +163,7 @@ ipcMain.on(OPEN_A_WORKSPACE, (event, repositoryPath) => {
         return
     }
 
-    startBackend(repositoryPath)
+    startWinery(repositoryPath)
 })
 
 ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => {
@@ -183,7 +179,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
             })
 
             if (result === 0) {
-                startBackend(repositoryPath)
+                startWinery(repositoryPath)
             }
         } else {
             if(fs.readdirSync(repositoryPath).length > 0) {
@@ -201,7 +197,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
     // create the repository directory
     try {
         if (baseRepository) {
-            fse.copySync(path.join(pathProvider.getBaseRepositoriesPath(), baseRepository), repositoryPath)
+            fse.copySync(path.join(baseRepositoriesPath, baseRepository), repositoryPath)
         } else {
             fs.mkdirSync(repositoryPath, { recursive: true })
         }
@@ -210,7 +206,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
         return
     }
 
-    startBackend(repositoryPath)
+    startWinery(repositoryPath)
 })
 
 ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
@@ -222,8 +218,8 @@ ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
     return !result.canceled && result.filePaths[0]
 })
 
-ipcMain.handle(IS_BACKEND_RUNNING, async () => {
-    return backend.isRunning
+ipcMain.handle(IS_WINERY_RUNNING, async () => {
+    return wineryProcess.isRunning
 })
 
 ipcMain.on(SHOW_LINK_CONTEXT_MENU, (event, url) => {
@@ -250,13 +246,13 @@ ipcMain.on(OPEN_NEW_WINDOW, (_event, url) => {
 windowManager.on(LAST_WINERY_WINDOW_CLOSED, () => {
     windowManager.openMainWindow()
     windowManager.mainWindow.webContents.on("dom-ready", () => {
-        windowManager.mainWindow.webContents.send(BACKEND_STOPPING)
-        backend.stop().then(() => {
-            windowManager.mainWindow.webContents.send(BACKEND_STOPPED)
+        windowManager.mainWindow.webContents.send(WINERY_STOPPING)
+        wineryProcess.stop().then(() => {
+            windowManager.mainWindow.webContents.send(WINERY_STOPPED)
         }).catch(() => {
             dialog.showMessageBoxSync({
                 type: "error",
-                title: "Winery backend error",
+                title: "Winery wineryProcess error",
                 message: `Timeout of reached while waiting for the winery to stop.`
             })
 
@@ -265,19 +261,19 @@ windowManager.on(LAST_WINERY_WINDOW_CLOSED, () => {
     })
 })
 
-// Handle Backend events
+// Handle Winery events
 // ---------------------------
 
 /*
  * When the Winery process exits unexpectedly, the main window should re-open.
  */
-backend.on("unexpected-exit", (error?) => {
+wineryProcess.on("unexpected-exit", (error?) => {
     dialog.showMessageBoxSync({
         type: "error",
-        title: "Winery backend error",
+        title: "Winery wineryProcess error",
         message: `The Winery has exited unexpectedly${error ? `: ${error}` : "."}`
     })
-    windowManager.mainWindow?.webContents?.send(BACKEND_STOPPED)
+    windowManager.mainWindow?.webContents?.send(WINERY_STOPPED)
 
     windowManager.closeAllWineryWindows()
 

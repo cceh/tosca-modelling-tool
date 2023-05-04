@@ -6,11 +6,9 @@ import path from "path";
 import child_process, {ChildProcess} from "child_process";
 import {Duplex, PassThrough, Writable} from "stream";
 import {expect} from "chai";
-import {Backend} from "../../src/main/backend";
-import * as resources from "../../src/main/resources"
+import {WineryManager} from "../../src/main/wineryManager";
 import {createLogger, LogEntry, transports} from "winston";
 import * as fsextra from "fs-extra";
-import {PathProvider} from "../../src/main/resources";
 
 class MockChildProcess extends ChildProcess {
     constructor(
@@ -33,23 +31,20 @@ const createTestLogger = () => {
     return {testTransport, testLogger};
 };
 
-describe('Backend Unit Tests', () => {
-    let spawnStub: SinonStub;
-    let getPortPromiseStub: SinonStub;
+describe('Winery Manager Unit Tests', () => {
     let fetchStub: SinonStub;
     let writeFileStub: SinonStub;
-    let backend: Backend;
 
     let fakeProcess: MockChildProcess;
 
-    const tmpdirPrefix = path.join(os.tmpdir(), "test-backend-data-")
+    const tmpdirPrefix = path.join(os.tmpdir(), "test-wineryManager-data-")
     let dataPath: string
 
     beforeEach(() => {
         fakeProcess = new MockChildProcess(12345, new PassThrough(), new PassThrough(), null)
 
-        spawnStub = stub(child_process, 'spawn').returns(fakeProcess);
-        getPortPromiseStub = stub(portfinder, 'getPortPromise').resolves(8000);
+        stub(child_process, 'spawn').returns(fakeProcess);
+        stub(portfinder, 'getPortPromise').resolves(8000);
         writeFileStub = stub(fs, 'writeFileSync');
 
         fetchStub = stub(global, 'fetch');
@@ -67,7 +62,7 @@ describe('Backend Unit Tests', () => {
 
     describe("#start()", () => {
         it('should write the .winery config file, creating the config directory if it does not exist', async () => {
-            backend = new Backend(dataPath)
+            const backend = new WineryManager(dataPath)
 
             const wineryConfigPath = path.join(dataPath, ".winery")
 
@@ -82,7 +77,7 @@ describe('Backend Unit Tests', () => {
 
         it('should redirect process process output correctly to the logger', async () => {
 
-            // Create a test logger with a dummy transport to pass to the backend
+            // Create a test logger with a dummy transport to pass to the wineryManager
             const {testTransport, testLogger} = createTestLogger();
 
             // Returns a Promise that resolves when an entry is received by the logger and checks if the received entry has
@@ -107,7 +102,7 @@ describe('Backend Unit Tests', () => {
                 await entryReceived
             }
 
-            const backend = new Backend(dataPath, null, testLogger)
+            const backend = new WineryManager(dataPath, null, testLogger)
             await backend.start("/path/to/repo");
 
             // Test if the stdout output is correctly logged as "info" level
@@ -116,12 +111,12 @@ describe('Backend Unit Tests', () => {
             await testOutputRedirect(fakeProcess.stderr, "error", "Test stderr line")
         });
 
-        it('should wait until the backend is ready and then resolve', async () => {
+        it('should wait until the wineryManager is ready and then resolve', async () => {
             fetchStub
                 .onFirstCall().rejects(new Error("Not ready"))
                 .onSecondCall().resolves(new Response(null, {status: 200, statusText: 'OK'}));
 
-            const backend = new Backend(dataPath);
+            const backend = new WineryManager(dataPath);
             await backend.start("/path/to/repo");
             expect(backend.isRunning).to.be.true;
         })
@@ -130,32 +125,30 @@ describe('Backend Unit Tests', () => {
             fetchStub
                 .withArgs(match(/http:\/\/localhost:8000\/winery/))
                 .rejects(new Error("Not ready"));
-            const backend = new Backend(dataPath);
+            const backend = new WineryManager(dataPath);
             setTimeout(() => fakeProcess.emit('error', new Error("Fake error starting process")), 100);
 
             try {
                 await backend.start("/path/to/repo")
                 expect.fail("start() Promise did not reject")
-            } catch (_) {
-            }
+            } catch (_) { /* empty */ }
 
             expect(backend.isRunning).to.be.false;
         });
 
-        it('should reject when the backend process exits unexpectedly while waiting', async () => {
+        it('should reject when the wineryManager process exits unexpectedly while waiting', async () => {
             fetchStub
                 .withArgs(match(/http:\/\/localhost:8000\/winery/))
                 .rejects(new Error("Not ready"));
 
             // resources.launcherPath = "sfd"
 
-            const backend = new Backend(dataPath);
+            const backend = new WineryManager(dataPath);
             setTimeout(() => fakeProcess.emit('exit', 1, 'SIGTERM'), 100);
             try {
                 await backend.start("/path/to/repo")
                 expect.fail()
-            } catch (_) {
-            }
+            } catch (_) { /* empty */ }
 
             expect(backend.isRunning).to.be.false;
 
@@ -163,24 +156,24 @@ describe('Backend Unit Tests', () => {
     })
 
     describe("#stop()", () => {
-        let backend: Backend
+        let backend: WineryManager
 
         beforeEach(() => {
-            backend = new Backend(dataPath)
+            backend = new WineryManager(dataPath)
         })
 
-        it('should stop the backend process if running', async () => {
-            // Start the backend and make sure it is running
+        it('should stop the wineryManager process if running', async () => {
+            // Start the wineryManager and make sure it is running
             await backend.start("/path/to/repo");
             expect(backend.isRunning).to.be.true;
 
             const stoppedPromise = backend.stop();
 
             // expect a POST request to the shutdown endpoint
-            expect(fetchStub.calledWith(`${backend.backendUrl}/shutdown?token=winery`, {method: "POST"}))
+            expect(fetchStub.calledWith(`${backend.baseUrl}/shutdown?token=winery`, {method: "POST"}))
                 .to.be.true
 
-            // simulate backend process exit
+            // simulate wineryManager process exit
             setTimeout(() => fakeProcess.emit('exit', 1, 'SIGTERM'), 100);
 
             // wait for the stoppedPromise to resolve
@@ -188,22 +181,22 @@ describe('Backend Unit Tests', () => {
             expect(backend.isRunning).to.be.false;
         });
 
-        it('should not throw an error when stopping a non-running backend', async () => {
-            const backend = new Backend(dataPath);
+        it('should not throw an error when stopping a non-running wineryManager', async () => {
+            const backend = new WineryManager(dataPath);
 
-            // Ensure the backend is not running
+            // Ensure the wineryManager is not running
             expect(backend.isRunning).to.be.false;
 
-            // Try stopping the non-running backend
+            // Try stopping the non-running wineryManager
             try {
                 await backend.stop();
             } catch (error) {
-                expect.fail("Stopping a non-running backend should not throw an error");
+                expect.fail("Stopping a non-running wineryManager should not throw an error");
             }
         });
 
-        it('should reject if the backend does not stop during the timeout', async () => {
-            // Start the backend and make sure it is running
+        it('should reject if the wineryManager does not stop during the timeout', async () => {
+            // Start the wineryManager and make sure it is running
             await backend.start("/path/to/repo");
             expect(backend.isRunning).to.be.true;
 
@@ -217,9 +210,9 @@ describe('Backend Unit Tests', () => {
         });
     });
 
-    it('should emit an unexpected-exit event when the backend process exits unexpectedly', async () => {
+    it('should emit an unexpected-exit event when the wineryManager process exits unexpectedly', async () => {
         const {testTransport, testLogger} = createTestLogger();
-        const backend = new Backend(dataPath, null, testLogger);
+        const backend = new WineryManager(dataPath, null, testLogger);
         const fakeErrorWineryLogLine = "ERROR: Catastrophe uncorked. Winery in chaos, must exit."
 
         const unexpectedExitEventReceived = new Promise<void>((resolve) => {

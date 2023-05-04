@@ -7,17 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="org.eclipse.winery.model.extension" />
-        <module name="org.eclipse.winery.model.tosca.yaml" />
-        <module name="org.eclipse.winery.model.tosca.canonical" />
-        <module name="org.eclipse.winery.model.threatmodeling" />
-        <module name="org.eclipse.winery.model.csar.toscametafile" />
-        <module name="org.eclipse.winery.model.tosca.xml" />
-        <module name="org.eclipse.winery.repository.client" />
-        <module name="org.eclipse.winery.repository.rest" />
         <module name="winery-launcher" />
-        <module name="org.eclipse.winery.model.bpmn4tosca" />
-        <module name="org.eclipse.winery.model.adaptation" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -34,9 +24,19 @@
       <module name="org.eclipse.winery.generators.ia" target="17" />
       <module name="org.eclipse.winery.highlevelrestapi" target="17" />
       <module name="org.eclipse.winery.model" target="17" />
+      <module name="org.eclipse.winery.model.adaptation" target="11" />
+      <module name="org.eclipse.winery.model.bpmn4tosca" target="17" />
+      <module name="org.eclipse.winery.model.csar.toscametafile" target="17" />
+      <module name="org.eclipse.winery.model.extension" target="17" />
       <module name="org.eclipse.winery.model.selfservice" target="1.8" />
+      <module name="org.eclipse.winery.model.threatmodeling" target="17" />
+      <module name="org.eclipse.winery.model.tosca.canonical" target="17" />
+      <module name="org.eclipse.winery.model.tosca.xml" target="17" />
+      <module name="org.eclipse.winery.model.tosca.yaml" target="17" />
       <module name="org.eclipse.winery.reporting" target="17" />
       <module name="org.eclipse.winery.repository" target="17" />
+      <module name="org.eclipse.winery.repository.client" target="17" />
+      <module name="org.eclipse.winery.repository.rest" target="17" />
       <module name="org.eclipse.winery.tools.copybaragenerator" target="17" />
       <module name="org.eclipse.winery.tools.deployablecomponents" target="17" />
       <module name="org.eclipse.winery.topologygraph" target="17" />
