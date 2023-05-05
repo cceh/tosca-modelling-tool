@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./",
+    "types": ["node", "mocha", "chai", "sinon"],
+    "esModuleInterop": true
+  },
+  "include": [
+    "./**/*.test.ts"
+  ],
+  "exclude": [
+    "../node_modules"
+  ]
+}

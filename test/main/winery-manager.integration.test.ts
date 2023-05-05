@@ -68,7 +68,7 @@ describe('Winery Manager Integration Tests', () => {
         }
         expect(wineryManager.isRunning).to.be.true;
 
-        const response = await fetch(wineryManager.getWineryUrl(wineryManager.port));
+        const response = await fetch(wineryManager.getWineryApiUrl(wineryManager.port));
         expect(response.ok).to.be.true;
     }).timeout(10000);
 })

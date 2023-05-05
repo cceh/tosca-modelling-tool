@@ -8,7 +8,12 @@ import {Duplex, PassThrough, Writable} from "stream";
 import {expect} from "chai";
 import {WineryManager} from "../../src/main/wineryManager";
 import {createLogger, LogEntry, transports} from "winston";
-import * as fsextra from "fs-extra";
+import * as fse from "fs-extra";
+import {wineryApiPath} from "../../src/main/resources";
+
+const PORT = 8000
+const wineryApiUrl = new URL(wineryApiPath, `http://localhost:${PORT}`).toString()
+const wineryApiUrlMatcher = match((url: URL) => url.toString() === wineryApiUrl)
 
 class MockChildProcess extends ChildProcess {
     constructor(
@@ -44,26 +49,26 @@ describe('Winery Manager Unit Tests', () => {
         fakeProcess = new MockChildProcess(12345, new PassThrough(), new PassThrough(), null)
 
         stub(child_process, 'spawn').returns(fakeProcess);
-        stub(portfinder, 'getPortPromise').resolves(8000);
+        stub(portfinder, 'getPortPromise').resolves(PORT);
         writeFileStub = stub(fs, 'writeFileSync');
 
         fetchStub = stub(global, 'fetch');
         fetchStub
-            .withArgs(match(/http:\/\/localhost:8000\/winery/))
+            .withArgs(wineryApiUrlMatcher)
             .resolves(new Response(null, {status: 200, statusText: 'OK'}))
+
 
         dataPath = fs.mkdtempSync(tmpdirPrefix)
     });
 
     afterEach(() => {
-        fsextra.remove(dataPath);
+        fse.remove(dataPath);
         sinon.restore();
     });
 
     describe("#start()", () => {
         it('should write the .winery config file, creating the config directory if it does not exist', async () => {
             const backend = new WineryManager(dataPath)
-
             const wineryConfigPath = path.join(dataPath, ".winery")
 
             sinon.stub(fs, 'existsSync').returns(false);
@@ -123,7 +128,7 @@ describe('Winery Manager Unit Tests', () => {
 
         it('should reject when the process cannot be started', async () => {
             fetchStub
-                .withArgs(match(/http:\/\/localhost:8000\/winery/))
+                .withArgs(wineryApiUrlMatcher)
                 .rejects(new Error("Not ready"));
             const backend = new WineryManager(dataPath);
             setTimeout(() => fakeProcess.emit('error', new Error("Fake error starting process")), 100);
@@ -138,7 +143,7 @@ describe('Winery Manager Unit Tests', () => {
 
         it('should reject when the wineryManager process exits unexpectedly while waiting', async () => {
             fetchStub
-                .withArgs(match(/http:\/\/localhost:8000\/winery/))
+                .withArgs(wineryApiUrlMatcher)
                 .rejects(new Error("Not ready"));
 
             // resources.launcherPath = "sfd"
@@ -167,11 +172,19 @@ describe('Winery Manager Unit Tests', () => {
             await backend.start("/path/to/repo");
             expect(backend.isRunning).to.be.true;
 
+            const shutdownUrl = new URL("/shutdown?token=winery", backend.baseUrl).toString()
+            const shutdownUrlMatcher = match((url: URL) => url.toString() === shutdownUrl)
+
+            fetchStub.withArgs(shutdownUrlMatcher, {method: "POST"})
+                .resolves(new Response(null, {status: 200, statusText: 'OK'}))
+
             const stoppedPromise = backend.stop();
 
             // expect a POST request to the shutdown endpoint
-            expect(fetchStub.calledWith(`${backend.baseUrl}/shutdown?token=winery`, {method: "POST"}))
-                .to.be.true
+            expect(fetchStub.calledWith(
+                shutdownUrlMatcher,
+                {method: "POST"})
+            ).to.be.true
 
             // simulate wineryManager process exit
             setTimeout(() => fakeProcess.emit('exit', 1, 'SIGTERM'), 100);
