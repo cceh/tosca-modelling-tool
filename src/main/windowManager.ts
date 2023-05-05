@@ -6,44 +6,73 @@ import {EventEmitter} from "events";
 
 export type WindowOpenHandler = Parameters<WebContents['setWindowOpenHandler']>[0];
 
-export const LAST_WINERY_WINDOW_CLOSED = "all-winery-windows-closed"
+export type NavigationUrlType = "toscaManager" | "topologyModeler" | "mainWindow" | "external"
 
-let mainWindow: BrowserWindow = null
+export const LAST_WINERY_WINDOW_CLOSED = "all-winery-windows-closed"
 
 /**
  * Create and manage the lifecycle of app windows
  */
 export class WindowManager extends EventEmitter {
-    private wineryWindows = new Set<BrowserWindow>()
+    private _mainWindow: BrowserWindow = null
+    private toscaManagerWindowSet = new Set<BrowserWindow>()
+    private topologyModelerWindowSet = new Set<BrowserWindow>()
 
-    constructor(private navigationChecker: (url: URL) => boolean) {
+    constructor(private urlTypeChecker: (url: URL) => NavigationUrlType) {
+        if (!urlTypeChecker) {
+            throw new Error("Could not initialize Window Manager: Need to pass in an URL type checker!")
+        }
         super()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        app['bw'] = BrowserWindow
     }
 
-    get mainWindow() { return mainWindow }
+    get mainWindow() { return this._mainWindow }
+    get toscaManagerWindows() { return Array.from(this.toscaManagerWindowSet) }
+    get topologyModelerWindows() { return Array.from(this.topologyModelerWindowSet) }
+    get wineryWindows() { return [...this.toscaManagerWindows, ...this.topologyModelerWindows] }
 
     /**
      * Opens the main "workspace selection" window. Makes sure it is created as needed and that there is only one main
      * window created / visible at all times.
      */
     openMainWindow() {
-        if (!mainWindow) {
-            mainWindow = this.createMainWindow()
+        if (!this.mainWindow) {
+            this._mainWindow = this.createMainWindow()
         }
     }
 
     /**
-     * Opens a TOSCA Manager window for the specified URL.
+     * Opens a Winery window for the specified URL. Makes sure that the correct type of window is created
+     * depending on the link. External (web) links will be opened externally in the user's web browser.
+     *
+     * @throws
+     * Throws an error if the specified URL is the main window (renderer) URL.
      */
-    openToscaManagerWindow(url: string) {
-        if (this.isToscaManagerUrl(new URL(url))) {
-            const toscaManagerWindow = this.createToscaManagerWindow()
-        toscaManagerWindow.once("ready-to-show", () => mainWindow?.close())
-        toscaManagerWindow.loadURL(url)
-        } else {
-            throw new Error(`Specified URL is not a TOSCA Manager URL: ${url}`)
+    async openWindowFor(url: URL) {
+        let window
+
+        switch (this.urlTypeChecker(url)) {
+            case "toscaManager":
+                window = this.createToscaManagerWindow()
+                break;
+            case "topologyModeler":
+                window = this.createTopologyModelerWindow()
+                break;
+            case "mainWindow":
+                throw new Error("Will open a new Window for the main window URL.")
+            case "external":
+                await shell.openExternal(url.toString())
         }
+
+        if (window) {
+            await window.loadURL(url.toString())
+        }
+
+        return window
     }
+
 
     closeAllWineryWindows() {
         this.wineryWindows.forEach(window => window.destroy())
@@ -65,7 +94,7 @@ export class WindowManager extends EventEmitter {
             height: 600,
             show: false,
         });
-        this.wineryWindows.add(toscaManagerWindow)
+        this.toscaManagerWindowSet.add(toscaManagerWindow)
 
         if (!app.isPackaged) {
             toscaManagerWindow.webContents.openDevTools();
@@ -75,7 +104,9 @@ export class WindowManager extends EventEmitter {
             .once('ready-to-show', () => toscaManagerWindow.show())
             .once('closed',  (event: Electron.Event) => this.onWineryWindowClosed(event, toscaManagerWindow))
 
-        toscaManagerWindow.webContents.setWindowOpenHandler(this.wineryWindowOpenHandler);
+        toscaManagerWindow.webContents.setWindowOpenHandler(
+            (details) => this.wineryWindowOpenHandler(details)
+        );
 
         return toscaManagerWindow;
     }
@@ -83,29 +114,29 @@ export class WindowManager extends EventEmitter {
     /**
      * Creates and configures a browser window suitable for the Topology Manager.
      */
-    createTopologyManagerWindow(): BrowserWindow {
-        const topologyManagerWindow = new BrowserWindow({
+    private createTopologyModelerWindow(): BrowserWindow {
+        const topologyModelerWindow = new BrowserWindow({
             webPreferences: {nodeIntegration: false},
             width: 1200,
             height: 1200,
             show: false,
         });
-        this.wineryWindows.add(topologyManagerWindow)
+        this.topologyModelerWindowSet.add(topologyModelerWindow)
 
-        topologyManagerWindow
-            .once('ready-to-show', () => topologyManagerWindow.show())
-            .once('closed',  (event: Electron.Event) => this.onWineryWindowClosed(event, topologyManagerWindow))
+        topologyModelerWindow
+            .once('ready-to-show', () => topologyModelerWindow.show())
+            .once('closed',  (event: Electron.Event) => this.onWineryWindowClosed(event, topologyModelerWindow))
 
-        topologyManagerWindow.webContents.setWindowOpenHandler(this.wineryWindowOpenHandler);
+        topologyModelerWindow.webContents.setWindowOpenHandler(this.wineryWindowOpenHandler);
 
-        return topologyManagerWindow;
+        return topologyModelerWindow;
     }
 
     /**
      * Creates and configures the singleton main window instance and loads the URL for the renderer process.
      */
     private createMainWindow(): BrowserWindow {
-        mainWindow = new BrowserWindow({
+        this._mainWindow = new BrowserWindow({
             center: true,
             width: 1024,
             height: 1000,
@@ -119,7 +150,7 @@ export class WindowManager extends EventEmitter {
             },
         });
 
-        mainWindow.loadURL(mainWindowUrl).catch((err) => {
+        this._mainWindow.loadURL(mainWindowUrl).catch((err) => {
             dialog.showErrorBox(
                 'Error',
                 `Could not load main UI at ${mainWindowUrl}: ${err.message}`,
@@ -128,14 +159,14 @@ export class WindowManager extends EventEmitter {
         });
 
         if (!app.isPackaged) {
-            mainWindow.webContents.openDevTools();
+            this._mainWindow.webContents.openDevTools();
         }
 
-        mainWindow
-            .on('ready-to-show', () => mainWindow.show())
-            .on('closed', (): void => mainWindow = null)
+        this._mainWindow
+            .on('ready-to-show', () => this._mainWindow.show())
+            .on('closed', (): void => this._mainWindow = null)
 
-        return mainWindow;
+        return this._mainWindow;
     }
 
     /**
@@ -146,42 +177,33 @@ export class WindowManager extends EventEmitter {
      */
     private wineryWindowOpenHandler(details: HandlerDetails): ReturnType<WindowOpenHandler> {
         const parsedUrl = new URL(details.url)
-        const navigationAllowed = this.navigationChecker(parsedUrl)
+        const urlType = this.urlTypeChecker(parsedUrl)
+        console.log(urlType)
+        console.log(details.url)
 
-        if (!navigationAllowed) {
-            shell.openExternal(details.url)
-            return {action: "deny"}
+        this.openWindowFor(parsedUrl).catch()
+
+        switch (urlType) {
+            case "mainWindow":
+            case "external":
+                return {action: "deny"}
         }
 
-        if (this.isTopologyManagerUrl(parsedUrl)) {
-            const topologyModelerWindow = this.createTopologyManagerWindow()
-            topologyModelerWindow.loadURL(details.url)
-        } else if (this.isToscaManagerUrl(parsedUrl)) {
-            const toscaManagerWindow = this.createToscaManagerWindow()
-            toscaManagerWindow.loadURL(details.url)
-        }
-    }
-
-    // TODO: make sure the host is the local Winery root path
-    private isToscaManagerUrl(parsedUrl: URL) {
-        return parsedUrl.pathname === "/";
-    }
-
-    // TODO: make sure the host is the local Winery root path
-    private isTopologyManagerUrl(parsedUrl: URL) {
-        return parsedUrl.pathname.startsWith(`/winery-topologymodeler`);
+        return {action: "allow"}
     }
 
     /**
      * Function that is passed as the handler for the close event for Winery windows. Emits an event when all Winery
-     * windows have been closed.
+     * windows have been closed and removes the window from the respective Set.
      */
     private onWineryWindowClosed(event: Electron.Event, window: BrowserWindow) {
-        if (!mainWindow && this.wineryWindows.size === 1) {
+        if (!this._mainWindow && this.wineryWindows.length === 1) {
             // this is the last open Winery windows and about to be closed
             event.preventDefault()
             this.emit(LAST_WINERY_WINDOW_CLOSED, event)
         }
-        this.wineryWindows.delete(window);
+
+        this.toscaManagerWindowSet.delete(window)
+        this.topologyModelerWindowSet.delete(window)
     }
 }

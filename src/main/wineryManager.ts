@@ -9,7 +9,13 @@ import winston, {createLogger, format, transports} from "winston"
 
 import {WineryConfig} from "./wineryConfiguration";
 import * as readline from "readline";
-import {javaCmdPath, launcherPath, logbackConfigurationPathDefault, wineryYamlConfigTemplatePath} from "./resources";
+import {
+    javaCmdPath,
+    launcherPath,
+    logbackConfigurationPathDefault,
+    topologyModelerPath, toscaManagerPath, wineryApiPath,
+    wineryYamlConfigTemplatePath
+} from "./resources";
 
 class WineryState {
     readonly process: ChildProcess;
@@ -82,31 +88,35 @@ export class WineryManager extends EventEmitter {
      *
      * @throws
      * Throws an error if the Winery process is not currently running.
+     *
      */
     get port() {
         if (!this.isRunning) {
-            throw new Error("Winery process not running while accessing Winery port!")
+            throw new Error("Winery process not running while accessing the Winery port!")
         }
-
         return this.state?.port
     }
 
     /**
      * The URL on which the Winery server currently listens for requests.
-     *
-     * @throws
-     * Throws an error if the Winery process is not currently running.
      */
     get baseUrl() {
-        if (!this.isRunning) {
-            throw new Error("Winery process not running while accessing Winery URL!")
-        }
-
         return this.getBackendBaseUrl(this.port)
     }
 
-    private getBackendBaseUrl(port: number) { return `http://localhost:${port}`}
-    getWineryUrl(port: number) { return `${this.getBackendBaseUrl(port)}/winery`}
+    get toscaManagerUrl() {
+        return new URL(toscaManagerPath, this.baseUrl)
+    }
+
+    get topologyModelerUrl() {
+        return new URL(topologyModelerPath, this.baseUrl)
+    }
+
+    private getBackendBaseUrl(port: number) {
+        return new URL(`http://localhost:${port}`)
+    }
+
+    getWineryApiUrl(port: number) { return new URL(wineryApiPath, this.getBackendBaseUrl(port))}
 
     /**
      * Starts the winery process with the specified repository path.
@@ -181,7 +191,9 @@ export class WineryManager extends EventEmitter {
         this.logger.info("Stopping the Winery...")
         this.state.shouldBeRunning = false
         const res = this.waitForWineryStopped(timeoutMs)
-        fetch(`${this.baseUrl}/shutdown?token=winery`, {method: "POST"})
+        fetch(new URL("/shutdown?token=winery", this.baseUrl), {method: "POST"}).catch(error => {
+            throw new Error(`Could not send shutdown request to winery: ${error.toString()}`)
+        })
         return res
     }
 
@@ -197,9 +209,11 @@ export class WineryManager extends EventEmitter {
 
        const yamlConfig = loadYaml(fs.readFileSync(wineryYamlConfigTemplatePath, "utf-8")) as WineryConfig
        yamlConfig.repository.repositoryRoot = repositoryPath
-       yamlConfig.ui.endpoints.topologymodeler = `${this.getBackendBaseUrl(port)}/winery-topologymodeler`
-       yamlConfig.ui.endpoints.repositoryApiUrl = this.getWineryUrl(port)
-       yamlConfig.ui.endpoints.repositoryUiUrl = this.getBackendBaseUrl(port)
+
+       const baseUrl = this.getBackendBaseUrl(port)
+       yamlConfig.ui.endpoints.topologymodeler = new URL(topologyModelerPath, baseUrl).toString()
+       yamlConfig.ui.endpoints.repositoryApiUrl = new URL(wineryApiPath, baseUrl).toString()
+       yamlConfig.ui.endpoints.repositoryUiUrl = new URL(toscaManagerPath, baseUrl).toString()
 
         fs.writeFileSync(this.wineryConfigFilePath, dumpYaml(yamlConfig))
     }
@@ -266,7 +280,7 @@ export class WineryManager extends EventEmitter {
                     setTimeout(() => checkWineryRunning(), 200)
                 }
 
-                fetch(this.getWineryUrl(port))
+                fetch(this.getWineryApiUrl(port))
                     .then(response => {
                         if (response.ok) {
                             this.logger.info(`Winery started on port ${port}!`);

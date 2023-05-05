@@ -36,3 +36,7 @@ export const mainWindowUrl = app?.isPackaged
         slashes: true
     })
     : `http://localhost:8080/`
+
+export const wineryApiPath = "/winery"
+export const toscaManagerPath = "/"
+export const topologyModelerPath = "/winery-topologymodeler"

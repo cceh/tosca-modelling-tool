@@ -56,11 +56,11 @@ import {
     OPEN_A_WORKSPACE
 } from "../common/ipcEvents";
 import * as process from "process";
-import {LAST_WINERY_WINDOW_CLOSED, WindowManager} from "./windowManager";
+import {LAST_WINERY_WINDOW_CLOSED, NavigationUrlType, WindowManager} from "./windowManager";
 import {baseRepositoriesPath, mainWindowUrl} from "./resources";
 
 const wineryProcess = new WineryManager(app.getPath("userData"))
-const windowManager = new WindowManager(navigationAllowedForUrl)
+const windowManager = new WindowManager(checkUrlType)
 
 
 // ---------------------------
@@ -75,16 +75,25 @@ function isValidRepository(repositoryPath: string) {
 /**
  * Check if the given URL is part of the app.
  */
-function navigationAllowedForUrl(url: URL) {
-    if (url.toString() === mainWindowUrl) {
-        return true
+function checkUrlType(url: URL): NavigationUrlType {
+    const parsedMainWindowUrl = new URL(mainWindowUrl)
+
+    console.log(url.pathname)
+    console.log(wineryProcess.toscaManagerUrl.pathname)
+
+    if (url.href.startsWith(parsedMainWindowUrl.href)) {
+        return "mainWindow"
+    } else if (
+        url.origin === wineryProcess.toscaManagerUrl.origin &&
+        url.pathname === wineryProcess.toscaManagerUrl.pathname) {
+        return "toscaManager"
+    } else if (
+        url.origin === wineryProcess.topologyModelerUrl.origin &&
+        url.pathname.startsWith(wineryProcess.topologyModelerUrl.pathname)) {
+        return "topologyModeler"
     }
 
-    const parsedMainWindowUrl = new URL(mainWindowUrl)
-    const parsedWineryUrl = new URL(wineryProcess.baseUrl)
-    const allowedOrigins = [parsedMainWindowUrl.origin, parsedWineryUrl.origin]
-
-    return allowedOrigins.includes(url.origin)
+    return "external"
 }
 
 /**
@@ -134,8 +143,10 @@ function startWinery(repositoryPath: string): null | Promise<void> {
             const parentLocation = path.resolve(repositoryPath, "..")
             store.set(SK_DEFAULT_WORKSPACE_PARENT_PATH, parentLocation)
 
-            windowManager.mainWindow.hide()
-            windowManager.openToscaManagerWindow(wineryProcess.baseUrl)
+            windowManager
+                .openWindowFor(wineryProcess.toscaManagerUrl)
+                .then(() => windowManager.mainWindow.close())
+
         }).catch(e => {
             windowManager.mainWindow.webContents.send(WINERY_STOPPED)
             dialog.showErrorBox("Winery error", e.toString())
@@ -152,7 +163,7 @@ function startWinery(repositoryPath: string): null | Promise<void> {
 // Handle IPC calls from the renderer process (triggered when a user interacts with the app)
 // ----------------------------------------------------------------------------------------
 
-ipcMain.on(OPEN_A_WORKSPACE, (event, repositoryPath) => {
+ipcMain.on(OPEN_A_WORKSPACE, async (event, repositoryPath) => {
     if (!fs.existsSync(repositoryPath)) {
         dialog.showErrorBox("Repository path not found", `The specified repository path could not be found: ${repositoryPath}`)
         return
@@ -163,7 +174,7 @@ ipcMain.on(OPEN_A_WORKSPACE, (event, repositoryPath) => {
         return
     }
 
-    startWinery(repositoryPath)
+    await startWinery(repositoryPath)
 })
 
 ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => {
@@ -179,7 +190,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
             })
 
             if (result === 0) {
-                startWinery(repositoryPath)
+                await startWinery(repositoryPath)
             }
         } else {
             if(fs.readdirSync(repositoryPath).length > 0) {
@@ -206,7 +217,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
         return
     }
 
-    startWinery(repositoryPath)
+    await startWinery(repositoryPath)
 })
 
 ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
@@ -226,13 +237,13 @@ ipcMain.on(SHOW_LINK_CONTEXT_MENU, (event, url) => {
     Menu.buildFromTemplate([
         {
             label: "Open in new window",
-            click: () => windowManager.openToscaManagerWindow(url)
+            click: () => windowManager.openWindowFor(url)
         }
     ]).popup({window: BrowserWindow.fromWebContents(event.sender)})
 })
 
-ipcMain.on(OPEN_NEW_WINDOW, (_event, url) => {
-    windowManager.openToscaManagerWindow(url)
+ipcMain.on(OPEN_NEW_WINDOW, async (_event, url: string) => {
+    await windowManager.openWindowFor(new URL(url))
 })
 
 
@@ -297,7 +308,7 @@ app.on('web-contents-created', (event, contents) => {
 
         // workaround for TOSCA manager bug: TOSCA docs link in 'about' dialog invalid
         if (parsedUrl.pathname.startsWith("/docs.oasis-open.org")) {
-            shell.openExternal(`https://${parsedUrl.pathname}`)
+            shell.openExternal(`https://${parsedUrl.pathname}`).catch()
             event.preventDefault()
             return
         }
@@ -313,8 +324,8 @@ app.on('web-contents-created', (event, contents) => {
         }
 
         // open external URLs in the user's web browser
-        if (!navigationAllowedForUrl(parsedUrl)) {
-            shell.openExternal(parsedUrl.toString())
+        if (checkUrlType(parsedUrl) === "external") {
+            shell.openExternal(parsedUrl.toString()).catch()
             event.preventDefault()
         }
     })
