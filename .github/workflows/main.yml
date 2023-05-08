@@ -75,7 +75,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      
+
+      - name: Setup xvfb (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install xvfb
+
       - name: Install NPM dependencies
         run: npm ci
 

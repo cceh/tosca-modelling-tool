@@ -7,13 +7,9 @@ import child_process, {ChildProcess} from "child_process";
 import {Duplex, PassThrough, Writable} from "stream";
 import {expect} from "chai";
 import {WineryManager} from "../../src/main/wineryManager";
-import {createLogger, LogEntry, transports} from "winston";
+import {LogEntry} from "winston";
 import * as fse from "fs-extra";
-import {wineryApiPath} from "../../src/main/resources";
-
-const PORT = 8000
-const wineryApiUrl = new URL(wineryApiPath, `http://localhost:${PORT}`).toString()
-const wineryApiUrlMatcher = match((url: URL) => url.toString() === wineryApiUrl)
+import {createTestLogger, PORT, wineryApiUrlMatcher} from "./utils";
 
 class MockChildProcess extends ChildProcess {
     constructor(
@@ -26,15 +22,6 @@ class MockChildProcess extends ChildProcess {
     }
 }
 
-
-// Helper function: create da test dummy logger to listen for "logged" events
-const createTestLogger = () => {
-    const testTransport = new transports.Stream({stream: new PassThrough()})
-    const testLogger = createLogger({
-        transports: [testTransport]
-    })
-    return {testTransport, testLogger};
-};
 
 describe('Winery Manager Unit Tests', () => {
     let fetchStub: SinonStub;

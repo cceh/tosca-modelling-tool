@@ -26,7 +26,7 @@
     "ci:dist": "electron-builder",
     "release": "electron-builder",
     "test:winery-launcher": "mvn -pl winery-launcher test",
-    "test:electron": "mocha -r ts-node/register test/**/*.unit.test.ts test/**/*.integration.test.ts",
+    "test:electron": "xvfb-maybe electron-mocha -r ts-node/register test/**/*.unit.test.ts test/**/*.integration.test.ts",
     "test:electron:coverage": "nyc npm run test:electron",
     "test": "npm-run-all test:winery-launcher test:electron"
   },
@@ -115,6 +115,7 @@
     "css-loader": "^6.7.3",
     "electron": "^24.1.2",
     "electron-builder": "^24.2.1",
+    "electron-mocha": "^12.0.0",
     "eslint": "^8.39.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "execa": "^7.1.1",
@@ -139,6 +140,7 @@
     "webpack": "^5.80.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.3",
+    "xvfb-maybe": "^0.2.1",
     "yauzl": "^2.10.0",
     "zx": "^7.2.1"
   },
