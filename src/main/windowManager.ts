@@ -19,19 +19,13 @@ export class WindowManager extends EventEmitter {
     private topologyModelerWindowSet = new Set<BrowserWindow>()
 
     constructor(private urlTypeChecker: (url: URL) => NavigationUrlType) {
-        if (!urlTypeChecker) {
-            throw new Error("Could not initialize Window Manager: Need to pass in an URL type checker!")
-        }
         super()
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        app['bw'] = BrowserWindow
     }
 
     get mainWindow() { return this._mainWindow }
-    get toscaManagerWindows() { return Array.from(this.toscaManagerWindowSet) }
-    get topologyModelerWindows() { return Array.from(this.topologyModelerWindowSet) }
-    get wineryWindows() { return [...this.toscaManagerWindows, ...this.topologyModelerWindows] }
+    get toscaManagerWindows() { return Object.freeze(Array.from(this.toscaManagerWindowSet)) }
+    get topologyModelerWindows() { return Object.freeze(Array.from(this.topologyModelerWindowSet)) }
+    get wineryWindows() { return Object.freeze([...this.toscaManagerWindows, ...this.topologyModelerWindows]) }
 
     /**
      * Opens the main "workspace selection" window. Makes sure it is created as needed and that there is only one main
@@ -178,8 +172,6 @@ export class WindowManager extends EventEmitter {
     private wineryWindowOpenHandler(details: HandlerDetails): ReturnType<WindowOpenHandler> {
         const parsedUrl = new URL(details.url)
         const urlType = this.urlTypeChecker(parsedUrl)
-        console.log(urlType)
-        console.log(details.url)
 
         this.openWindowFor(parsedUrl).catch()
 
