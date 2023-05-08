@@ -78,9 +78,6 @@ function isValidRepository(repositoryPath: string) {
 function checkUrlType(url: URL): NavigationUrlType {
     const parsedMainWindowUrl = new URL(mainWindowUrl)
 
-    console.log(url.pathname)
-    console.log(wineryProcess.toscaManagerUrl.pathname)
-
     if (url.href.startsWith(parsedMainWindowUrl.href)) {
         return "mainWindow"
     } else if (
