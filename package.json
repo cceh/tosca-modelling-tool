@@ -114,7 +114,7 @@
     "chalk": "^5.2.0",
     "css-loader": "^6.7.3",
     "electron": "^24.1.2",
-    "electron-builder": "^24.2.1",
+    "electron-builder": "^24.4.0",
     "electron-mocha": "^12.0.0",
     "eslint": "^8.39.0",
     "eslint-plugin-tsdoc": "^0.2.17",
