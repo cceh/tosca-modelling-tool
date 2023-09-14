@@ -113,7 +113,7 @@
     "chai": "^4.3.7",
     "chalk": "^5.2.0",
     "css-loader": "^6.8.1",
-    "electron": "^24.1.2",
+    "electron": "^26.2.1",
     "electron-builder": "^24.4.0",
     "electron-mocha": "^12.0.0",
     "eslint": "^8.39.0",
