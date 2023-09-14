@@ -139,7 +139,7 @@
     "typescript": "^5.0.4",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.13.3",
+    "webpack-dev-server": "^4.15.1",
     "xvfb-maybe": "^0.2.1",
     "yauzl": "^2.10.0",
     "zx": "^7.2.1"
