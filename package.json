@@ -145,7 +145,7 @@
     "zx": "^7.2.1"
   },
   "dependencies": {
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.2",
     "electron-store": "^8.1.0",
     "js-yaml": "^4.1.0",
     "portfinder": "^1.0.32",
