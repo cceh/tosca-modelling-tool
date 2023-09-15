@@ -17,7 +17,7 @@ updates:
       js-dev-dependencies:
         dependency-type: "development"
       js-prod-dependencies:
-        dependency-types: "production"
+        dependency-type: "production"
 
   - package-ecosystem: "maven" # See documentation for possible values
     open-pull-requests-limit: 10
