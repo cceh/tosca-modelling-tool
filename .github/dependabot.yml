@@ -13,6 +13,11 @@ updates:
     ignore: 
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
+    groups:
+      js-dev-dependencies:
+        dependency-type: "development"
+      js-prod-dependencies:
+        dependency-types: "production"
 
   - package-ecosystem: "maven" # See documentation for possible values
     open-pull-requests-limit: 10
@@ -22,6 +27,10 @@ updates:
     ignore: 
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    groups:
+      java-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "bundler" # See documentation for possible values
     open-pull-requests-limit: 10
@@ -31,3 +40,7 @@ updates:
     ignore: 
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
+    groups:
+      landing-page-dependencies:
+        patterns:
+          - "*"
