@@ -1,6 +1,6 @@
 {
   "name": "tosca-modelling-tool",
-  "version": "0.0.7-alpha",
+  "version": "1.0.0-beta1",
   "description": "",
   "scripts": {
     "build:main": "webpack --config webpack.electron-main.config.js",
@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/olvidalo/desktop-winery.git"
+    "url": "https://github.com/cceh/tosca-modelling-tool.git"
   },
   "build": {
     "mac": {
