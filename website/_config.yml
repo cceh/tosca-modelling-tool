@@ -2,8 +2,8 @@
 # Site
 
 title: TOSCA Modelling Tool
-url: "https://olvidalo.github.io"
-baseurl: "/desktop-winery"
+url: "https://cceh.github.io"
+baseurl: "/tosca-modelling-tool"
 google_analytics_key:
 google_maps_javascript_api_key:
 disqus_shortname:
