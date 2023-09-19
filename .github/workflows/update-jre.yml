@@ -6,6 +6,10 @@ name: Check for JRE updates
 on:
   schedule:
     - cron: '11 11 * * 3'
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/update-jre.yml'
 #  push:
 #    branches: [ main ]
 #    paths-ignore:
@@ -42,32 +46,35 @@ jobs:
 
       - name: Check for latest JRE versions
         id: jre-version-check
-        run: >-
-          echo "::set-output name=UPDATED_VERSION::$(
-            npm run -s deps:jre:check
-          )"
+        run: |
+          OUTPUT=$(npm run -s deps:jre:check)
+          if [[ $? -ne 0 ]]; then
+            echo "Checking for latest JRE versions failed."
+            exit 1
+          else
+            echo "UPDATED_VERSION=$OUTPUT" >> $GITHUB_ENV
+          fi
 
       - name: Check if JRE versions were updated
         id: jre-updated
-        run: >-
-          echo "::set-output name=STATUS::$(
-            git status --porcelain jre-version.json
-          )"
+        run: |
+          STATUS=$(git status --porcelain jre-version.json)
+          echo "STATUS=$STATUS" >> $GITHUB_ENV
           
       - name: Create pull request for updated JRE versions
         uses: peter-evans/create-pull-request@v4
         id: create-pull-request
-        if: ${{ steps.jre-updated.outputs.STATUS != '' }}
+        if: ${{ env.STATUS != '' }}
         with:
           token: ${{secrets.PUBLISH_GH_TOKEN}}
           author: GitHub Actions <noreply@github.com>
           add-paths: jre-version.json
-          commit-message: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
+          commit-message: Update bundled JRE to ${{ env.UPDATED_VERSION }}
           branch: update-bundled-jre
           delete-branch: true
-          title: Update bundled JRE to ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}
+          title: Update bundled JRE to ${{ env.UPDATED_VERSION }}
           body: |
-            This automated pull request updates the bundled JRE versions to the new security patch release ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}.
+            This automated pull request updates the bundled JRE versions to the new security patch release ${{ env.UPDATED_VERSION }}.
             
       - name: Send alert email
         uses: dawidd6/action-send-mail@v3
@@ -81,4 +88,4 @@ jobs:
           subject: New JRE security update
           to: ${{secrets.ALTERT_RECIPIENT_ADDRESS}}
           secure: true
-          body: New JRE security update ${{ steps.jre-version-check.outputs.UPDATED_VERSION }}. Created pull request ${{ steps.create-pull-request.outputs.pull-request-url }}.
+          body: New JRE security update ${{ env.UPDATED_VERSION }}. Created pull request ${{ steps.create-pull-request.outputs.pull-request-url }}.
