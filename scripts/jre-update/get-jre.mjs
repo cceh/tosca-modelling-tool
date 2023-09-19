@@ -4,14 +4,14 @@ import { writeFile, readFile } from "fs/promises"
 import fs from "fs";
 import crypto from "crypto";
 import os from "os"
-import {runCommand} from "./common/common.mjs";
+import {runCommand} from "../common/common.mjs";
 import yauzl from "yauzl"
 import minimist from "minimist"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const jreVersionFile = path.join(__dirname, "../jre-version.json")
-const vendorDir = path.join(__dirname, "../vendor/java")
+const jreVersionFile = path.join(__dirname, "../../jre-version.json")
+const vendorDir = path.join(__dirname, "../../vendor/java")
 
 function clean() {
     const entries = fs.readdirSync(vendorDir)
@@ -21,7 +21,7 @@ function clean() {
 }
 
 function downloadFile(url, targetPath) {
-    console.log(`Downloading ${targetPath}`)
+    console.log(`Downloading ${url} -> ${targetPath}`)
 
     return fetch(url)
         .then(response => response.arrayBuffer())
@@ -87,7 +87,7 @@ async function getJreReleaseInfo(version) {
         console.log(`Get release info from Adoptium for JRE ${version}`)
         await downloadFile(`https://api.adoptium.net/v3/assets/release_name/eclipse/jdk-${version}?heap_size=normal&image_type=jre&project=jdk`, localReleaseInfoFile)
     } else {
-        console.log(`Found existing release info from Adoptium for JRE ${version}`)
+        console.log(`Found existing release info from Adoptium for JRE ${version} at ${localReleaseInfoFile}`)
     }
 
     const releaseInfoJson =  (await readFile(localReleaseInfoFile)).toString()
@@ -193,7 +193,7 @@ for (const platform of platforms) {
     })()
 
     const arch = "x64"
-    const version = jreVersions[os]?.[arch]
+    const version = jreVersions[os]?.[arch]?.openjdk_version
 
     if (!version) {
         throw new Error(`Could not find JRE version for ${os} (${arch}) in versions file (${jreVersionFile}).`)

@@ -10,6 +10,7 @@ on:
     branches: [ main ]
     paths:
       - '.github/workflows/update-jre.yml'
+      - 'scripts/jre-update'
 #  push:
 #    branches: [ main ]
 #    paths-ignore:
@@ -52,7 +53,10 @@ jobs:
             echo "Checking for latest JRE versions failed."
             exit 1
           else
-            echo "UPDATED_VERSION=$OUTPUT" >> $GITHUB_ENV
+            LAST_LINE=$(echo "$OUTPUT" | tail -n 1)
+            echo "UPDATED_VERSION<<EOF" >> $GITHUB_ENV
+            echo $LAST_LINE >> $GITHUB_ENV
+            echo EOF >> $GITHUB_ENV
           fi
 
       - name: Check if JRE versions were updated
