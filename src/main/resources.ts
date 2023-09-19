@@ -1,6 +1,6 @@
 import path from 'path';
 import {app} from 'electron';
-import {getPlatform} from "./get-platform";
+import {getArch, getPlatform} from "./get-platform";
 import url from "url";
 
 const useProdPath = app?.isPackaged;
@@ -11,7 +11,7 @@ const resourcePath = useProdPath
 
 export const javaCmdPath = useProdPath
     ? path.join(resourcePath, "java", "bin", "java")
-    : path.join(__dirname, "..", "..", "vendor", "java", getPlatform(), "bin", "java");
+    : path.join(__dirname, "..", "..", "vendor", "java", getPlatform(), getArch(), "bin", "java");
 
 export const baseRepositoriesPath = useProdPath
     ? path.join(resourcePath, "base-repos")

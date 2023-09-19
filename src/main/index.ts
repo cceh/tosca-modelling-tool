@@ -121,10 +121,6 @@ function initializeStore() {
  * @returns A Promise that resolves when the wineryProcess has started, or throws an error if something goes wrong.
  */
 function startWinery(repositoryPath: string): null | Promise<void> {
-    if (!repositoryPath) {
-        throw new Error("No repositoryPath set!")
-    }
-
     windowManager.mainWindow.webContents.send(WINERY_STARTING)
     return wineryProcess
         .start(repositoryPath)

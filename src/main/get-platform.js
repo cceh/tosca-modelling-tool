@@ -1,6 +1,6 @@
 'use strict';
 
-import {platform} from 'os';
+import {platform, pr} from 'os';
 
 export const getPlatform = () => {
     switch (platform()) {
@@ -17,3 +17,10 @@ export const getPlatform = () => {
             return 'win';
     }
 };
+
+export const getArch = () => {
+    switch (process.arch) {
+        case 'arm64': return "aarch64"
+        default: return process.arch
+    }
+}

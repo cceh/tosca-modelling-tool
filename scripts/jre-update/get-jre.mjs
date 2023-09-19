@@ -4,6 +4,7 @@ import { writeFile, readFile } from "fs/promises"
 import fs from "fs";
 import crypto from "crypto";
 import os from "os"
+import {execSync} from "child_process";
 import {runCommand} from "../common/common.mjs";
 import yauzl from "yauzl"
 import minimist from "minimist"
@@ -123,18 +124,22 @@ async function downloadJrePackage(packageInfo) {
     return destFilePath
 }
 
-async function getJre(version, os, arch, targetDirectoryName) {
+function getTargetDir(os, arch) {
+    return path.join(vendorDir, os === "windows" ? "win" : os, arch === "aarch64" ? "arm64" : arch)
+}
+
+async function getJre(version, os, arch) {
     console.log(`Get JRE for: ${os}`)
 
     const {releaseInfo, releaseInfoFileName, localReleaseInfoFile} = await getJreReleaseInfo(version)
 
     const binaryInfo = releaseInfo["binaries"]
-        .find(({architecture, os: _os}) => architecture === "x64" && os === _os)
+        .find(({architecture, os: _os}) => architecture === arch && os === _os)
     const packageInfo = binaryInfo["package"]
 
     const packageFilePath = await downloadJrePackage(packageInfo)
 
-    const extractDir = path.join(vendorDir, targetDirectoryName)
+    const extractDir = getTargetDir(os, arch)
     const isAlreadyExtracted = fs.existsSync(path.join(extractDir, releaseInfoFileName))
 
     if (isAlreadyExtracted) {
@@ -166,6 +171,32 @@ async function getJre(version, os, arch, targetDirectoryName) {
     return Promise.resolve()
 }
 
+function traverseDir(dir, callback) {
+    const files = fs.readdirSync(dir)
+    files.forEach((file) => {
+        const filePath = path.join(dir, file);
+        const stats = fs.statSync(filePath)
+        if (stats.isDirectory()) {
+            traverseDir(filePath, callback)
+        } else if (stats.isFile()) {
+            callback(filePath)
+        }
+    });
+}
+
+function createUniversalBinary(x64File, arm64File, universalFile) {
+    const lipoCommand = `lipo -create "${x64File}" "${arm64File}" -output "${universalFile}"`
+    console.log(`Executing: ${lipoCommand}`)
+    execSync(lipoCommand)
+}
+
+function isMachExecutable(filePath) {
+    const fileOutput = execSync(`file -b "${filePath}"`).toString();
+    return fileOutput.includes("Mach-O")
+}
+
+
+
 const argv = minimist(process.argv)
 if (argv.clean) {
     await clean()
@@ -192,17 +223,59 @@ for (const platform of platforms) {
         }
     })()
 
-    const arch = "x64"
-    const version = jreVersions[os]?.[arch]?.openjdk_version
+    const arches = platform === "darwin" ? ["x64", "aarch64"] : ["x64"]
+    for (const arch of arches) {
+        const version = jreVersions[os]?.[arch]?.openjdk_version
 
-    if (!version) {
-        throw new Error(`Could not find JRE version for ${os} (${arch}) in versions file (${jreVersionFile}).`)
+        if (!version) {
+            throw new Error(`Could not find JRE version for ${os} (${arch}) in versions file (${jreVersionFile}).`)
+        }
+        try {
+            await getJre(version, os, arch)
+        } catch (e) {
+            console.log(`Could not download JRE for ${os} (${arch}).`)
+            throw e
+        }
     }
 
-    try {
-        await getJre(version, os, arch, os === "windows" ? "win" : os)
-    } catch (e) {
-        console.log(`Could not download JRE for ${os} (${arch}).`)
-        throw e
+    if (platform === "darwin") {
+       try {
+           const universalPath = getTargetDir("mac", "universal")
+           if (!fs.existsSync(universalPath)) {
+               fs.mkdirSync(universalPath, {recursive: true})
+               const x64Path = getTargetDir("mac", "x64")
+               const arm64Path = getTargetDir("mac", "aarch64")
+
+               traverseDir(x64Path, (x64File) => {
+                   const relativePath = path.relative(x64Path, x64File);
+                   const arm64File = path.join(arm64Path, relativePath);
+                   const universalFile = path.join(universalPath, relativePath);
+
+                   // Make sure corresponding arm64 file exists
+                   if (fs.existsSync(arm64File)) {
+
+                       const universalDir = path.dirname(universalFile);
+
+                       // Create directory structure in the universal JRE folder
+                       if (!fs.existsSync(universalDir)) {
+                           fs.mkdirSync(universalDir, {recursive: true});
+                       }
+
+                       if (isMachExecutable(arm64File)) {
+                           createUniversalBinary(x64File, arm64File, universalFile);
+                       } else {
+                           fs.copyFileSync(x64File, universalFile)
+                       }
+
+                       // Create the universal binary
+
+                   }
+               });
+           }
+
+       } catch (e) {
+           console.log("Could not create mac universal binary")
+           throw e
+       }
     }
 }

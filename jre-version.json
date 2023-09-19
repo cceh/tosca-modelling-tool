@@ -3,6 +3,10 @@
     "x64": {
       "semver": "17.0.8+101",
       "openjdk_version": "17.0.8.1+1"
+    },
+    "aarch64": {
+      "semver": "17.0.8+101",
+      "openjdk_version": "17.0.8.1+1"
     }
   },
   "windows": {
