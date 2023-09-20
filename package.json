@@ -47,6 +47,7 @@
       "mergeASARs": false
     },
     "linux": {
+      "target": ["AppImage", "snap"],
       "publish": [
         "github"
       ]
