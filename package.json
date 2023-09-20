@@ -38,6 +38,8 @@
     "url": "https://github.com/cceh/tosca-modelling-tool.git"
   },
   "build": {
+    "appId": "de.cceh.tosca-modelling-tool",
+    "productName": "TOSCA Modelling Tool",
     "mac": {
       "publish": [
         "github"
