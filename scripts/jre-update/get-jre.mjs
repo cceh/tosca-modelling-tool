@@ -195,6 +195,37 @@ function isMachExecutable(filePath) {
     return fileOutput.includes("Mach-O")
 }
 
+function createMacUniversalJRE() {
+    const universalPath = getTargetDir("mac", "universal")
+    if (!fs.existsSync(universalPath)) {
+        fs.mkdirSync(universalPath, {recursive: true})
+        const x64Path = getTargetDir("mac", "x64")
+        const arm64Path = getTargetDir("mac", "aarch64")
+
+        traverseDir(x64Path, (x64File) => {
+            const relativePath = path.relative(x64Path, x64File);
+            const arm64File = path.join(arm64Path, relativePath);
+            const universalFile = path.join(universalPath, relativePath);
+
+            // Make sure corresponding arm64 file exists
+            if (fs.existsSync(arm64File)) {
+
+                const universalDir = path.dirname(universalFile);
+
+                // Create directory structure in the universal JRE folder
+                if (!fs.existsSync(universalDir)) {
+                    fs.mkdirSync(universalDir, {recursive: true});
+                }
+
+                if (isMachExecutable(arm64File)) {
+                    createUniversalBinary(x64File, arm64File, universalFile);
+                } else {
+                    fs.copyFileSync(x64File, universalFile)
+                }
+            }
+        });
+    }
+}
 
 
 const argv = minimist(process.argv)
@@ -240,41 +271,9 @@ for (const platform of platforms) {
 
     if (platform === "darwin") {
        try {
-           const universalPath = getTargetDir("mac", "universal")
-           if (!fs.existsSync(universalPath)) {
-               fs.mkdirSync(universalPath, {recursive: true})
-               const x64Path = getTargetDir("mac", "x64")
-               const arm64Path = getTargetDir("mac", "aarch64")
-
-               traverseDir(x64Path, (x64File) => {
-                   const relativePath = path.relative(x64Path, x64File);
-                   const arm64File = path.join(arm64Path, relativePath);
-                   const universalFile = path.join(universalPath, relativePath);
-
-                   // Make sure corresponding arm64 file exists
-                   if (fs.existsSync(arm64File)) {
-
-                       const universalDir = path.dirname(universalFile);
-
-                       // Create directory structure in the universal JRE folder
-                       if (!fs.existsSync(universalDir)) {
-                           fs.mkdirSync(universalDir, {recursive: true});
-                       }
-
-                       if (isMachExecutable(arm64File)) {
-                           createUniversalBinary(x64File, arm64File, universalFile);
-                       } else {
-                           fs.copyFileSync(x64File, universalFile)
-                       }
-
-                       // Create the universal binary
-
-                   }
-               });
-           }
-
+           createMacUniversalJRE()
        } catch (e) {
-           console.log("Could not create mac universal binary")
+           console.log("Could not create mac universal JRE")
            throw e
        }
     }

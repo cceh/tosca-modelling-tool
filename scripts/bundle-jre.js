@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs-extra')
 
 exports.default = async function (context) {
+    console.log("Running afterPack hook for bundling JRE for Windows and Linux")
     if (context.electronPlatformName !== "darwin") {
         const targetDir = path.join(context.appOutDir, "resources", "java")
         fs.mkdirSync(targetDir, {recursive: true})
@@ -20,6 +21,7 @@ exports.default = async function (context) {
         })()
 
         const archName = (() => {
+            console.log(context.arch)
             switch (context.arch) {
                 case 0:
                     return 'ia32'
@@ -27,8 +29,10 @@ exports.default = async function (context) {
                     return 'x64'
                 case 2:
                     return 'armv7l'
-                case 4:
+                case 3:
                     return 'arm64'
+                case 4:
+                    return 'universal'
                 default:
                     return 'unknown'
             }
