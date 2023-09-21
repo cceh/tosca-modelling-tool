@@ -133,7 +133,7 @@ export class WindowManager extends EventEmitter {
         this._mainWindow = new BrowserWindow({
             center: true,
             width: 1024,
-            height: 1000,
+            height: 635,
             show: false,
             maximizable: false,
             fullscreenable: false,
