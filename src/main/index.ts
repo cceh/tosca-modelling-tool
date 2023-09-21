@@ -72,6 +72,12 @@ function isValidRepository(repositoryPath: string) {
     return fs.existsSync(path.join(repositoryPath, ".git")) || fs.existsSync(path.join(repositoryPath, "workspace"));
 }
 
+// Winery wants a ".git" directory at the repositoryPath/../../.., so we need to create a
+// directory structure to accommodate this.
+function getRepositoryPath(workspaceRoot: string) {
+    return path.join(workspaceRoot, "content", "repository")
+}
+
 /**
  * Check if the given URL is part of the app.
  */
@@ -117,23 +123,25 @@ function initializeStore() {
 /**
  * Start the Winery process with the given repository path.
  *
- * @param repositoryPath - The path of the repository to start the wineryProcess with.
+ * @param workspaceRoot - The path which contains the repository to start the wineryProcess with.
  * @returns A Promise that resolves when the wineryProcess has started, or throws an error if something goes wrong.
  */
-function startWinery(repositoryPath: string): null | Promise<void> {
+function startWinery(workspaceRoot: string): null | Promise<void> {
+    const repositoryPath = getRepositoryPath(workspaceRoot)
+
     windowManager.mainWindow.webContents.send(WINERY_STARTING)
     return wineryProcess
         .start(repositoryPath)
         .then(() => {
 
             const knownWorkspaces = store.get(SK_KNOWN_WORKSPACES) ?? []
-            const knownOtherWorkspaces = knownWorkspaces.filter(workspace => workspace.path !== repositoryPath)
+            const knownOtherWorkspaces = knownWorkspaces.filter(workspace => workspace.path !== workspaceRoot)
             store.set(SK_KNOWN_WORKSPACES, [
-                {path: repositoryPath},
+                {path: workspaceRoot},
                 ...knownOtherWorkspaces
             ])
 
-            const parentLocation = path.resolve(repositoryPath, "..")
+            const parentLocation = path.resolve(workspaceRoot, "..")
             store.set(SK_DEFAULT_WORKSPACE_PARENT_PATH, parentLocation)
 
             windowManager
@@ -148,7 +156,6 @@ function startWinery(repositoryPath: string): null | Promise<void> {
         });
 }
 
-
 // ---------------------------
 // IPC AND EVENT HANDLING
 // ---------------------------
@@ -156,7 +163,9 @@ function startWinery(repositoryPath: string): null | Promise<void> {
 // Handle IPC calls from the renderer process (triggered when a user interacts with the app)
 // ----------------------------------------------------------------------------------------
 
-ipcMain.on(OPEN_A_WORKSPACE, async (event, repositoryPath) => {
+ipcMain.on(OPEN_A_WORKSPACE, async (event, workspaceRoot) => {
+    const repositoryPath = getRepositoryPath(workspaceRoot)
+
     if (!fs.existsSync(repositoryPath)) {
         dialog.showErrorBox("Repository path not found", `The specified repository path could not be found: ${repositoryPath}`)
         return
@@ -167,29 +176,30 @@ ipcMain.on(OPEN_A_WORKSPACE, async (event, repositoryPath) => {
         return
     }
 
-    await startWinery(repositoryPath)
+    await startWinery(workspaceRoot)
 })
 
-ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => {
+ipcMain.on(CREATE_A_WORKSPACE, async (event, workspaceRoot, baseRepository) => {
+    const repositoryPath = getRepositoryPath(workspaceRoot)
 
     // handle already existing repository directory
-    if (fs.existsSync(repositoryPath)) {
-        if (isValidRepository(repositoryPath)) {
+    if (fs.existsSync(workspaceRoot)) {
+        if (isValidRepository(workspaceRoot)) {
             const result = dialog.showMessageBoxSync({
                 title: "Workspace already exists",
-                message: `Found an existing workspace at ${repositoryPath}. What would you like to do?`,
+                message: `Found an existing workspace at ${workspaceRoot}. What would you like to do?`,
                 buttons: ["Open the workspace", "Choose another name"],
                 cancelId: 1
             })
 
             if (result === 0) {
-                await startWinery(repositoryPath)
+                await startWinery(workspaceRoot)
             }
         } else {
-            if(fs.readdirSync(repositoryPath).length > 0) {
+            if(fs.readdirSync(workspaceRoot).length > 0) {
                 dialog.showMessageBoxSync({
                     title: "Directory not empty",
-                    message: `The directory at ${repositoryPath} already exists and is not empty. Cannot create a workspace in a non-empty directory.`,
+                    message: `The directory at ${workspaceRoot} already exists and is not empty. Cannot create a workspace in a non-empty directory.`,
                     buttons: ["Choose another name"]
                 })
             }
@@ -199,6 +209,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
     }
 
     // create the repository directory
+    fs.mkdirSync(workspaceRoot, { recursive: true })
     try {
         if (baseRepository) {
             fse.copySync(path.join(baseRepositoriesPath, baseRepository), repositoryPath)
@@ -210,7 +221,7 @@ ipcMain.on(CREATE_A_WORKSPACE, async (event, repositoryPath, baseRepository) => 
         return
     }
 
-    await startWinery(repositoryPath)
+    await startWinery(workspaceRoot)
 })
 
 ipcMain.handle(CHOOSE_DIRECTORY, async (event, path: string) => {
