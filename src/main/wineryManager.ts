@@ -135,10 +135,7 @@ export class WineryManager extends EventEmitter {
 
         this.logger.info("Starting the Winery...")
         
-        // discoverGitSystemConfig             - Exception caught during execution of command '[git, --version]' in '/usr/bin', return code '1', error message 'xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools."}
-        // https://stackoverflow.com/questions/33804097/prevent-jgit-from-reading-the-native-git-config
-        // https://www.npmjs.com/package/which
-        const process = spawn(javaCmdPath, [
+        const processArgs = [
             `-Duser.home=${this.dataPath}`,
             `-Dorg.eclipse.jetty.LEVEL=INFO`,
             `-Dwinerylauncher.port=${port}`,
@@ -147,7 +144,13 @@ export class WineryManager extends EventEmitter {
             "-XX:TieredStopAtLevel=1",
             "-noverify",
             launcherPath]
-            , {
+
+        this.logger.debug(["Winery command:", javaCmdPath, ...processArgs].join(" "))
+
+        // discoverGitSystemConfig             - Exception caught during execution of command '[git, --version]' in '/usr/bin', return code '1', error message 'xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools."}
+        // https://stackoverflow.com/questions/33804097/prevent-jgit-from-reading-the-native-git-config
+        // https://www.npmjs.com/package/which
+        const process = spawn(javaCmdPath, processArgs, {
             stdio: "pipe"
         })
 
