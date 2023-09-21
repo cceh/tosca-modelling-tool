@@ -2,10 +2,6 @@
 $enable-rfs: false;
 @import "bootstrap";
 
-$bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
-@import "bootstrap-icons";
-
-
 :root {
   --app-card-bg: rgba(255,255,255,0.7);
   --default-button-height: 120px;
