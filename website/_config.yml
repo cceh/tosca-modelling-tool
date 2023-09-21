@@ -12,22 +12,23 @@ disqus_shortname:
 logo: /siteicon.png
 description: A desktop distribution for the TOSCA Winery.
 author:
-  name:
-  email:
-  twitter: # twitter username without the @ symbol
+  name: Cologne Center for eHumanities (CCeH)
+  email: info-cceh@uni-koeln.de
+  twitter: CCeHum
 social:
-  name: Hydra Template
+  name: TOSCA Modelling Tool
   links:
-    - https://github.com/CloudCannon/hydra-jekyll-template
+    - https://github.com/cceh/tosca-modelling-tool
 
 # -----
 # Build
 
-timezone: Etc/UTC
+#timezone: Etc/UTC
 
-collections:
-  staff_members:
-    _hide_content: true
+#
+#collections:
+#  staff_members:
+#    _hide_content: true
 
 #paginate: 10
 #paginate_path: "/blog/:num/"
@@ -69,11 +70,11 @@ defaults:
 #    - categories
 
 plugins:
-  - jekyll-archives
+#  - jekyll-archives
   - jekyll-sitemap
   - jekyll-seo-tag
-  - jekyll-feed
-  - jekyll-paginate
+#  - jekyll-feed
+#  - jekyll-paginate
   - jekyll-github-metadata
 
 exclude:
@@ -81,27 +82,3 @@ exclude:
   - Gemfile.lock
   - README.md
   - LICENCE
-
-# -----------
-# CloudCannon
-
-_select_data:
-  social_icons:
-    - Facebook
-    - Instagram
-    - LinkedIn
-    - Pinterest
-    - Tumblr
-    - Twitter
-    - YouTube
-    - RSS
-
-_comments:
-  map: Update the map location and display settings.
-  latitude: Coordinates for the center marker on the map.
-  longitude: Coordinates for the center marker on the map.
-  zoom: The zoom level for the map.
-  pricing_table: Update the information in the pricing tables.
-  highlight: Emphasis the text
-  color: The background colour used in the plan name and call to action.
-  new_window: Open link in new window
