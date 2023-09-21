@@ -9,9 +9,10 @@ const resourcePath = useProdPath
     ? process.resourcesPath
     : path.join(__dirname, "..", "..", "resources");
 
+const platform = getPlatform()
 export const javaCmdPath = useProdPath
     ? path.join(resourcePath, "java", "bin", "java")
-    : path.join(__dirname, "..", "..", "vendor", "java", getPlatform(), getArch(), "bin", "java");
+    : path.join(__dirname, "..", "..", "vendor", "java", platform, platform === "mac" ? "universal" : getArch(), "bin", "java");
 
 export const baseRepositoriesPath = useProdPath
     ? path.join(resourcePath, "base-repos")
