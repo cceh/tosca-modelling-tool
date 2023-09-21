@@ -329,7 +329,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (!windowManager.mainWindow) {
+  if (!windowManager.mainWindow && !wineryProcess.isRunning) {
     windowManager.openMainWindow()
   }
 });
