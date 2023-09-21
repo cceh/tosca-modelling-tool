@@ -76,21 +76,9 @@ description: A desktop distribution for the TOSCA Winery
 				<div class="cta button alt"><a href="{{ mac_asset.browser_download_url }}">Mac: {{ mac_asset.name }}</a></div>
 				{% assign win_asset = latest_release.assets | sort: "name" | find_exp: "asset", "asset.name contains '.exe'" %}
 				<div class="cta button alt"><a href="{{ win_asset.browser_download_url }}">Windows: {{ win_asset.name }}</a></div>
+				{% assign app_img_asset = latest_release.assets | sort: "name" | find_exp: "asset", "asset.name contains '.snap'" %}
+				<div class="cta button alt"><a href="{{ app_img_asset.browser_download_url }}">Linux (AppImage): {{ app_img_asset.name }}</a></div>
 			</ul>
-
-			<!--				<h3>All</h3>-->
-			<!--				<ul>-->
-			<!--					{% for release in site.github.releases %}-->
-			<!--					<li>{{ release.name }}</li>-->
-			<!--					<ul>-->
-			<!--						{% for asset in release.assets %}-->
-			<!--						<li><a href="{{ asset.browser_download_url }}">{{ asset.name }}</a></li>-->
-			<!--						{% endfor %}-->
-			<!--					</ul>-->
-			<!--					{% endfor %}-->
-			<!--				</ul>-->
-
-
 		</div>
 	</section>
 </div>
