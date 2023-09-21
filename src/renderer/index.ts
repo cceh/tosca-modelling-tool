@@ -98,11 +98,11 @@ const globalMethods: GlobalMethods = {
         const defaultParentPath = store.get(SK_DEFAULT_WORKSPACE_PARENT_PATH)
 
         let nameIndex = 1
-        let defaultName = "Winery Workspace"
+        let defaultName = "TOSCA Workspace"
 
         if (fs.existsSync(path.join(defaultParentPath, defaultName))) {
             nameIndex++
-            defaultName = `Winery Workspace ${nameIndex}`
+            defaultName = `TOSCA Workspace ${nameIndex}`
         }
 
         const workspacePath = await createWorkspaceDialog.show(defaultParentPath, defaultName)

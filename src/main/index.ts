@@ -115,7 +115,7 @@ function initializeStore() {
     }
 
     if (!store.has(SK_DEFAULT_WORKSPACE_PARENT_PATH) || !fs.existsSync(store.get(SK_DEFAULT_WORKSPACE_PARENT_PATH))) {
-        store.set(SK_DEFAULT_WORKSPACE_PARENT_PATH, path.join(app.getPath("home"), "Winery Workspaces"))
+        store.set(SK_DEFAULT_WORKSPACE_PARENT_PATH, path.join(app.getPath("home"), "TOSCA Workspaces"))
     }
 }
 
