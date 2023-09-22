@@ -6,11 +6,11 @@
     - name: Download
       link: "/#download"
 - links:
-    - name: Cologne Center for eHumanities
+    - name: CCeH
       link: https://cceh.uni-koeln.de
       new_window: true
-    - name: University of Cologne
-      link: https://uni-koeln.de
+    - name: IAAS
+      link: https://www.iaas.uni-stuttgart.de/
       new_window: true
 - links:
     - name: Twitter
