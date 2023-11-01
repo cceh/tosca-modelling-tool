@@ -11,8 +11,8 @@
   },
   "windows": {
     "x64": {
-      "semver": "17.0.8+101",
-      "openjdk_version": "17.0.8.1+1"
+      "semver": "17.0.9+9.1",
+      "openjdk_version": "17.0.9+9"
     }
   },
   "linux": {
