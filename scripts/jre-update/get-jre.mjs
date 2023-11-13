@@ -256,7 +256,7 @@ for (const platform of platforms) {
 
     const arches = platform === "darwin" ? ["x64", "aarch64"] : ["x64"]
     for (const arch of arches) {
-        const version = jreVersions[os]?.[arch]?.openjdk_version
+        const version = jreVersions[os]?.[arch]?.semver
 
         if (!version) {
             throw new Error(`Could not find JRE version for ${os} (${arch}) in versions file (${jreVersionFile}).`)
