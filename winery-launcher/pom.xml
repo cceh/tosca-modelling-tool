@@ -15,7 +15,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <version.jetty>9.4.53.v20231009</version.jetty>
-        <version.spring>5.3.30</version.spring>
+        <version.spring>5.3.31</version.spring>
         <version.junit>5.10.1</version.junit>
         <javax.websocket.api.version>1.0</javax.websocket.api.version>
     </properties>
@@ -68,7 +68,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.3</version>
 
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -180,7 +180,7 @@
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.16.2</version>
+            <version>1.17.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
