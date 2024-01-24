@@ -1,24 +1,24 @@
 {
   "mac": {
     "x64": {
-      "semver": "17.0.9+9",
-      "openjdk_version": "17.0.9+9"
+      "semver": "17.0.10+7",
+      "openjdk_version": "17.0.10+7"
     },
     "aarch64": {
-      "semver": "17.0.9+9",
-      "openjdk_version": "17.0.9+9"
+      "semver": "17.0.10+7",
+      "openjdk_version": "17.0.10+7"
     }
   },
   "windows": {
     "x64": {
-      "semver": "17.0.9+9.1",
-      "openjdk_version": "17.0.9+9"
+      "semver": "17.0.10+7",
+      "openjdk_version": "17.0.10+7"
     }
   },
   "linux": {
     "x64": {
-      "semver": "17.0.9+9",
-      "openjdk_version": "17.0.9+9"
+      "semver": "17.0.10+7",
+      "openjdk_version": "17.0.10+7"
     }
   }
 }
