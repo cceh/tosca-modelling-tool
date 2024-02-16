@@ -14,9 +14,9 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <version.jetty>9.4.53.v20231009</version.jetty>
-        <version.spring>5.3.31</version.spring>
-        <version.junit>5.10.1</version.junit>
+        <version.jetty>9.4.54.v20240208</version.jetty>
+        <version.spring>5.3.32</version.spring>
+        <version.junit>5.10.2</version.junit>
         <javax.websocket.api.version>1.0</javax.websocket.api.version>
     </properties>
 
