@@ -158,6 +158,6 @@
     "electron-store": "^8.1.0",
     "js-yaml": "^4.1.0",
     "portfinder": "^1.0.32",
-    "winston": "^3.11.0"
+    "winston": "^3.12.0"
   }
 }
