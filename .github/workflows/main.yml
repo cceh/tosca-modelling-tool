@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-22.04, windows-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -81,13 +81,17 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install xvfb
 
+      - name: Install Python 2 for node-gyp (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y python2
+
       - name: Install NPM dependencies
         run: npm ci
 
       - name: Get and build app dependencies
         run: npm run deps
 
-      # winery-launcher is tested my maven after build
+      # winery-launcher tests run during mvn package (Winery tests excluded)
       - name: Test Electron app
         run: npm run test:electron
 

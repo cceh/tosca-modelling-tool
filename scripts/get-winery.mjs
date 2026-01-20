@@ -48,8 +48,10 @@ function buildWineryLauncher() {
             `-f`, parentPom,
             "-Dstyle.color=always",
 
-            // skip the Winery tests, only test the winery launcher
-            "-Dtest=!%regex[org/eclipse/winery.*]",
+            // exclude upstream Winery tests using wildcard (more portable than regex)
+            "-Dtest=!org.eclipse.winery.**",
+            // surefire 3.0.x uses -DfailIfNoTests, surefire 3.2.x uses -Dsurefire.failIfNoSpecifiedTests
+            "-DfailIfNoTests=false",
             "-Dsurefire.failIfNoSpecifiedTests=false",
 
             "-Dcheckstyle.skip",
