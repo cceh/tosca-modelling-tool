@@ -16,6 +16,8 @@ updates:
       # chai v5+ and sinon v18+ are ESM-only, incompatible with electron-mocha
       - dependency-name: "chai"
       - dependency-name: "sinon"
+      # electron-store v9+ is ESM-only and requires moduleResolution "bundler"
+      - dependency-name: "electron-store"
     groups:
       js-dev-dependencies:
         dependency-type: "development"
