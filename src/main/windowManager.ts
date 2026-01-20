@@ -96,7 +96,7 @@ export class WindowManager extends EventEmitter {
 
         toscaManagerWindow
             .once('ready-to-show', () => toscaManagerWindow.show())
-            .once('closed',  (event: Electron.Event) => this.onWineryWindowClosed(event, toscaManagerWindow))
+            .once('closed', () => this.onWineryWindowClosed(toscaManagerWindow))
 
         toscaManagerWindow.webContents.setWindowOpenHandler(
             (details) => this.wineryWindowOpenHandler(details)
@@ -119,7 +119,7 @@ export class WindowManager extends EventEmitter {
 
         topologyModelerWindow
             .once('ready-to-show', () => topologyModelerWindow.show())
-            .once('closed',  (event: Electron.Event) => this.onWineryWindowClosed(event, topologyModelerWindow))
+            .once('closed', () => this.onWineryWindowClosed(topologyModelerWindow))
 
         topologyModelerWindow.webContents.setWindowOpenHandler(this.wineryWindowOpenHandler);
 
@@ -185,14 +185,12 @@ export class WindowManager extends EventEmitter {
     }
 
     /**
-     * Function that is passed as the handler for the close event for Winery windows. Emits an event when all Winery
-     * windows have been closed and removes the window from the respective Set.
+     * Handler for the 'closed' event of Winery windows. Emits LAST_WINERY_WINDOW_CLOSED when the last
+     * winery window is closed (triggering main window to reopen), and removes the window from its Set.
      */
-    private onWineryWindowClosed(event: Electron.Event, window: BrowserWindow) {
+    private onWineryWindowClosed(window: BrowserWindow) {
         if (!this._mainWindow && this.wineryWindows.length === 1) {
-            // this is the last open Winery windows and about to be closed
-            event.preventDefault()
-            this.emit(LAST_WINERY_WINDOW_CLOSED, event)
+            this.emit(LAST_WINERY_WINDOW_CLOSED)
         }
 
         this.toscaManagerWindowSet.delete(window)
