@@ -10,9 +10,12 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-    ignore: 
+    ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
+      # chai v5+ and sinon v18+ are ESM-only, incompatible with electron-mocha
+      - dependency-name: "chai"
+      - dependency-name: "sinon"
     groups:
       js-dev-dependencies:
         dependency-type: "development"
